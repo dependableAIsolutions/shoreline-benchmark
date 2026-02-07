@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shoreline/shared": ["packages/shared/src/index.ts"],
+      "@shoreline/shared/*": ["packages/shared/src/*"],
+      "@shoreline/harness": ["packages/harness/src/index.ts"],
+      "@shoreline/harness/*": ["packages/harness/src/*"]
+    }
+  }
+}
