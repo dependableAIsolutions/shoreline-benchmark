@@ -62,8 +62,18 @@ if [[ -n "$LATEST_RESULT_DIR" ]]; then
 fi
 
 if [[ "$START_WEB" == "1" ]]; then
-  printf "[shoreline] Starting web UI on http://localhost:%s\n" "$WEB_PORT"
-  exec corepack pnpm --filter @shoreline/web dev -- --port "$WEB_PORT"
+  SELECTED_PORT="$WEB_PORT"
+  if command -v lsof >/dev/null 2>&1; then
+    while lsof -n -iTCP:"$SELECTED_PORT" -sTCP:LISTEN >/dev/null 2>&1; do
+      SELECTED_PORT="$((SELECTED_PORT + 1))"
+    done
+  fi
+  if [[ "$SELECTED_PORT" != "$WEB_PORT" ]]; then
+    printf "[shoreline] Port %s in use, switching to %s\n" "$WEB_PORT" "$SELECTED_PORT"
+  fi
+
+  printf "[shoreline] Starting web UI on http://localhost:%s\n" "$SELECTED_PORT"
+  exec corepack pnpm --filter @shoreline/web dev --port "$SELECTED_PORT"
 else
   printf "[shoreline] START_WEB=0, skipping web server startup.\n"
 fi
