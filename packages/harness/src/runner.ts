@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { access, appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
   CATEGORY_DEFINITIONS,
@@ -27,12 +27,30 @@ export interface BenchmarkRunnerConfig {
   temperature: number;
   probeTrials?: number;
   quickMode?: boolean;
+  resume?: boolean;
 }
 
 interface TrialRunResult {
   trial: TrialResult;
   tokensUsed: number;
   invalidConfidence: boolean;
+}
+
+interface CategoryCheckpoint {
+  boundary: number;
+  sampleDifficulties: number[];
+  quickMode: boolean;
+  completedByDifficulty: Record<string, number>;
+}
+
+interface RunCheckpoint {
+  version: 1;
+  modelId: string;
+  startedAt: string;
+  updatedAt: string;
+  quickMode: boolean;
+  trialsPerDifficulty: number;
+  categories: Partial<Record<CategoryKey, CategoryCheckpoint>>;
 }
 
 function getCategoryOrThrow(key: CategoryKey) {
@@ -49,6 +67,65 @@ function getGeneratorOrThrow(key: CategoryKey): TaskGenerator {
     );
   }
   return generator;
+}
+
+function emptyScore(category: CategoryKey): CategoryScore {
+  return {
+    category,
+    sand: 0,
+    solid: 0,
+    concrete: 0,
+    trialCount: 0,
+    difficultyRange: [0, 0],
+    transitionZone: 0
+  };
+}
+
+async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function countByDifficulty(trials: TrialResult[]): Map<number, number> {
+  const counts = new Map<number, number>();
+  for (const trial of trials) {
+    counts.set(trial.difficulty, (counts.get(trial.difficulty) ?? 0) + 1);
+  }
+  return counts;
+}
+
+async function loadExistingTrials(rawPath: string): Promise<TrialResult[]> {
+  if (!(await fileExists(rawPath))) return [];
+  const content = await readFile(rawPath, "utf8");
+  const lines = content
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
+  const parsed: TrialResult[] = [];
+  for (const line of lines) {
+    try {
+      parsed.push(JSON.parse(line) as TrialResult);
+    } catch {
+      // skip malformed line
+    }
+  }
+  return parsed;
+}
+
+async function loadCheckpoint(checkpointPath: string): Promise<RunCheckpoint | null> {
+  if (!(await fileExists(checkpointPath))) return null;
+  const content = await readFile(checkpointPath, "utf8");
+  return JSON.parse(content) as RunCheckpoint;
+}
+
+async function saveCheckpoint(checkpointPath: string, checkpoint: RunCheckpoint): Promise<void> {
+  checkpoint.updatedAt = new Date().toISOString();
+  await writeFile(checkpointPath, JSON.stringify(checkpoint, null, 2));
 }
 
 async function runThreePhaseTrial(
@@ -114,12 +191,13 @@ async function runPhase2Probe(
   adapter: ModelAdapter,
   generator: TaskGenerator,
   difficulty: number,
-  trials: number
+  trials: number,
+  quickMode: boolean
 ): Promise<number> {
   let correct = 0;
   for (let i = 0; i < trials; i += 1) {
     const task = generator.generate(difficulty);
-    const prompt = buildPhase2Prompt(task.prompt);
+    const prompt = buildPhase2Prompt(task.prompt, quickMode);
     const response = await adapter.complete(prompt);
     const evaluation = task.evaluate(response.content);
     if (evaluation.isCorrect) correct += 1;
@@ -127,86 +205,147 @@ async function runPhase2Probe(
   return correct / trials;
 }
 
-function emptyScore(category: CategoryKey): CategoryScore {
-  return {
-    category,
-    sand: 0,
-    solid: 0,
-    concrete: 0,
-    trialCount: 0,
-    difficultyRange: [0, 0],
-    transitionZone: 0
-  };
+function buildEmptyScoreMap(): Record<CategoryKey, CategoryScore> {
+  return Object.fromEntries(CATEGORY_ORDER.map((key) => [key, emptyScore(key)])) as Record<CategoryKey, CategoryScore>;
 }
 
 export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<ModelResult> {
   const startedAt = new Date().toISOString();
+  const quickMode = config.quickMode ?? false;
+
   await mkdir(config.outputDir, { recursive: true });
 
-  const categories = [...new Set(config.categories)];
-  const scoresByCategory = Object.fromEntries(CATEGORY_ORDER.map((key) => [key, emptyScore(key)])) as Record<
-    CategoryKey,
-    CategoryScore
-  >;
+  const scoresPath = path.join(config.outputDir, "scores.json");
+  const rawPath = path.join(config.outputDir, "raw-responses.jsonl");
+  const checkpointPath = path.join(config.outputDir, "checkpoint.json");
 
-  const allTrials: TrialResult[] = [];
-  let totalTokensUsed = 0;
-  let invalidTrials = 0;
+  if (!config.resume) {
+    const hasExistingData =
+      (await fileExists(rawPath)) || (await fileExists(checkpointPath)) || (await fileExists(scoresPath));
+    if (hasExistingData) {
+      throw new Error(
+        `Output directory already contains benchmark data: ${config.outputDir}. Use --resume ${config.outputDir} or set a new --output directory.`
+      );
+    }
+  }
+
+  const existingTrials = config.resume ? await loadExistingTrials(rawPath) : [];
+  const allTrials: TrialResult[] = [...existingTrials];
+
+  let checkpoint = (config.resume ? await loadCheckpoint(checkpointPath) : null) as RunCheckpoint | null;
+  if (!checkpoint) {
+    checkpoint = {
+      version: 1,
+      modelId: config.adapter.getModelId(),
+      startedAt,
+      updatedAt: startedAt,
+      quickMode,
+      trialsPerDifficulty: config.trialsPerDifficulty,
+      categories: {}
+    };
+    await saveCheckpoint(checkpointPath, checkpoint);
+  }
+
+  const categories = [...new Set(config.categories)];
+  const scoresByCategory = buildEmptyScoreMap();
+
+  let totalTokensUsed = allTrials.reduce(
+    (sum, trial) => sum + trial.phase1.tokensUsed + trial.phase2.tokensUsed + trial.phase3.tokensUsed,
+    0
+  );
+  let invalidTrials = allTrials.filter((trial) => trial.phase1.confidence === null || trial.phase3.confidence === null).length;
 
   for (const categoryKey of categories) {
     const generator = getGeneratorOrThrow(categoryKey);
     const category = getCategoryOrThrow(categoryKey);
-    let transition:
-      | {
-          boundary: number;
-          sampleDifficulties: number[];
-        }
-      | undefined;
 
-    if (config.quickMode) {
-      const midpoint = Math.round((category.minDifficulty + category.maxDifficulty) / 2);
-      transition = {
-        boundary: midpoint,
-        sampleDifficulties: [midpoint]
-      };
-      logInfo(`Category ${category.label}: quick mode at difficulty=${midpoint}`);
-    } else {
-      logInfo(`Category ${category.label}: finding transition zone...`);
-      transition = await findTransitionZone(
-        {
-          minDifficulty: category.minDifficulty,
-          maxDifficulty: category.maxDifficulty,
-          probeTrials: config.probeTrials ?? 3
-        },
-        async (difficulty, probeTrials) => runPhase2Probe(config.adapter, generator, difficulty, probeTrials)
-      );
-
-      logInfo(
-        `Category ${category.label}: boundary≈${transition.boundary.toFixed(2)} difficulties=[${transition.sampleDifficulties.join(
-          ", "
-        )}]`
+    let state = checkpoint.categories[categoryKey];
+    if (state && state.quickMode !== quickMode) {
+      throw new Error(
+        `Cannot resume category '${categoryKey}' with a different quick-mode setting. Existing=${state.quickMode}, requested=${quickMode}`
       );
     }
 
-    const categoryTrials: TrialResult[] = [];
+    if (!state) {
+      if (quickMode) {
+        const midpoint = Math.round((category.minDifficulty + category.maxDifficulty) / 2);
+        state = {
+          boundary: midpoint,
+          sampleDifficulties: [midpoint],
+          quickMode,
+          completedByDifficulty: {}
+        };
+        logInfo(`Category ${category.label}: quick mode at difficulty=${midpoint}`);
+      } else {
+        logInfo(`Category ${category.label}: finding transition zone...`);
+        const transition = await findTransitionZone(
+          {
+            minDifficulty: category.minDifficulty,
+            maxDifficulty: category.maxDifficulty,
+            probeTrials: config.probeTrials ?? 3
+          },
+          async (difficulty, probeTrials) =>
+            runPhase2Probe(config.adapter, generator, difficulty, probeTrials, quickMode)
+        );
 
-    for (const difficulty of transition.sampleDifficulties) {
-      for (let trialIndex = 0; trialIndex < config.trialsPerDifficulty; trialIndex += 1) {
-        const result = await runThreePhaseTrial(config.adapter, generator, categoryKey, difficulty, config.quickMode ?? false);
-        categoryTrials.push(result.trial);
+        logInfo(
+          `Category ${category.label}: boundary≈${transition.boundary.toFixed(2)} difficulties=[${transition.sampleDifficulties.join(
+            ", "
+          )}]`
+        );
+
+        state = {
+          boundary: transition.boundary,
+          sampleDifficulties: transition.sampleDifficulties,
+          quickMode,
+          completedByDifficulty: {}
+        };
+      }
+
+      checkpoint.categories[categoryKey] = state;
+      await saveCheckpoint(checkpointPath, checkpoint);
+    }
+
+    const categoryTrials = allTrials.filter((trial) => trial.category === categoryKey);
+    const existingCounts = countByDifficulty(categoryTrials);
+
+    for (const difficulty of state.sampleDifficulties) {
+      let completedCount = Math.max(existingCounts.get(difficulty) ?? 0, state.completedByDifficulty[String(difficulty)] ?? 0);
+      if (completedCount >= config.trialsPerDifficulty) {
+        logInfo(
+          `Category ${category.label}: difficulty=${difficulty} already complete (${completedCount}/${config.trialsPerDifficulty})`
+        );
+        state.completedByDifficulty[String(difficulty)] = completedCount;
+        continue;
+      }
+
+      while (completedCount < config.trialsPerDifficulty) {
+        const result = await runThreePhaseTrial(config.adapter, generator, categoryKey, difficulty, quickMode);
+
         allTrials.push(result.trial);
+        categoryTrials.push(result.trial);
         totalTokensUsed += result.tokensUsed;
         if (result.invalidConfidence) invalidTrials += 1;
+
+        await appendFile(rawPath, `${JSON.stringify(result.trial)}\n`);
+
+        completedCount += 1;
+        state.completedByDifficulty[String(difficulty)] = completedCount;
+        await saveCheckpoint(checkpointPath, checkpoint);
       }
     }
 
-    const invalidRate = categoryTrials.length === 0 ? 0 : categoryTrials.filter((trial) => trial.phase1.confidence === null || trial.phase3.confidence === null).length / categoryTrials.length;
+    const invalidRate =
+      categoryTrials.length === 0
+        ? 0
+        : categoryTrials.filter((trial) => trial.phase1.confidence === null || trial.phase3.confidence === null).length /
+          categoryTrials.length;
+
     if (invalidRate > 0.2) {
       logWarn(`${category.label}: confidence extraction failed in ${(invalidRate * 100).toFixed(1)}% of trials.`);
     }
 
-    const score = computeCategoryScore(categoryKey, categoryTrials, transition.boundary);
-    scoresByCategory[categoryKey] = score;
+    scoresByCategory[categoryKey] = computeCategoryScore(categoryKey, categoryTrials, state.boundary);
   }
 
   const activeScores = categories.map((key) => scoresByCategory[key]);
@@ -227,14 +366,12 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
     }
   };
 
-  const scoresPath = path.join(config.outputDir, "scores.json");
-  const rawPath = path.join(config.outputDir, "raw-responses.jsonl");
-
   await writeFile(scoresPath, JSON.stringify(result, null, 2));
-  await writeFile(rawPath, allTrials.map((trial) => JSON.stringify(trial)).join("\n"));
+  await saveCheckpoint(checkpointPath, checkpoint);
 
   logInfo(`Saved ${scoresPath}`);
   logInfo(`Saved ${rawPath}`);
+  logInfo(`Saved ${checkpointPath}`);
 
   return result;
 }
