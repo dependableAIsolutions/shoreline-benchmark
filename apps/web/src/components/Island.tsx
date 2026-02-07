@@ -1,6 +1,7 @@
 "use client";
 
 import { categoryLabels } from "../data/results";
+import { normalizeLayersForDisplay } from "../lib/scoring";
 import { catmullRom, getSmoothedPoints, polarToXY } from "../lib/splines";
 import { CATEGORY_ORDER, type CategoryKey, type ModelResult } from "../lib/types";
 
@@ -24,9 +25,16 @@ export function Island({
   const maxR = size / 2 - 50;
   const step = 360 / CATEGORY_ORDER.length;
 
-  const sandVals = CATEGORY_ORDER.map((key) => model.categories[key]?.sand ?? 0);
-  const solidVals = CATEGORY_ORDER.map((key) => model.categories[key]?.solid ?? 0);
-  const concreteVals = CATEGORY_ORDER.map((key) => model.categories[key]?.concrete ?? 0);
+  const rawSandVals = CATEGORY_ORDER.map((key) => model.categories[key]?.sand ?? 0);
+  const rawClaimedVals = CATEGORY_ORDER.map((key) => model.categories[key]?.claimed ?? model.categories[key]?.sand ?? 0);
+  const rawSolidVals = CATEGORY_ORDER.map((key) => model.categories[key]?.solid ?? 0);
+  const rawConcreteVals = CATEGORY_ORDER.map((key) => model.categories[key]?.concrete ?? 0);
+  const displayLayers = CATEGORY_ORDER.map((_, index) =>
+    normalizeLayersForDisplay(rawSandVals[index], rawSolidVals[index], rawConcreteVals[index])
+  );
+  const sandVals = displayLayers.map((layer) => layer.sand);
+  const solidVals = displayLayers.map((layer) => layer.solid);
+  const concreteVals = displayLayers.map((layer) => layer.concrete);
 
   const sandPath = catmullRom(getSmoothedPoints(cx, cy, sandVals, maxR));
   const solidPath = catmullRom(getSmoothedPoints(cx, cy, solidVals, maxR));
@@ -44,10 +52,10 @@ export function Island({
         </radialGradient>
 
         <pattern id={`sandTex-${uid}`} patternUnits="userSpaceOnUse" width="8" height="8">
-          <rect width="8" height="8" fill="rgba(196,181,130,0.14)" />
-          <circle cx="2" cy="2" r="0.7" fill="rgba(210,195,145,0.22)" />
-          <circle cx="6" cy="5" r="0.5" fill="rgba(210,195,145,0.18)" />
-          <circle cx="4" cy="7" r="0.4" fill="rgba(195,180,130,0.15)" />
+          <rect width="8" height="8" fill="rgba(245,158,11,0.20)" />
+          <circle cx="2" cy="2" r="0.7" fill="rgba(251,191,36,0.30)" />
+          <circle cx="6" cy="5" r="0.5" fill="rgba(251,191,36,0.24)" />
+          <circle cx="4" cy="7" r="0.4" fill="rgba(234,88,12,0.22)" />
         </pattern>
 
         <radialGradient id={`solidGrad-${uid}`} cx="50%" cy="50%" r="50%">
@@ -83,8 +91,8 @@ export function Island({
         filter={`url(#waterGlow-${uid})`}
       />
 
-      <path d={sandPath} fill={`url(#sandTex-${uid})`} stroke="rgba(196,181,130,0.4)" strokeWidth={1.5} strokeDasharray="6 4" />
-      <path d={sandPath} fill="rgba(196,181,130,0.08)" />
+      <path d={sandPath} fill={`url(#sandTex-${uid})`} stroke="rgba(245,158,11,0.65)" strokeWidth={1.5} strokeDasharray="6 4" />
+      <path d={sandPath} fill="rgba(245,158,11,0.12)" />
 
       <path d={solidPath} fill={`url(#solidGrad-${uid})`} stroke="rgba(60,150,70,0.6)" strokeWidth={2} />
       <path d={concretePath} fill={`url(#concreteGrad-${uid})`} stroke="rgba(100,120,140,0.7)" strokeWidth={2.5} />
@@ -139,16 +147,16 @@ export function Island({
 
               {isHovered && (
                 <>
-                  <circle cx={sandDot.x} cy={sandDot.y} r={3} fill="rgba(196,181,130,0.8)" stroke="#C4B582" strokeWidth={1} />
+                  <circle cx={sandDot.x} cy={sandDot.y} r={3} fill="rgba(245,158,11,0.9)" stroke="#F59E0B" strokeWidth={1} />
                   <circle cx={solidDot.x} cy={solidDot.y} r={3} fill="rgba(60,150,70,0.8)" stroke="#3C9646" strokeWidth={1} />
                   <circle cx={concreteDot.x} cy={concreteDot.y} r={3.5} fill="rgba(100,120,140,0.8)" stroke="#64788C" strokeWidth={1} />
 
                   <g>
                     <rect
                       x={cx - 84}
-                      y={cy - 42}
+                      y={cy - 52}
                       width={168}
-                      height={84}
+                      height={104}
                       rx={8}
                       fill="rgba(8,12,26,0.94)"
                       stroke="rgba(255,255,255,0.1)"
@@ -165,14 +173,17 @@ export function Island({
                     >
                       {categoryLabels[category as CategoryKey]}
                     </text>
-                    <text x={cx - 62} y={cy - 6} fontSize={10} fontFamily="'JetBrains Mono', monospace" fill="#C4B582">
-                      Sand: {sandVals[index].toFixed(1)}
+                    <text x={cx - 62} y={cy - 22} fontSize={10} fontFamily="'JetBrains Mono', monospace" fill="#FBBF24">
+                      Claimed: {rawClaimedVals[index].toFixed(1)}
+                    </text>
+                    <text x={cx - 62} y={cy - 6} fontSize={10} fontFamily="'JetBrains Mono', monospace" fill="#F59E0B">
+                      Sand: {rawSandVals[index].toFixed(1)}
                     </text>
                     <text x={cx - 62} y={cy + 10} fontSize={10} fontFamily="'JetBrains Mono', monospace" fill="#3DA84A">
-                      Solid: {solidVals[index].toFixed(1)}
+                      Solid: {rawSolidVals[index].toFixed(1)}
                     </text>
                     <text x={cx - 62} y={cy + 26} fontSize={10} fontFamily="'JetBrains Mono', monospace" fill="#8A9CAA">
-                      Concrete: {concreteVals[index].toFixed(1)}
+                      Concrete: {rawConcreteVals[index].toFixed(1)}
                     </text>
                   </g>
                 </>

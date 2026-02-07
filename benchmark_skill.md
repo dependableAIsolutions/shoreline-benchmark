@@ -130,7 +130,7 @@ After running benchmarks:
 1. `apps/web/src/data/results.generated.json` contains latest models.
 2. Each tested model has 11 populated categories (`trialCount > 0`).
 3. `./start-dev.sh` serves the UI and displays shoreline layers:
-   - Sand (prediction)
+   - Sand (outer envelope of claimed vs observed)
    - Solid (task performance)
    - Concrete (self-evaluation alignment)
 4. Compare and leaderboard views show the new models.

@@ -12,6 +12,7 @@
     "typecheck": "corepack pnpm -r typecheck",
     "benchmark": "tsx scripts/run-benchmark.ts",
     "benchmark:suite": "tsx scripts/run-benchmark-suite.ts",
+    "recompute-scores": "tsx scripts/recompute-scores.ts",
     "generate-static": "tsx scripts/generate-static.ts"
   },
   "devDependencies": {

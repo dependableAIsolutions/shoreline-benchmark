@@ -16,10 +16,10 @@ export function Legend() {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <div className="h-4 w-7 rounded border-2 border-dashed border-[#C4B582] bg-[rgba(196,181,130,0.15)]" />
+        <div className="h-4 w-7 rounded border-2 border-dashed border-[#F59E0B] bg-[rgba(245,158,11,0.25)]" />
         <div>
-          <span className="font-mono text-[11px] font-semibold text-[#C4B582]">Sand</span>
-          <span className="ml-2 text-[11px] text-[#6f6457]">Claimed capability. Unverified.</span>
+          <span className="font-mono text-[11px] font-semibold text-[#F59E0B]">Sand</span>
+          <span className="ml-2 text-[11px] text-[#6f6457]">Outer shoreline envelope (claimed vs observed).</span>
         </div>
       </div>
     </div>

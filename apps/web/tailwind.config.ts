@@ -10,7 +10,7 @@ const config: Config = {
           800: "#0e1b3d",
           700: "#13294f"
         },
-        sand: "#c4b582",
+        sand: "#f59e0b",
         solid: "#3da84a",
         concrete: "#8a9caa"
       },

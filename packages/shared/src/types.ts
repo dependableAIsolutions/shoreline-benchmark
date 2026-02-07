@@ -51,9 +51,13 @@ export interface TrialResult {
 
 export interface CategoryScore {
   category: CategoryKey;
+  claimed?: number;                // Raw Phase 1 confidence before envelope normalization (0-100)
   sand: number;
   solid: number;
   concrete: number;
+  discernment?: number;            // Correctly identifies success/failure in both directions (0-100)
+  calibrationError?: number;       // |predicted confidence - realized accuracy| (0-100, lower is better)
+  capability?: number;             // Normalized transition-zone capability percentile (0-100)
   trialCount: number;
   difficultyRange: [number, number];
   transitionZone: number;
@@ -65,10 +69,16 @@ export interface ModelResult {
   timestamp: string;
   categories: Record<CategoryKey, CategoryScore>;
   aggregate: {
+    avgClaimed?: number;
     avgSand: number;
     avgSolid: number;
     avgConcrete: number;
+    avgDiscernment?: number;
+    avgCalibrationError?: number;
+    calibrationIndex?: number;     // 100 - avgCalibrationError
+    avgCapability?: number;        // Average normalized capability percentile
     overconfidence: number;
+    underconfidence?: number;
     blindSpots: number;
     totalGap: number;
   };

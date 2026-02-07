@@ -26,19 +26,33 @@ function aggregate(data: {
   concrete: Record<string, number>;
 }) {
   const keys = CATEGORY_ORDER;
-  const sand = keys.reduce((sum, key) => sum + (data.sand[key] ?? 0), 0) / keys.length;
+  const claimed = keys.reduce((sum, key) => sum + (data.sand[key] ?? 0), 0) / keys.length;
+  const sand = keys.reduce((sum, key) => sum + Math.max(data.sand[key] ?? 0, data.solid[key] ?? 0, data.concrete[key] ?? 0), 0) / keys.length;
   const solid = keys.reduce((sum, key) => sum + (data.solid[key] ?? 0), 0) / keys.length;
   const concrete = keys.reduce((sum, key) => sum + (data.concrete[key] ?? 0), 0) / keys.length;
-  const overconfidence = sand - solid;
-  const blindSpots = solid - concrete;
+  const overconfidence =
+    keys.reduce((sum, key) => sum + Math.max(0, (data.sand[key] ?? 0) - (data.solid[key] ?? 0)), 0) / keys.length;
+  const underconfidence =
+    keys.reduce((sum, key) => sum + Math.max(0, (data.solid[key] ?? 0) - (data.sand[key] ?? 0)), 0) / keys.length;
+  const blindSpots = Math.max(0, solid - concrete);
+  const avgDiscernment = concrete;
+  const avgCalibrationError = Math.abs(claimed - solid);
+  const calibrationIndex = Math.max(0, 100 - avgCalibrationError);
+  const avgCapability = solid;
 
   return {
+    avgClaimed: claimed,
     avgSand: sand,
     avgSolid: solid,
     avgConcrete: concrete,
+    avgDiscernment,
+    avgCalibrationError,
+    calibrationIndex,
+    avgCapability,
     overconfidence,
+    underconfidence,
     blindSpots,
-    totalGap: overconfidence + blindSpots
+    totalGap: overconfidence + underconfidence + blindSpots
   };
 }
 
@@ -52,9 +66,13 @@ function toModelResult(name: string, layers: (typeof modelData)[keyof typeof mod
         key,
         {
           category: key,
-          sand,
+          claimed: sand,
+          sand: Math.max(sand, solid, concrete),
           solid,
           concrete,
+          discernment: concrete,
+          calibrationError: Math.abs(sand - solid),
+          capability: solid,
           trialCount: 100,
           difficultyRange: [0, 0],
           transitionZone: 0

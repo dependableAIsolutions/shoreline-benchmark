@@ -2,169 +2,19 @@ import type { ModelResult } from "@shoreline/shared";
 
 export const generatedResults: ModelResult[] = [
   {
-    "modelId": "google/gemini-2.5-pro",
-    "modelDisplayName": "google/gemini-2.5-pro",
-    "timestamp": "2026-02-07T20:19:00.094Z",
-    "categories": {
-      "mult": {
-        "category": "mult",
-        "sand": 100,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 1,
-        "difficultyRange": [
-          7,
-          7
-        ],
-        "transitionZone": 7
-      },
-      "modexp": {
-        "category": "modexp",
-        "sand": 100,
-        "solid": 0,
-        "concrete": 100,
-        "trialCount": 1,
-        "difficultyRange": [
-          16,
-          16
-        ],
-        "transitionZone": 16
-      },
-      "bool": {
-        "category": "bool",
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "trialCount": 1,
-        "difficultyRange": [
-          9,
-          9
-        ],
-        "transitionZone": 9
-      },
-      "matrix": {
-        "category": "matrix",
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "trialCount": 1,
-        "difficultyRange": [
-          4,
-          4
-        ],
-        "transitionZone": 4
-      },
-      "combo": {
-        "category": "combo",
-        "sand": 99,
-        "solid": 100,
-        "concrete": 100,
-        "trialCount": 1,
-        "difficultyRange": [
-          5,
-          5
-        ],
-        "transitionZone": 5
-      },
-      "random": {
-        "category": "random",
-        "sand": 100,
-        "solid": 0,
-        "concrete": 100,
-        "trialCount": 1,
-        "difficultyRange": [
-          260,
-          260
-        ],
-        "transitionZone": 260
-      },
-      "constrained": {
-        "category": "constrained",
-        "sand": 100,
-        "solid": 40,
-        "concrete": 100,
-        "trialCount": 1,
-        "difficultyRange": [
-          5,
-          5
-        ],
-        "transitionZone": 5
-      },
-      "sudoku": {
-        "category": "sudoku",
-        "sand": 0,
-        "solid": 100,
-        "concrete": 100,
-        "trialCount": 1,
-        "difficultyRange": [
-          3,
-          3
-        ],
-        "transitionZone": 3
-      },
-      "distrib": {
-        "category": "distrib",
-        "sand": 96,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 1,
-        "difficultyRange": [
-          105,
-          105
-        ],
-        "transitionZone": 105
-      },
-      "selfref": {
-        "category": "selfref",
-        "sand": 100,
-        "solid": 50,
-        "concrete": 100,
-        "trialCount": 1,
-        "difficultyRange": [
-          5,
-          5
-        ],
-        "transitionZone": 5
-      },
-      "counting": {
-        "category": "counting",
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "trialCount": 1,
-        "difficultyRange": [
-          21,
-          21
-        ],
-        "transitionZone": 21
-      }
-    },
-    "aggregate": {
-      "avgSand": 90.45454545454545,
-      "avgSolid": 53.63636363636363,
-      "avgConcrete": 81.81818181818181,
-      "overconfidence": 36.81818181818182,
-      "blindSpots": -28.181818181818183,
-      "totalGap": 8.636363636363637
-    },
-    "metadata": {
-      "adapter": "openrouter",
-      "temperature": 0.7,
-      "totalTokensUsed": 51876,
-      "totalTrials": 11,
-      "invalidTrials": 1
-    }
-  },
-  {
     "modelId": "openai/gpt-5.2",
     "modelDisplayName": "openai/gpt-5.2",
     "timestamp": "2026-02-07T20:13:05.960Z",
     "categories": {
       "mult": {
         "category": "mult",
-        "sand": 98,
+        "claimed": 98,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 2.0000000000000018,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           7,
@@ -174,9 +24,13 @@ export const generatedResults: ModelResult[] = [
       },
       "modexp": {
         "category": "modexp",
-        "sand": 96,
+        "claimed": 96,
+        "sand": 100,
         "solid": 100,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 4.0000000000000036,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           16,
@@ -186,9 +40,13 @@ export const generatedResults: ModelResult[] = [
       },
       "bool": {
         "category": "bool",
-        "sand": 1,
+        "claimed": 1,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 99,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           9,
@@ -198,9 +56,13 @@ export const generatedResults: ModelResult[] = [
       },
       "matrix": {
         "category": "matrix",
-        "sand": 95,
+        "claimed": 95,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 5.000000000000004,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           4,
@@ -210,9 +72,13 @@ export const generatedResults: ModelResult[] = [
       },
       "combo": {
         "category": "combo",
-        "sand": 93,
+        "claimed": 93,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 6.999999999999995,
+        "capability": 57.14285714285714,
         "trialCount": 1,
         "difficultyRange": [
           5,
@@ -222,9 +88,13 @@ export const generatedResults: ModelResult[] = [
       },
       "random": {
         "category": "random",
+        "claimed": 87,
         "sand": 87,
         "solid": 79.24053274652235,
-        "concrete": 100,
+        "concrete": 79.24053274652235,
+        "discernment": 100,
+        "calibrationError": 7.759467253477659,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           260,
@@ -234,9 +104,13 @@ export const generatedResults: ModelResult[] = [
       },
       "constrained": {
         "category": "constrained",
+        "claimed": 92,
         "sand": 92,
         "solid": 20,
-        "concrete": 100,
+        "concrete": 0,
+        "discernment": 100,
+        "calibrationError": 72,
+        "capability": 57.14285714285714,
         "trialCount": 1,
         "difficultyRange": [
           5,
@@ -246,9 +120,13 @@ export const generatedResults: ModelResult[] = [
       },
       "sudoku": {
         "category": "sudoku",
-        "sand": 93,
+        "claimed": 93,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 6.999999999999995,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           3,
@@ -258,9 +136,13 @@ export const generatedResults: ModelResult[] = [
       },
       "distrib": {
         "category": "distrib",
+        "claimed": 92,
         "sand": 92,
         "solid": 87.48076201266971,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 4.5192379873302935,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           105,
@@ -270,9 +152,13 @@ export const generatedResults: ModelResult[] = [
       },
       "selfref": {
         "category": "selfref",
+        "claimed": 92,
         "sand": 92,
         "solid": 50,
-        "concrete": 0,
+        "concrete": 50,
+        "discernment": 0,
+        "calibrationError": 42.00000000000001,
+        "capability": 57.14285714285714,
         "trialCount": 1,
         "difficultyRange": [
           5,
@@ -282,9 +168,13 @@ export const generatedResults: ModelResult[] = [
       },
       "counting": {
         "category": "counting",
-        "sand": 52,
+        "claimed": 52,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 48,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           21,
@@ -294,12 +184,18 @@ export const generatedResults: ModelResult[] = [
       }
     },
     "aggregate": {
-      "avgSand": 81,
+      "avgClaimed": 81,
+      "avgSand": 96.63636363636364,
       "avgSolid": 85.15648134174474,
-      "avgConcrete": 72.72727272727273,
-      "overconfidence": -4.156481341744733,
-      "blindSpots": 12.429208614472005,
-      "totalGap": 8.272727272727272
+      "avgConcrete": 66.2945938860475,
+      "avgDiscernment": 72.72727272727273,
+      "avgCalibrationError": 27.11624593098254,
+      "calibrationIndex": 72.88375406901746,
+      "avgCapability": 51.94805194805194,
+      "overconfidence": 11.479882294618903,
+      "underconfidence": 15.636363636363637,
+      "blindSpots": 18.861887455697246,
+      "totalGap": 45.97813338667979
     },
     "metadata": {
       "adapter": "openrouter",
@@ -310,15 +206,19 @@ export const generatedResults: ModelResult[] = [
     }
   },
   {
-    "modelId": "anthropic/claude-sonnet-4.5",
-    "modelDisplayName": "anthropic/claude-sonnet-4.5",
-    "timestamp": "2026-02-07T20:17:20.992Z",
+    "modelId": "google/gemini-2.5-pro",
+    "modelDisplayName": "google/gemini-2.5-pro",
+    "timestamp": "2026-02-07T20:19:00.094Z",
     "categories": {
       "mult": {
         "category": "mult",
-        "sand": 65,
+        "claimed": 100,
+        "sand": 100,
         "solid": 0,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 100,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           7,
@@ -328,9 +228,13 @@ export const generatedResults: ModelResult[] = [
       },
       "modexp": {
         "category": "modexp",
-        "sand": 75,
+        "claimed": 100,
+        "sand": 100,
         "solid": 0,
-        "concrete": 100,
+        "concrete": 0,
+        "discernment": 100,
+        "calibrationError": 100,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           16,
@@ -340,9 +244,13 @@ export const generatedResults: ModelResult[] = [
       },
       "bool": {
         "category": "bool",
-        "sand": 85,
+        "claimed": 100,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 0,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           9,
@@ -352,9 +260,13 @@ export const generatedResults: ModelResult[] = [
       },
       "matrix": {
         "category": "matrix",
-        "sand": 85,
+        "claimed": 100,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 0,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           4,
@@ -364,9 +276,13 @@ export const generatedResults: ModelResult[] = [
       },
       "combo": {
         "category": "combo",
-        "sand": 65,
+        "claimed": 99,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 1.0000000000000009,
+        "capability": 57.14285714285714,
         "trialCount": 1,
         "difficultyRange": [
           5,
@@ -376,9 +292,13 @@ export const generatedResults: ModelResult[] = [
       },
       "random": {
         "category": "random",
-        "sand": 72,
-        "solid": 79.07704174647948,
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
         "concrete": 0,
+        "discernment": 100,
+        "calibrationError": 100,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           260,
@@ -388,9 +308,13 @@ export const generatedResults: ModelResult[] = [
       },
       "constrained": {
         "category": "constrained",
-        "sand": 72,
-        "solid": 20,
-        "concrete": 100,
+        "claimed": 100,
+        "sand": 100,
+        "solid": 40,
+        "concrete": 0,
+        "discernment": 100,
+        "calibrationError": 60,
+        "capability": 57.14285714285714,
         "trialCount": 1,
         "difficultyRange": [
           5,
@@ -400,9 +324,13 @@ export const generatedResults: ModelResult[] = [
       },
       "sudoku": {
         "category": "sudoku",
-        "sand": 72,
-        "solid": 25.925925925925924,
-        "concrete": 0,
+        "claimed": 0,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 100,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           3,
@@ -412,9 +340,13 @@ export const generatedResults: ModelResult[] = [
       },
       "distrib": {
         "category": "distrib",
-        "sand": 72,
-        "solid": 95.2449756703428,
+        "claimed": 96,
+        "sand": 96,
+        "solid": 0,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 96,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           105,
@@ -424,9 +356,13 @@ export const generatedResults: ModelResult[] = [
       },
       "selfref": {
         "category": "selfref",
-        "sand": 68,
+        "claimed": 100,
+        "sand": 100,
         "solid": 50,
         "concrete": 0,
+        "discernment": 100,
+        "calibrationError": 50,
+        "capability": 57.14285714285714,
         "trialCount": 1,
         "difficultyRange": [
           5,
@@ -436,9 +372,13 @@ export const generatedResults: ModelResult[] = [
       },
       "counting": {
         "category": "counting",
-        "sand": 75,
-        "solid": 0,
-        "concrete": 0,
+        "claimed": 100,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 0,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           21,
@@ -448,12 +388,222 @@ export const generatedResults: ModelResult[] = [
       }
     },
     "aggregate": {
-      "avgSand": 73.27272727272727,
-      "avgSolid": 51.840722122068016,
+      "avgClaimed": 90.45454545454545,
+      "avgSand": 99.63636363636364,
+      "avgSolid": 53.63636363636363,
       "avgConcrete": 45.45454545454545,
-      "overconfidence": 21.432005150659254,
-      "blindSpots": 6.386176667522563,
-      "totalGap": 27.818181818181817
+      "avgDiscernment": 81.81818181818181,
+      "avgCalibrationError": 55.18181818181818,
+      "calibrationIndex": 44.81818181818182,
+      "avgCapability": 51.94805194805194,
+      "overconfidence": 46,
+      "underconfidence": 9.181818181818182,
+      "blindSpots": 8.181818181818182,
+      "totalGap": 63.36363636363636
+    },
+    "metadata": {
+      "adapter": "openrouter",
+      "temperature": 0.7,
+      "totalTokensUsed": 51876,
+      "totalTrials": 11,
+      "invalidTrials": 1
+    }
+  },
+  {
+    "modelId": "anthropic/claude-sonnet-4.5",
+    "modelDisplayName": "anthropic/claude-sonnet-4.5",
+    "timestamp": "2026-02-07T20:17:20.992Z",
+    "categories": {
+      "mult": {
+        "category": "mult",
+        "claimed": 65,
+        "sand": 65,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 65,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          7,
+          7
+        ],
+        "transitionZone": 7
+      },
+      "modexp": {
+        "category": "modexp",
+        "claimed": 75,
+        "sand": 75,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "calibrationError": 75,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          16,
+          16
+        ],
+        "transitionZone": 16
+      },
+      "bool": {
+        "category": "bool",
+        "claimed": 85,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 15.000000000000002,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          9,
+          9
+        ],
+        "transitionZone": 9
+      },
+      "matrix": {
+        "category": "matrix",
+        "claimed": 85,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 15.000000000000002,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          4,
+          4
+        ],
+        "transitionZone": 4
+      },
+      "combo": {
+        "category": "combo",
+        "claimed": 65,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 35,
+        "capability": 57.14285714285714,
+        "trialCount": 1,
+        "difficultyRange": [
+          5,
+          5
+        ],
+        "transitionZone": 5
+      },
+      "random": {
+        "category": "random",
+        "claimed": 72,
+        "sand": 79.07704174647948,
+        "solid": 79.07704174647948,
+        "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 7.077041746479484,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          260,
+          260
+        ],
+        "transitionZone": 260
+      },
+      "constrained": {
+        "category": "constrained",
+        "claimed": 72,
+        "sand": 72,
+        "solid": 20,
+        "concrete": 0,
+        "discernment": 100,
+        "calibrationError": 52,
+        "capability": 57.14285714285714,
+        "trialCount": 1,
+        "difficultyRange": [
+          5,
+          5
+        ],
+        "transitionZone": 5
+      },
+      "sudoku": {
+        "category": "sudoku",
+        "claimed": 72,
+        "sand": 72,
+        "solid": 25.925925925925924,
+        "concrete": 25.925925925925924,
+        "discernment": 0,
+        "calibrationError": 46.074074074074076,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          3,
+          3
+        ],
+        "transitionZone": 3
+      },
+      "distrib": {
+        "category": "distrib",
+        "claimed": 72,
+        "sand": 95.2449756703428,
+        "solid": 95.2449756703428,
+        "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 23.244975670342793,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          105,
+          105
+        ],
+        "transitionZone": 105
+      },
+      "selfref": {
+        "category": "selfref",
+        "claimed": 68,
+        "sand": 68,
+        "solid": 50,
+        "concrete": 50,
+        "discernment": 0,
+        "calibrationError": 18.000000000000004,
+        "capability": 57.14285714285714,
+        "trialCount": 1,
+        "difficultyRange": [
+          5,
+          5
+        ],
+        "transitionZone": 5
+      },
+      "counting": {
+        "category": "counting",
+        "claimed": 75,
+        "sand": 75,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 75,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          21,
+          21
+        ],
+        "transitionZone": 21
+      }
+    },
+    "aggregate": {
+      "avgClaimed": 73.27272727272727,
+      "avgSand": 81.93836521971112,
+      "avgSolid": 51.840722122068016,
+      "avgConcrete": 34.17508417508417,
+      "avgDiscernment": 45.45454545454545,
+      "avgCalibrationError": 38.76328104462694,
+      "calibrationIndex": 61.23671895537306,
+      "avgCapability": 51.94805194805194,
+      "overconfidence": 30.097643097643097,
+      "underconfidence": 8.665637946983843,
+      "blindSpots": 17.665637946983846,
+      "totalGap": 56.428918991610786
     },
     "metadata": {
       "adapter": "openrouter",
@@ -470,9 +620,13 @@ export const generatedResults: ModelResult[] = [
     "categories": {
       "mult": {
         "category": "mult",
+        "claimed": 95,
         "sand": 95,
         "solid": 0,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 95,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           7,
@@ -482,9 +636,13 @@ export const generatedResults: ModelResult[] = [
       },
       "modexp": {
         "category": "modexp",
+        "claimed": 95,
         "sand": 95,
         "solid": 0,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 95,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           16,
@@ -494,9 +652,13 @@ export const generatedResults: ModelResult[] = [
       },
       "bool": {
         "category": "bool",
-        "sand": 75,
+        "claimed": 75,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 25,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           9,
@@ -506,9 +668,13 @@ export const generatedResults: ModelResult[] = [
       },
       "matrix": {
         "category": "matrix",
+        "claimed": 98,
         "sand": 98,
         "solid": 0,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 98,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           4,
@@ -518,9 +684,13 @@ export const generatedResults: ModelResult[] = [
       },
       "combo": {
         "category": "combo",
+        "claimed": 95,
         "sand": 95,
         "solid": 0,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 95,
+        "capability": 57.14285714285714,
         "trialCount": 1,
         "difficultyRange": [
           5,
@@ -530,9 +700,13 @@ export const generatedResults: ModelResult[] = [
       },
       "random": {
         "category": "random",
+        "claimed": 26,
         "sand": 26,
         "solid": 0,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 26,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           260,
@@ -542,9 +716,13 @@ export const generatedResults: ModelResult[] = [
       },
       "constrained": {
         "category": "constrained",
+        "claimed": 75,
         "sand": 75,
         "solid": 20,
-        "concrete": 0,
+        "concrete": 20,
+        "discernment": 0,
+        "calibrationError": 55.00000000000001,
+        "capability": 57.14285714285714,
         "trialCount": 1,
         "difficultyRange": [
           5,
@@ -554,9 +732,13 @@ export const generatedResults: ModelResult[] = [
       },
       "sudoku": {
         "category": "sudoku",
-        "sand": 85,
+        "claimed": 85,
+        "sand": 100,
         "solid": 100,
         "concrete": 100,
+        "discernment": 100,
+        "calibrationError": 15.000000000000002,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           3,
@@ -566,9 +748,13 @@ export const generatedResults: ModelResult[] = [
       },
       "distrib": {
         "category": "distrib",
+        "claimed": 95,
         "sand": 95,
         "solid": 82.00739377161796,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 12.992606228382042,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           105,
@@ -578,9 +764,13 @@ export const generatedResults: ModelResult[] = [
       },
       "selfref": {
         "category": "selfref",
-        "sand": 0,
+        "claimed": 0,
+        "sand": 25,
         "solid": 25,
-        "concrete": 0,
+        "concrete": 25,
+        "discernment": 0,
+        "calibrationError": 25,
+        "capability": 57.14285714285714,
         "trialCount": 1,
         "difficultyRange": [
           5,
@@ -590,9 +780,13 @@ export const generatedResults: ModelResult[] = [
       },
       "counting": {
         "category": "counting",
+        "claimed": 85,
         "sand": 85,
         "solid": 0,
         "concrete": 0,
+        "discernment": 0,
+        "calibrationError": 85,
+        "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
           21,
@@ -602,12 +796,18 @@ export const generatedResults: ModelResult[] = [
       }
     },
     "aggregate": {
-      "avgSand": 74.9090909090909,
+      "avgClaimed": 74.9090909090909,
+      "avgSand": 80.81818181818181,
       "avgSolid": 29.727944888328906,
-      "avgConcrete": 18.181818181818183,
-      "overconfidence": 45.18114602076201,
-      "blindSpots": 11.546126706510723,
-      "totalGap": 56.727272727272734
+      "avgConcrete": 22.272727272727273,
+      "avgDiscernment": 18.181818181818183,
+      "avgCalibrationError": 56.99932783894382,
+      "calibrationIndex": 43.00067216105618,
+      "avgCapability": 51.94805194805194,
+      "overconfidence": 51.09023692985292,
+      "underconfidence": 5.909090909090909,
+      "blindSpots": 7.455217615601632,
+      "totalGap": 64.45454545454545
     },
     "metadata": {
       "adapter": "localapi",
