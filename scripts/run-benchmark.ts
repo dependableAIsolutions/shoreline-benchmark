@@ -38,6 +38,7 @@ async function main(): Promise<void> {
   const all = hasFlag("all");
   const dryRun = hasFlag("dry-run");
   const quick = hasFlag("quick");
+  const resumeDir = parseArg("resume");
 
   const trialsPerDifficulty = Number.parseInt(parseArg("trials") ?? "20", 10);
   const temperature = Number.parseFloat(parseArg("temperature") ?? "0.7");
@@ -111,14 +112,19 @@ async function main(): Promise<void> {
   }
 
   const outputDir =
-    parseArg("output") ?? path.join(process.cwd(), "results", sanitizeModel(finalModel), nowStamp());
+    resumeDir ?? parseArg("output") ?? path.join(process.cwd(), "results", sanitizeModel(finalModel), nowStamp());
+  const resume = typeof resumeDir === "string" && resumeDir.length > 0;
 
-  await mkdir(outputDir, { recursive: true });
+  if (!resume) {
+    await mkdir(outputDir, { recursive: true });
+  }
 
   console.log(`Running Shoreline benchmark for ${finalModel}`);
   console.log(`Adapter: ${dryRun ? "mock (dry-run)" : finalAdapterName}`);
   console.log(`Categories: ${categories.join(", ")}`);
   console.log(`Trials/difficulty: ${trialsPerDifficulty}`);
+  console.log(`Quick mode: ${quick ? "on" : "off"}`);
+  console.log(`Resume mode: ${resume ? "on" : "off"}`);
   console.log(`Output: ${outputDir}`);
 
   const result = await runBenchmark({
@@ -129,7 +135,8 @@ async function main(): Promise<void> {
     adapterName: finalAdapterName,
     temperature,
     probeTrials: Math.min(5, Math.max(1, Number.parseInt(parseArg("probe-trials") ?? "3", 10))),
-    quickMode: quick
+    quickMode: quick,
+    resume
   });
 
   console.log("Benchmark complete.");

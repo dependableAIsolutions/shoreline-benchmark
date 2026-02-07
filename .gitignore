@@ -6,5 +6,6 @@ dist
 *.tsbuildinfo
 .env
 .env.local
+benchmark/state/*.json
 results/*/*
 !results/.gitkeep

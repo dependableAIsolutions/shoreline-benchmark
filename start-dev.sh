@@ -4,76 +4,42 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
-MODEL="${MODEL:-qwen/qwen3-coder-next}"
-LOCAL_API_URL="${LOCAL_API_URL:-http://localhost:5555/api/v1/chat}"
-SYSTEM_PROMPT="${SYSTEM_PROMPT:-You are a precise benchmarking assistant. Follow all instructions and put final answers on ANSWER: lines when asked.}"
-CATEGORIES="${CATEGORIES:-mult,bool,counting}"
-TRIALS="${TRIALS:-1}"
-PROBE_TRIALS="${PROBE_TRIALS:-1}"
-TIMEOUT_MS="${TIMEOUT_MS:-120000}"
-QUICK_MODE="${QUICK_MODE:-1}"
 WEB_PORT="${WEB_PORT:-3000}"
-START_WEB="${START_WEB:-1}"
+REFRESH_STATIC="${REFRESH_STATIC:-1}"
+RESULTS_INPUT="${RESULTS_INPUT:-results}"
 
+if [[ -f .env.local ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source .env.local
+  set +a
+fi
+
+printf "[shoreline] Starting web-only dev flow\n"
 printf "[shoreline] Root: %s\n" "$ROOT_DIR"
-printf "[shoreline] Model: %s\n" "$MODEL"
-printf "[shoreline] Local API: %s\n" "$LOCAL_API_URL"
-printf "[shoreline] Categories: %s\n" "$CATEGORIES"
-printf "[shoreline] Request timeout: %sms\n" "$TIMEOUT_MS"
-printf "[shoreline] Quick mode: %s\n" "$QUICK_MODE"
+printf "[shoreline] Refresh static data: %s\n" "$REFRESH_STATIC"
 
 if ! command -v corepack >/dev/null 2>&1; then
   echo "[shoreline] corepack is required but not found" >&2
   exit 1
 fi
 
-printf "[shoreline] Checking local model API...\n"
-curl -sS "$LOCAL_API_URL" \
-  -H "Content-Type: application/json" \
-  -d "{\"model\":\"$MODEL\",\"system_prompt\":\"You answer only in rhymes.\",\"input\":\"What is your favorite color?\"}" \
-  >/tmp/shoreline-localapi-check.json
-printf "[shoreline] Local model API responded.\n"
-
-printf "[shoreline] Installing dependencies...\n"
 corepack pnpm install
 
-printf "[shoreline] Running benchmark...\n"
-QUICK_FLAG=""
-if [[ "$QUICK_MODE" == "1" ]]; then
-  QUICK_FLAG="--quick"
+if [[ "$REFRESH_STATIC" == "1" ]]; then
+  printf "[shoreline] Refreshing static data from %s\n" "$RESULTS_INPUT"
+  corepack pnpm generate-static --input "$RESULTS_INPUT" --output apps/web/src/data
 fi
 
-LOCAL_MODEL_API_URL="$LOCAL_API_URL" LOCAL_MODEL_SYSTEM_PROMPT="$SYSTEM_PROMPT" \
-  corepack pnpm benchmark \
-  --adapter localapi \
-  --model "$MODEL" \
-  --categories "$CATEGORIES" \
-  --trials "$TRIALS" \
-  --probe-trials "$PROBE_TRIALS" \
-  --timeout-ms "$TIMEOUT_MS" \
-  $QUICK_FLAG
-
-printf "[shoreline] Generating static web data...\n"
-corepack pnpm generate-static --input results --output apps/web/src/data
-
-LATEST_RESULT_DIR="$(ls -td results/*/* 2>/dev/null | head -n 1 || true)"
-if [[ -n "$LATEST_RESULT_DIR" ]]; then
-  printf "[shoreline] Latest results: %s\n" "$LATEST_RESULT_DIR"
+SELECTED_PORT="$WEB_PORT"
+if command -v lsof >/dev/null 2>&1; then
+  while lsof -n -iTCP:"$SELECTED_PORT" -sTCP:LISTEN >/dev/null 2>&1; do
+    SELECTED_PORT="$((SELECTED_PORT + 1))"
+  done
+fi
+if [[ "$SELECTED_PORT" != "$WEB_PORT" ]]; then
+  printf "[shoreline] Port %s in use, switching to %s\n" "$WEB_PORT" "$SELECTED_PORT"
 fi
 
-if [[ "$START_WEB" == "1" ]]; then
-  SELECTED_PORT="$WEB_PORT"
-  if command -v lsof >/dev/null 2>&1; then
-    while lsof -n -iTCP:"$SELECTED_PORT" -sTCP:LISTEN >/dev/null 2>&1; do
-      SELECTED_PORT="$((SELECTED_PORT + 1))"
-    done
-  fi
-  if [[ "$SELECTED_PORT" != "$WEB_PORT" ]]; then
-    printf "[shoreline] Port %s in use, switching to %s\n" "$WEB_PORT" "$SELECTED_PORT"
-  fi
-
-  printf "[shoreline] Starting web UI on http://localhost:%s\n" "$SELECTED_PORT"
-  exec corepack pnpm --filter @shoreline/web dev --port "$SELECTED_PORT"
-else
-  printf "[shoreline] START_WEB=0, skipping web server startup.\n"
-fi
+printf "[shoreline] Web UI: http://localhost:%s\n" "$SELECTED_PORT"
+exec corepack pnpm --filter @shoreline/web dev --port "$SELECTED_PORT"

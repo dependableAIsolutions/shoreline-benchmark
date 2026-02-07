@@ -154,13 +154,13 @@
     }
   },
   {
-    "modelId": "qwen/qwen3-coder-next",
-    "modelDisplayName": "qwen/qwen3-coder-next",
-    "timestamp": "2026-02-07T04:24:56.543Z",
+    "modelId": "openai/gpt-4o-mini",
+    "modelDisplayName": "openai/gpt-4o-mini",
+    "timestamp": "2026-02-07T05:17:13.056Z",
     "categories": {
       "mult": {
         "category": "mult",
-        "sand": 98,
+        "sand": 95,
         "solid": 0,
         "concrete": 0,
         "trialCount": 1,
@@ -292,18 +292,172 @@
       }
     },
     "aggregate": {
-      "avgSand": 98,
+      "avgSand": 95,
       "avgSolid": 0,
       "avgConcrete": 0,
-      "overconfidence": 98,
+      "overconfidence": 95,
       "blindSpots": 0,
-      "totalGap": 98
+      "totalGap": 95
+    },
+    "metadata": {
+      "adapter": "openrouter",
+      "temperature": 0.7,
+      "totalTokensUsed": 152,
+      "totalTrials": 1,
+      "invalidTrials": 0
+    }
+  },
+  {
+    "modelId": "qwen/qwen3-coder-next",
+    "modelDisplayName": "qwen/qwen3-coder-next",
+    "timestamp": "2026-02-07T05:17:00.892Z",
+    "categories": {
+      "mult": {
+        "category": "mult",
+        "sand": 96.5,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 2,
+        "difficultyRange": [
+          7,
+          7
+        ],
+        "transitionZone": 7
+      },
+      "modexp": {
+        "category": "modexp",
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 0,
+        "difficultyRange": [
+          0,
+          0
+        ],
+        "transitionZone": 0
+      },
+      "bool": {
+        "category": "bool",
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 0,
+        "difficultyRange": [
+          0,
+          0
+        ],
+        "transitionZone": 0
+      },
+      "matrix": {
+        "category": "matrix",
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 0,
+        "difficultyRange": [
+          0,
+          0
+        ],
+        "transitionZone": 0
+      },
+      "combo": {
+        "category": "combo",
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 0,
+        "difficultyRange": [
+          0,
+          0
+        ],
+        "transitionZone": 0
+      },
+      "random": {
+        "category": "random",
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 0,
+        "difficultyRange": [
+          0,
+          0
+        ],
+        "transitionZone": 0
+      },
+      "constrained": {
+        "category": "constrained",
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 0,
+        "difficultyRange": [
+          0,
+          0
+        ],
+        "transitionZone": 0
+      },
+      "sudoku": {
+        "category": "sudoku",
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 0,
+        "difficultyRange": [
+          0,
+          0
+        ],
+        "transitionZone": 0
+      },
+      "distrib": {
+        "category": "distrib",
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 0,
+        "difficultyRange": [
+          0,
+          0
+        ],
+        "transitionZone": 0
+      },
+      "selfref": {
+        "category": "selfref",
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 0,
+        "difficultyRange": [
+          0,
+          0
+        ],
+        "transitionZone": 0
+      },
+      "counting": {
+        "category": "counting",
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 0,
+        "difficultyRange": [
+          0,
+          0
+        ],
+        "transitionZone": 0
+      }
+    },
+    "aggregate": {
+      "avgSand": 96.5,
+      "avgSolid": 0,
+      "avgConcrete": 0,
+      "overconfidence": 96.5,
+      "blindSpots": 0,
+      "totalGap": 96.5
     },
     "metadata": {
       "adapter": "localapi",
       "temperature": 0.7,
-      "totalTokensUsed": 285,
-      "totalTrials": 1,
+      "totalTokensUsed": 1526,
+      "totalTrials": 4,
       "invalidTrials": 0
     }
   }

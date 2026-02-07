@@ -5,32 +5,13 @@ Shoreline measures model capability and metacognitive calibration in three layer
 - Solid: ground-truth task performance
 - Concrete: self-evaluation aligned with correctness
 
-## Monorepo layout
+## Monorepo
 
-- `apps/web`: Next.js frontend island visualization and leaderboard
-- `packages/shared`: canonical types and constants
-- `packages/harness`: benchmark runner, adapters, task generators, scoring
-- `scripts/run-benchmark.ts`: CLI entry point
-- `scripts/generate-static.ts`: converts results to web static data
-
-## Implemented benchmark categories
-
-- `mult` (multi-digit multiplication)
-- `modexp` (modular exponentiation)
-- `bool` (boolean circuit evaluation)
-- `matrix` (integer matrix determinants)
-- `combo` (combinatorial counting)
-- `random` (random sequence quality scoring)
-- `constrained` (mechanical constrained-writing verification)
-- `sudoku` (Sudoku validity checks)
-- `distrib` (distribution-fit scoring)
-- `selfref` (self-referential consistency)
-- `counting` (counting in context)
-
-## Prerequisites
-
-- Node.js 22+
-- pnpm via Corepack (`corepack pnpm`)
+- `apps/web`: Next.js frontend (single view, compare view, leaderboard)
+- `packages/shared`: canonical Shoreline types/constants
+- `packages/harness`: adapters, tasks, scoring, adaptive runner, checkpoint resume
+- `scripts/run-benchmark.ts`: single-model benchmark CLI
+- `scripts/run-benchmark-suite.ts`: config-driven multi-model orchestrator with state tracking
 
 ## Install
 
@@ -38,70 +19,97 @@ Shoreline measures model capability and metacognitive calibration in three layer
 corepack pnpm install
 ```
 
-## Run benchmark
+## Environment
 
-Dry run (no API dependency):
-
-```bash
-corepack pnpm benchmark --dry-run --categories mult,bool --trials 2
-```
-
-LM Studio:
+Create local env file:
 
 ```bash
-corepack pnpm benchmark --adapter lmstudio --model "llama-3.1-8b" --categories mult,bool,counting
+cp .env.example .env.local
 ```
 
-Local API (`/api/v1/chat` protocol):
+`.env.local` is gitignored and loaded automatically by helper scripts.
 
-```bash
-corepack pnpm benchmark --adapter localapi --model "qwen/qwen3-coder-next" --categories mult,bool,counting
-```
+## Script split
 
-OpenRouter:
+- `./start-dev.sh`
+  - Web-only script.
+  - Optionally regenerates static data from existing `results/`.
+  - Starts Next dev server so you can inspect visualization.
 
-```bash
-OPENROUTER_API_KEY=... corepack pnpm benchmark --adapter openrouter --model "openai/gpt-4o" --categories mult,modexp,bool,counting
-```
+- `./run-benchmarks.sh`
+  - Benchmark execution script.
+  - Uses suite config (`benchmark/suites/*.json`).
+  - Tracks progress/state in `benchmark/state/*.state.json`.
+  - Skips completed models and resumes incomplete/failed models when checkpoints exist.
 
-## Generate frontend data from results
-
-```bash
-corepack pnpm generate-static --input results --output apps/web/src/data
-```
-
-## Run web app
-
-```bash
-corepack pnpm --filter @shoreline/web dev
-```
-
-## One-command local test flow
+## Website (render results only)
 
 ```bash
 ./start-dev.sh
 ```
 
-Environment overrides:
-- `MODEL` (default `qwen/qwen3-coder-next`)
-- `LOCAL_API_URL` (default `http://localhost:5555/api/v1/chat`)
-- `CATEGORIES` (default `mult,bool,counting`)
-- `TRIALS` (default `1`)
-- `PROBE_TRIALS` (default `1`)
-- `TIMEOUT_MS` (default `120000`)
-- `QUICK_MODE=1` runs a fast single-difficulty benchmark (default `1`)
-- `WEB_PORT` (default `3000`)
-- `START_WEB=0` to run benchmark + data generation without starting the web server
+Optional env overrides:
+- `WEB_PORT=3000`
+- `REFRESH_STATIC=1` (default)
+- `RESULTS_INPUT=results`
 
-## Build all packages
+## Benchmark suite runs
+
+Default local suite:
 
 ```bash
-corepack pnpm build
+./run-benchmarks.sh
 ```
 
-## Firebase deploy (static)
+Run a specific suite:
 
 ```bash
-corepack pnpm --filter @shoreline/web build
-firebase deploy --only hosting
+CONFIG=benchmark/suites/openrouter.smoke.json ./run-benchmarks.sh
+```
+
+Useful flags passed through to suite runner:
+- `--dry-run`
+- `--force`
+- `--models modelA,modelB`
+- `--limit 2`
+- `--state benchmark/state/custom.state.json`
+
+## Suite configs and state
+
+- Config examples:
+  - `benchmark/suites/localapi.default.json`
+  - `benchmark/suites/openrouter.smoke.json`
+  - `benchmark/suites/openrouter.launch-template.json`
+- Runtime state:
+  - `benchmark/state/<suite>.state.json` (gitignored)
+
+State tracks for each model:
+- status (`in_progress`, `completed`, `failed`)
+- attempts
+- active run directory
+- timestamps and error info
+
+## Single-model CLI (advanced)
+
+```bash
+corepack pnpm benchmark --adapter localapi --model "qwen/qwen3-coder-next" --categories mult,bool,counting --quick
+```
+
+Resume an interrupted run directory:
+
+```bash
+corepack pnpm benchmark --adapter localapi --model "qwen/qwen3-coder-next" --categories mult,bool,counting --resume results/qwen-qwen3-coder-next/<timestamp>
+```
+
+## Static data generation
+
+```bash
+corepack pnpm generate-static --input results --output apps/web/src/data
+```
+
+## Build and checks
+
+```bash
+corepack pnpm typecheck
+corepack pnpm build
 ```

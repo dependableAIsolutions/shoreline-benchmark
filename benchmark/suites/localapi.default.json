@@ -1,0 +1,26 @@
+{
+  "name": "localapi-default",
+  "adapter": "localapi",
+  "categories": ["mult", "bool", "counting"],
+  "trialsPerDifficulty": 1,
+  "probeTrials": 1,
+  "quickMode": true,
+  "temperature": 0.7,
+  "outputRoot": "results",
+  "staticOutput": "apps/web/src/data",
+  "skipCompleted": true,
+  "resumeIncomplete": true,
+  "continueOnError": true,
+  "localapi": {
+    "apiUrl": "http://localhost:5555/api/v1/chat",
+    "timeoutMs": 120000,
+    "systemPrompt": "You are participating in a benchmark. Follow instructions exactly and provide direct final answers."
+  },
+  "models": [
+    {
+      "id": "qwen/qwen3-coder-next",
+      "enabled": true,
+      "notes": "Default local run model"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "openrouter-launch-template",
+  "adapter": "openrouter",
+  "categories": ["mult", "modexp", "bool", "matrix", "combo", "random", "constrained", "sudoku", "distrib", "selfref", "counting"],
+  "trialsPerDifficulty": 20,
+  "probeTrials": 3,
+  "quickMode": false,
+  "temperature": 0.7,
+  "outputRoot": "results",
+  "staticOutput": "apps/web/src/data",
+  "skipCompleted": true,
+  "resumeIncomplete": true,
+  "continueOnError": true,
+  "openrouter": {
+    "apiKeyEnv": "OPENROUTER_API_KEY"
+  },
+  "models": [
+    { "id": "anthropic/claude-3.5-sonnet", "enabled": false },
+    { "id": "openai/gpt-4o", "enabled": false },
+    { "id": "openai/o3", "enabled": false },
+    { "id": "meta-llama/llama-3.1-405b-instruct", "enabled": false },
+    { "id": "google/gemini-2.0-flash-001", "enabled": false },
+    { "id": "deepseek/deepseek-chat", "enabled": false },
+    { "id": "qwen/qwen-2.5-72b-instruct", "enabled": false }
+  ]
+}
