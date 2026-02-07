@@ -1,7 +1,7 @@
 {
-  "name": "openrouter-smoke",
+  "name": "openrouter-sota-quick",
   "adapter": "openrouter",
-  "categories": ["mult"],
+  "categories": ["mult", "modexp", "bool", "matrix", "combo", "random", "constrained", "sudoku", "distrib", "selfref", "counting"],
   "trialsPerDifficulty": 1,
   "probeTrials": 1,
   "quickMode": true,
@@ -16,9 +16,19 @@
   },
   "models": [
     {
-      "id": "openai/gpt-4o-mini",
+      "id": "openai/gpt-5.2",
       "enabled": true,
-      "notes": "Cheap smoke-test model"
+      "notes": "SOTA reasoning baseline"
+    },
+    {
+      "id": "anthropic/claude-sonnet-4.5",
+      "enabled": true,
+      "notes": "SOTA production reasoning"
+    },
+    {
+      "id": "google/gemini-2.5-pro",
+      "enabled": true,
+      "notes": "SOTA multimodal reasoning"
     }
   ]
 }

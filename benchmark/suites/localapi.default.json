@@ -1,7 +1,7 @@
 {
   "name": "localapi-default",
   "adapter": "localapi",
-  "categories": ["mult", "bool", "counting"],
+  "categories": ["mult", "modexp", "bool", "matrix", "combo", "random", "constrained", "sudoku", "distrib", "selfref", "counting"],
   "trialsPerDifficulty": 1,
   "probeTrials": 1,
   "quickMode": true,
@@ -13,7 +13,7 @@
   "continueOnError": true,
   "localapi": {
     "apiUrl": "http://localhost:5555/api/v1/chat",
-    "timeoutMs": 120000,
+    "timeoutMs": 300000,
     "systemPrompt": "You are participating in a benchmark. Follow instructions exactly and provide direct final answers."
   },
   "models": [

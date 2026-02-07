@@ -1,162 +1,470 @@
 [
   {
-    "modelId": "mock/model",
-    "modelDisplayName": "mock/model",
-    "timestamp": "2026-02-07T00:37:19.775Z",
+    "modelId": "google/gemini-2.5-pro",
+    "modelDisplayName": "google/gemini-2.5-pro",
+    "timestamp": "2026-02-07T20:19:00.094Z",
     "categories": {
       "mult": {
         "category": "mult",
-        "sand": 50,
+        "sand": 100,
         "solid": 0,
         "concrete": 0,
-        "trialCount": 4,
+        "trialCount": 1,
         "difficultyRange": [
-          2,
-          5
+          7,
+          7
         ],
-        "transitionZone": 3
+        "transitionZone": 7
       },
       "modexp": {
         "category": "modexp",
-        "sand": 50,
+        "sand": 100,
         "solid": 0,
-        "concrete": 0,
-        "trialCount": 4,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          4,
-          7
+          16,
+          16
         ],
-        "transitionZone": 5
+        "transitionZone": 16
       },
       "bool": {
         "category": "bool",
-        "sand": 50,
-        "solid": 25,
-        "concrete": 0,
-        "trialCount": 4,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          2,
-          5
+          9,
+          9
         ],
-        "transitionZone": 3
+        "transitionZone": 9
       },
       "matrix": {
         "category": "matrix",
-        "sand": 50,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 4,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          2,
-          5
+          4,
+          4
         ],
-        "transitionZone": 3
+        "transitionZone": 4
       },
       "combo": {
         "category": "combo",
-        "sand": 50,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 4,
+        "sand": 99,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          1,
-          4
+          5,
+          5
         ],
-        "transitionZone": 2
+        "transitionZone": 5
       },
       "random": {
         "category": "random",
-        "sand": 50,
+        "sand": 100,
         "solid": 0,
-        "concrete": 0,
-        "trialCount": 4,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          20,
-          23
+          260,
+          260
         ],
-        "transitionZone": 21
+        "transitionZone": 260
       },
       "constrained": {
         "category": "constrained",
-        "sand": 50,
-        "solid": 14.583333333333332,
-        "concrete": 0,
-        "trialCount": 4,
+        "sand": 100,
+        "solid": 40,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          1,
-          4
+          5,
+          5
         ],
-        "transitionZone": 2
+        "transitionZone": 5
       },
       "sudoku": {
         "category": "sudoku",
-        "sand": 50,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 4,
+        "sand": 0,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          1,
-          4
+          3,
+          3
         ],
-        "transitionZone": 2
+        "transitionZone": 3
       },
       "distrib": {
         "category": "distrib",
-        "sand": 50,
+        "sand": 96,
         "solid": 0,
         "concrete": 0,
-        "trialCount": 4,
+        "trialCount": 1,
         "difficultyRange": [
-          10,
-          13
+          105,
+          105
         ],
-        "transitionZone": 11
+        "transitionZone": 105
       },
       "selfref": {
         "category": "selfref",
-        "sand": 50,
-        "solid": 25,
-        "concrete": 0,
-        "trialCount": 4,
+        "sand": 100,
+        "solid": 50,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          1,
-          4
+          5,
+          5
         ],
-        "transitionZone": 2
+        "transitionZone": 5
       },
       "counting": {
         "category": "counting",
-        "sand": 50,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 4,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          2,
-          5
+          21,
+          21
         ],
-        "transitionZone": 3
+        "transitionZone": 21
       }
     },
     "aggregate": {
-      "avgSand": 50,
-      "avgSolid": 5.871212121212121,
-      "avgConcrete": 0,
-      "overconfidence": 44.12878787878788,
-      "blindSpots": 5.871212121212121,
-      "totalGap": 50
+      "avgSand": 90.45454545454545,
+      "avgSolid": 53.63636363636363,
+      "avgConcrete": 81.81818181818181,
+      "overconfidence": 36.81818181818182,
+      "blindSpots": -28.181818181818183,
+      "totalGap": 8.636363636363637
     },
     "metadata": {
-      "adapter": "lmstudio",
+      "adapter": "openrouter",
       "temperature": 0.7,
-      "totalTokensUsed": 7294,
-      "totalTrials": 44,
+      "totalTokensUsed": 51876,
+      "totalTrials": 11,
+      "invalidTrials": 1
+    }
+  },
+  {
+    "modelId": "openai/gpt-5.2",
+    "modelDisplayName": "openai/gpt-5.2",
+    "timestamp": "2026-02-07T20:13:05.960Z",
+    "categories": {
+      "mult": {
+        "category": "mult",
+        "sand": 98,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          7,
+          7
+        ],
+        "transitionZone": 7
+      },
+      "modexp": {
+        "category": "modexp",
+        "sand": 96,
+        "solid": 100,
+        "concrete": 0,
+        "trialCount": 1,
+        "difficultyRange": [
+          16,
+          16
+        ],
+        "transitionZone": 16
+      },
+      "bool": {
+        "category": "bool",
+        "sand": 1,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          9,
+          9
+        ],
+        "transitionZone": 9
+      },
+      "matrix": {
+        "category": "matrix",
+        "sand": 95,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          4,
+          4
+        ],
+        "transitionZone": 4
+      },
+      "combo": {
+        "category": "combo",
+        "sand": 93,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          5,
+          5
+        ],
+        "transitionZone": 5
+      },
+      "random": {
+        "category": "random",
+        "sand": 87,
+        "solid": 79.24053274652235,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          260,
+          260
+        ],
+        "transitionZone": 260
+      },
+      "constrained": {
+        "category": "constrained",
+        "sand": 92,
+        "solid": 20,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          5,
+          5
+        ],
+        "transitionZone": 5
+      },
+      "sudoku": {
+        "category": "sudoku",
+        "sand": 93,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          3,
+          3
+        ],
+        "transitionZone": 3
+      },
+      "distrib": {
+        "category": "distrib",
+        "sand": 92,
+        "solid": 87.48076201266971,
+        "concrete": 0,
+        "trialCount": 1,
+        "difficultyRange": [
+          105,
+          105
+        ],
+        "transitionZone": 105
+      },
+      "selfref": {
+        "category": "selfref",
+        "sand": 92,
+        "solid": 50,
+        "concrete": 0,
+        "trialCount": 1,
+        "difficultyRange": [
+          5,
+          5
+        ],
+        "transitionZone": 5
+      },
+      "counting": {
+        "category": "counting",
+        "sand": 52,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          21,
+          21
+        ],
+        "transitionZone": 21
+      }
+    },
+    "aggregate": {
+      "avgSand": 81,
+      "avgSolid": 85.15648134174474,
+      "avgConcrete": 72.72727272727273,
+      "overconfidence": -4.156481341744733,
+      "blindSpots": 12.429208614472005,
+      "totalGap": 8.272727272727272
+    },
+    "metadata": {
+      "adapter": "openrouter",
+      "temperature": 0.7,
+      "totalTokensUsed": 16813,
+      "totalTrials": 11,
       "invalidTrials": 0
     }
   },
   {
-    "modelId": "openai/gpt-4o-mini",
-    "modelDisplayName": "openai/gpt-4o-mini",
-    "timestamp": "2026-02-07T05:17:13.056Z",
+    "modelId": "anthropic/claude-sonnet-4.5",
+    "modelDisplayName": "anthropic/claude-sonnet-4.5",
+    "timestamp": "2026-02-07T20:17:20.992Z",
+    "categories": {
+      "mult": {
+        "category": "mult",
+        "sand": 65,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 1,
+        "difficultyRange": [
+          7,
+          7
+        ],
+        "transitionZone": 7
+      },
+      "modexp": {
+        "category": "modexp",
+        "sand": 75,
+        "solid": 0,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          16,
+          16
+        ],
+        "transitionZone": 16
+      },
+      "bool": {
+        "category": "bool",
+        "sand": 85,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          9,
+          9
+        ],
+        "transitionZone": 9
+      },
+      "matrix": {
+        "category": "matrix",
+        "sand": 85,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          4,
+          4
+        ],
+        "transitionZone": 4
+      },
+      "combo": {
+        "category": "combo",
+        "sand": 65,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          5,
+          5
+        ],
+        "transitionZone": 5
+      },
+      "random": {
+        "category": "random",
+        "sand": 72,
+        "solid": 79.07704174647948,
+        "concrete": 0,
+        "trialCount": 1,
+        "difficultyRange": [
+          260,
+          260
+        ],
+        "transitionZone": 260
+      },
+      "constrained": {
+        "category": "constrained",
+        "sand": 72,
+        "solid": 20,
+        "concrete": 100,
+        "trialCount": 1,
+        "difficultyRange": [
+          5,
+          5
+        ],
+        "transitionZone": 5
+      },
+      "sudoku": {
+        "category": "sudoku",
+        "sand": 72,
+        "solid": 25.925925925925924,
+        "concrete": 0,
+        "trialCount": 1,
+        "difficultyRange": [
+          3,
+          3
+        ],
+        "transitionZone": 3
+      },
+      "distrib": {
+        "category": "distrib",
+        "sand": 72,
+        "solid": 95.2449756703428,
+        "concrete": 0,
+        "trialCount": 1,
+        "difficultyRange": [
+          105,
+          105
+        ],
+        "transitionZone": 105
+      },
+      "selfref": {
+        "category": "selfref",
+        "sand": 68,
+        "solid": 50,
+        "concrete": 0,
+        "trialCount": 1,
+        "difficultyRange": [
+          5,
+          5
+        ],
+        "transitionZone": 5
+      },
+      "counting": {
+        "category": "counting",
+        "sand": 75,
+        "solid": 0,
+        "concrete": 0,
+        "trialCount": 1,
+        "difficultyRange": [
+          21,
+          21
+        ],
+        "transitionZone": 21
+      }
+    },
+    "aggregate": {
+      "avgSand": 73.27272727272727,
+      "avgSolid": 51.840722122068016,
+      "avgConcrete": 45.45454545454545,
+      "overconfidence": 21.432005150659254,
+      "blindSpots": 6.386176667522563,
+      "totalGap": 27.818181818181817
+    },
+    "metadata": {
+      "adapter": "openrouter",
+      "temperature": 0.7,
+      "totalTokensUsed": 10335,
+      "totalTrials": 11,
+      "invalidTrials": 0
+    }
+  },
+  {
+    "modelId": "qwen/qwen3-coder-next",
+    "modelDisplayName": "qwen/qwen3-coder-next",
+    "timestamp": "2026-02-07T20:12:19.364Z",
     "categories": {
       "mult": {
         "category": "mult",
@@ -172,293 +480,139 @@
       },
       "modexp": {
         "category": "modexp",
-        "sand": 0,
+        "sand": 95,
         "solid": 0,
         "concrete": 0,
-        "trialCount": 0,
+        "trialCount": 1,
         "difficultyRange": [
-          0,
-          0
+          16,
+          16
         ],
-        "transitionZone": 0
+        "transitionZone": 16
       },
       "bool": {
         "category": "bool",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
+        "sand": 75,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          0,
-          0
+          9,
+          9
         ],
-        "transitionZone": 0
+        "transitionZone": 9
       },
       "matrix": {
         "category": "matrix",
-        "sand": 0,
+        "sand": 98,
         "solid": 0,
         "concrete": 0,
-        "trialCount": 0,
+        "trialCount": 1,
         "difficultyRange": [
-          0,
-          0
+          4,
+          4
         ],
-        "transitionZone": 0
+        "transitionZone": 4
       },
       "combo": {
         "category": "combo",
-        "sand": 0,
+        "sand": 95,
         "solid": 0,
         "concrete": 0,
-        "trialCount": 0,
+        "trialCount": 1,
         "difficultyRange": [
-          0,
-          0
+          5,
+          5
         ],
-        "transitionZone": 0
+        "transitionZone": 5
       },
       "random": {
         "category": "random",
-        "sand": 0,
+        "sand": 26,
         "solid": 0,
         "concrete": 0,
-        "trialCount": 0,
+        "trialCount": 1,
         "difficultyRange": [
-          0,
-          0
+          260,
+          260
         ],
-        "transitionZone": 0
+        "transitionZone": 260
       },
       "constrained": {
         "category": "constrained",
-        "sand": 0,
-        "solid": 0,
+        "sand": 75,
+        "solid": 20,
         "concrete": 0,
-        "trialCount": 0,
+        "trialCount": 1,
         "difficultyRange": [
-          0,
-          0
+          5,
+          5
         ],
-        "transitionZone": 0
+        "transitionZone": 5
       },
       "sudoku": {
         "category": "sudoku",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
+        "sand": 85,
+        "solid": 100,
+        "concrete": 100,
+        "trialCount": 1,
         "difficultyRange": [
-          0,
-          0
+          3,
+          3
         ],
-        "transitionZone": 0
+        "transitionZone": 3
       },
       "distrib": {
         "category": "distrib",
-        "sand": 0,
-        "solid": 0,
+        "sand": 95,
+        "solid": 82.00739377161796,
         "concrete": 0,
-        "trialCount": 0,
+        "trialCount": 1,
         "difficultyRange": [
-          0,
-          0
+          105,
+          105
         ],
-        "transitionZone": 0
+        "transitionZone": 105
       },
       "selfref": {
         "category": "selfref",
         "sand": 0,
-        "solid": 0,
+        "solid": 25,
         "concrete": 0,
-        "trialCount": 0,
+        "trialCount": 1,
         "difficultyRange": [
-          0,
-          0
+          5,
+          5
         ],
-        "transitionZone": 0
+        "transitionZone": 5
       },
       "counting": {
         "category": "counting",
-        "sand": 0,
+        "sand": 85,
         "solid": 0,
         "concrete": 0,
-        "trialCount": 0,
+        "trialCount": 1,
         "difficultyRange": [
-          0,
-          0
+          21,
+          21
         ],
-        "transitionZone": 0
+        "transitionZone": 21
       }
     },
     "aggregate": {
-      "avgSand": 95,
-      "avgSolid": 0,
-      "avgConcrete": 0,
-      "overconfidence": 95,
-      "blindSpots": 0,
-      "totalGap": 95
-    },
-    "metadata": {
-      "adapter": "openrouter",
-      "temperature": 0.7,
-      "totalTokensUsed": 152,
-      "totalTrials": 1,
-      "invalidTrials": 0
-    }
-  },
-  {
-    "modelId": "qwen/qwen3-coder-next",
-    "modelDisplayName": "qwen/qwen3-coder-next",
-    "timestamp": "2026-02-07T05:17:00.892Z",
-    "categories": {
-      "mult": {
-        "category": "mult",
-        "sand": 96.5,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 2,
-        "difficultyRange": [
-          7,
-          7
-        ],
-        "transitionZone": 7
-      },
-      "modexp": {
-        "category": "modexp",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
-        "difficultyRange": [
-          0,
-          0
-        ],
-        "transitionZone": 0
-      },
-      "bool": {
-        "category": "bool",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
-        "difficultyRange": [
-          0,
-          0
-        ],
-        "transitionZone": 0
-      },
-      "matrix": {
-        "category": "matrix",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
-        "difficultyRange": [
-          0,
-          0
-        ],
-        "transitionZone": 0
-      },
-      "combo": {
-        "category": "combo",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
-        "difficultyRange": [
-          0,
-          0
-        ],
-        "transitionZone": 0
-      },
-      "random": {
-        "category": "random",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
-        "difficultyRange": [
-          0,
-          0
-        ],
-        "transitionZone": 0
-      },
-      "constrained": {
-        "category": "constrained",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
-        "difficultyRange": [
-          0,
-          0
-        ],
-        "transitionZone": 0
-      },
-      "sudoku": {
-        "category": "sudoku",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
-        "difficultyRange": [
-          0,
-          0
-        ],
-        "transitionZone": 0
-      },
-      "distrib": {
-        "category": "distrib",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
-        "difficultyRange": [
-          0,
-          0
-        ],
-        "transitionZone": 0
-      },
-      "selfref": {
-        "category": "selfref",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
-        "difficultyRange": [
-          0,
-          0
-        ],
-        "transitionZone": 0
-      },
-      "counting": {
-        "category": "counting",
-        "sand": 0,
-        "solid": 0,
-        "concrete": 0,
-        "trialCount": 0,
-        "difficultyRange": [
-          0,
-          0
-        ],
-        "transitionZone": 0
-      }
-    },
-    "aggregate": {
-      "avgSand": 96.5,
-      "avgSolid": 0,
-      "avgConcrete": 0,
-      "overconfidence": 96.5,
-      "blindSpots": 0,
-      "totalGap": 96.5
+      "avgSand": 74.9090909090909,
+      "avgSolid": 29.727944888328906,
+      "avgConcrete": 18.181818181818183,
+      "overconfidence": 45.18114602076201,
+      "blindSpots": 11.546126706510723,
+      "totalGap": 56.727272727272734
     },
     "metadata": {
       "adapter": "localapi",
       "temperature": 0.7,
-      "totalTokensUsed": 1526,
-      "totalTrials": 4,
-      "invalidTrials": 0
+      "totalTokensUsed": 7299,
+      "totalTrials": 11,
+      "invalidTrials": 1
     }
   }
 ]
