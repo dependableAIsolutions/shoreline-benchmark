@@ -1,10 +1,15 @@
 import type { CategoryDefinition } from "./types";
 
 export const SHORELINE_LAYERS = {
-  sand: "Phase 1 prediction",
+  sand: "Phase 1 claimed depth",
   solid: "Phase 2 task performance",
-  concrete: "Phase 3 verified self-evaluation"
+  concrete: "Phase 3 failure-awareness"
 } as const;
+
+// Sand normalization is intentionally model-agnostic and extends beyond
+// the benchmarked range so 100 is a theoretical outer ceiling.
+export const SAND_DIFFICULTY_HEADROOM_MULTIPLIER = 2;
+export const SAND_DIFFICULTY_EXPONENT = 1.35;
 
 export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
   {

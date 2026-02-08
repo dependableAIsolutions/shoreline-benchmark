@@ -1,4 +1,11 @@
-import { CATEGORY_DEFINITIONS, type CategoryKey, type CategoryScore, type TrialResult } from "@shoreline/shared";
+import {
+  CATEGORY_DEFINITIONS,
+  SAND_DIFFICULTY_EXPONENT,
+  SAND_DIFFICULTY_HEADROOM_MULTIPLIER,
+  type CategoryKey,
+  type CategoryScore,
+  type TrialResult
+} from "@shoreline/shared";
 import { avg, clamp } from "../utils/math";
 
 export function computeCategoryScore(
@@ -19,15 +26,13 @@ export function computeCategoryScore(
     })
   );
 
-  // Concrete is intentionally a strict subset of achieved capability:
-  // a trial contributes only when the model both succeeds and recognizes success.
+  // Concrete measures failure-awareness:
+  // wrong answers where the model correctly self-doubts (Phase 3 confidence < 40).
   const concrete01 = avg(
     trials.map((trial) => {
       const c = trial.phase3.confidence;
       if (c === null) return 0;
-      const phase2Score =
-        typeof trial.phase2.partialScore === "number" ? trial.phase2.partialScore : trial.phase2.isCorrect ? 1 : 0;
-      return c >= 60 ? phase2Score : 0;
+      return !trial.phase2.isCorrect && c < 40 ? 1 : 0;
     })
   );
 
@@ -70,7 +75,15 @@ export function computeCategoryScore(
   const concrete = concrete01 * 100;
   const normalizeDifficulty = (difficulty: number): number => {
     if (!categoryDef || categoryDef.maxDifficulty <= categoryDef.minDifficulty) return 0;
-    return clamp((difficulty - categoryDef.minDifficulty) / (categoryDef.maxDifficulty - categoryDef.minDifficulty), 0, 1);
+
+    // Model-agnostic theoretical ceiling:
+    // tested max maps below 1.0 so sand=100 is outside normal benchmark range.
+    const span = categoryDef.maxDifficulty - categoryDef.minDifficulty + 1;
+    const theoreticalSpan = span * SAND_DIFFICULTY_HEADROOM_MULTIPLIER;
+    const linear = clamp((difficulty - categoryDef.minDifficulty + 1) / theoreticalSpan, 0, 1);
+
+    // Exponential difficulty ramp: higher levels consume disproportionate territory.
+    return clamp(linear ** SAND_DIFFICULTY_EXPONENT, 0, 1);
   };
 
   const phase1Depth = trials.map((trial) => {
@@ -101,9 +114,7 @@ export function computeCategoryScore(
   );
 
   // Sand represents Phase 1 claimed territory intensity (0-100).
-  // Sand=100 means: model expressed 100% confidence at the category's maximum difficulty.
-  // Note: For display purposes, normalizeLayersForDisplay() expands sand to envelope
-  // solid/concrete, ensuring proper layer nesting in the visualization.
+  // Sand=100 means: model expressed 100% confidence at the theoretical category ceiling.
   const sand = claimedDepth01 * 100;
 
   const predicted01 = claimed / 100;
@@ -149,8 +160,8 @@ export function computeAggregateScores(scores: CategoryScore[]) {
   // Phase 1 miscalibration: prediction vs actual
   const overconfidence = avg(scores.map((score) => Math.max(0, (score.claimed ?? score.sand) - score.solid)));
   const underconfidence = avg(scores.map((score) => Math.max(0, score.solid - (score.claimed ?? score.sand))));
-  // Phase 3 miscalibration: self-assessment accuracy
-  const blindSpots = avg(scores.map((score) => Math.max(0, score.solid - score.concrete)));
+  // Phase 3 missed failures: wrong answers where model remained confident.
+  const blindSpots = avg(scores.map((score) => score.falseConfidence ?? Math.max(0, score.solid - score.concrete)));
   // Phase 3 false confidence: wrong answers where model was confident
   const avgFalseConfidence = avg(scores.map((score) => score.falseConfidence ?? 0));
   // Phase 3 true uncertainty: wrong answers where model correctly doubted itself

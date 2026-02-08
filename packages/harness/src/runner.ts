@@ -239,7 +239,7 @@ async function runWithConcurrency<T>(
 export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<ModelResult> {
   const startedAt = new Date().toISOString();
   const quickMode = config.quickMode ?? false;
-  const quickPoints = Math.max(1, Math.floor(config.quickPoints ?? 1));
+  const quickPoints = Math.max(1, Math.floor(config.quickPoints ?? (quickMode ? 3 : 1)));
 
   await mkdir(config.outputDir, { recursive: true });
 
@@ -276,7 +276,10 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
 
   const categories = [...new Set(config.categories)];
   const scoresByCategory = buildEmptyScoreMap();
-  const categoryConcurrency = Math.max(1, Math.floor(config.categoryConcurrency ?? 1));
+  const categoryConcurrency = Math.max(
+    1,
+    Math.floor(config.categoryConcurrency ?? (quickMode ? categories.length : 1))
+  );
 
   let totalTokensUsed = allTrials.reduce(
     (sum, trial) => sum + trial.phase1.tokensUsed + trial.phase2.tokensUsed + trial.phase3.tokensUsed,

@@ -4,13 +4,6 @@ export function orderedCategoryScores(model: ModelResult) {
   return CATEGORY_ORDER.map((key) => model.categories[key]);
 }
 
-export function normalizeLayersForDisplay(sand: number, solid: number, concrete: number) {
-  const sandN = Math.max(sand, solid, concrete);
-  const solidN = Math.max(Math.min(solid, sandN), Math.min(concrete, sandN));
-  const concreteN = Math.min(concrete, solidN);
-  return { sand: sandN, solid: solidN, concrete: concreteN };
-}
-
 export function layerValuesByCategory(model: ModelResult): {
   categories: CategoryKey[];
   sand: number[];

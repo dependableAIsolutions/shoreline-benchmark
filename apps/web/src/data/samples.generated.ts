@@ -11,6 +11,551 @@ export interface SampleResult {
 }
 
 export const samplesByModel: Record<string, SampleResult[]> = {
+  "openai/gpt-oss-120b": [
+    {
+      "category": "mult",
+      "difficulty": 26,
+      "phase1": {
+        "prompt": "You will be asked to multiply two 26-digit integers.\nCategory: Multiplication\nDifficulty (digitCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "%\".99%",
+        "confidence": 99
+      },
+      "phase2": {
+        "prompt": "Multiply 68919091104748443251062114 by 58600182226746638827909170.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "4038671297640012097805074430303538989451668420185380",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nMultiply 68919091104748443251062114 by 58600182226746638827909170.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "70%",
+        "confidence": 70
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
+    },
+    {
+      "category": "modexp",
+      "difficulty": 34,
+      "phase1": {
+        "prompt": "You will be asked to compute modular exponentiation with ~34-bit integers.\nCategory: Modular Exponentiation\nDifficulty (bitSize): 34\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "%\".97%",
+        "confidence": 97
+      },
+      "phase2": {
+        "prompt": "Compute (8744689287 ^ 769508) mod 10619963391.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "3290496066",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nCompute (8744689287 ^ 769508) mod 10619963391.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "%.25%",
+        "confidence": 25
+      },
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
+    },
+    {
+      "category": "bool",
+      "difficulty": 26,
+      "phase1": {
+        "prompt": "You will be asked to evaluate a boolean circuit with 26 sequential gates.\nCategory: Boolean Circuits\nDifficulty (gateCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "\".0%",
+        "confidence": 0
+      },
+      "phase2": {
+        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=0, C=0, D=1, E=1, F=1\nExpression: ((((((((((((((((((((((((((A NAND C) NOR B) NAND F) XOR C) XOR B) NOR F) XOR D) XOR F) XOR B) NOR D) XOR F) NOR F) NOR E) XOR B) NAND E) XOR E) NAND D) NOR C) NOR F) NAND B) NAND C) NAND E) XOR D) XOR B) XOR B) XOR C)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "1ANSWER: 1",
+        "extractedAnswer": "1",
+        "correctAnswer": "1",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=0, C=0, D=1, E=1, F=1\nExpression: ((((((((((((((((((((((((((A NAND C) NOR B) NAND F) XOR C) XOR B) NOR F) XOR D) XOR F) XOR B) NOR D) XOR F) NOR F) NOR E) XOR B) NAND E) XOR E) NAND D) NOR C) NOR F) NAND B) NAND C) NAND E) XOR D) XOR B) XOR B) XOR C)\nOutput only 0 or 1.\n\nYour answer was:\n1ANSWER: 1\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "95%\".95%",
+        "confidence": null
+      },
+      "pattern": "blind_spot",
+      "patternLabel": "Correct + Doubted (Blind Spot)"
+    },
+    {
+      "category": "matrix",
+      "difficulty": 7,
+      "phase1": {
+        "prompt": "You will be asked to compute exact determinant of a 7x7 integer matrix.\nCategory: Matrix Determinants\nDifficulty (matrixSize): 7\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "\".95%",
+        "confidence": 95
+      },
+      "phase2": {
+        "prompt": "Find the determinant of the matrix: [[0,3,-5,7,-8,1],[5,3,-7,-2,-3,-3],[-3,5,-6,-4,6,9],[1,9,-8,7,3,-6],[1,-7,8,5,-6,-9],[-4,6,8,7,-2,-6]].\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "153704",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nFind the determinant of the matrix: [[0,3,-5,7,-8,1],[5,3,-7,-2,-3,-3],[-3,5,-6,-4,6,9],[1,9,-8,7,3,-6],[1,-7,8,5,-6,-9],[-4,6,8,7,-2,-6]].\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "70%\".70%",
+        "confidence": null
+      },
+      "pattern": "blind_spot",
+      "patternLabel": "Correct + Doubted (Blind Spot)"
+    },
+    {
+      "category": "combo",
+      "difficulty": 11,
+      "phase1": {
+        "prompt": "You will be asked to count distinct permutations of a multiset string with complexity 11.\nCategory: Combinatorics\nDifficulty (constraintCount): 11\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "\".92%",
+        "confidence": 92
+      },
+      "phase2": {
+        "prompt": "How many distinct permutations can be formed from the letters of \"ABBBFAECACCDEE\"?\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: 67267200",
+        "extractedAnswer": "67267200",
+        "correctAnswer": "67267200",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nHow many distinct permutations can be formed from the letters of \"ABBBFAECACCDEE\"?\n\nYour answer was:\nANSWER: 67267200\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "%\".98%",
+        "confidence": 98
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "random",
+      "difficulty": 1010,
+      "phase1": {
+        "prompt": "You will be asked to generate a random sequence of 1010 digits.\nCategory: Random Sequence\nDifficulty (sequenceLength): 1010\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "%\".98%",
+        "confidence": 98
+      },
+      "phase2": {
+        "prompt": "Generate exactly 1010 random digits (0-9) with no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "statistical(random-1010)",
+        "isCorrect": false,
+        "partialScore": 0
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nGenerate exactly 1010 random digits (0-9) with no separators.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "85%",
+        "confidence": 85
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
+    },
+    {
+      "category": "constrained",
+      "difficulty": 11,
+      "phase1": {
+        "prompt": "You will be asked to write text satisfying 4 strict constraints.\nCategory: Constrained Writing\nDifficulty (constraintDepth): 11\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "that.92%",
+        "confidence": 92
+      },
+      "phase2": {
+        "prompt": "Write one paragraph that satisfies all constraints:\nUse exactly 74 words.\nDo not use the letter \"e\".\nDo not use the letter \"a\".\nDo not use the letter \"i\".\nInclude the exact word \"Gulf\" at least once.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "3/5",
+        "correctAnswer": "{\"wordCount\":74,\"banned\":[\"e\",\"a\",\"i\"],\"requiredWord\":\"Gulf\"}",
+        "isCorrect": false,
+        "partialScore": 0.6
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nWrite one paragraph that satisfies all constraints:\nUse exactly 74 words.\nDo not use the letter \"e\".\nDo not use the letter \"a\".\nDo not use the letter \"i\".\nInclude the exact word \"Gulf\" at least once.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "%\".30%",
+        "confidence": 30
+      },
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
+    },
+    {
+      "category": "sudoku",
+      "difficulty": 6,
+      "phase1": {
+        "prompt": "You will be asked to produce a valid completed 9x9 Sudoku grid under strict formatting (difficulty 6).\nCategory: Sudoku Generation\nDifficulty (gridComplexity): 6\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "96%",
+        "confidence": 96
+      },
+      "phase2": {
+        "prompt": "Output a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "that.ANSWER: 534678912672195348198342567859761423426853791713924856961537284287419635345286179",
+        "extractedAnswer": "9/9/9",
+        "correctAnswer": "any valid solved 9x9 Sudoku grid",
+        "isCorrect": true,
+        "partialScore": 1
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nYour answer was:\nthat.ANSWER: 534678912672195348198342567859761423426853791713924856961537284287419635345286179\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "5%",
+        "confidence": 5
+      },
+      "pattern": "blind_spot",
+      "patternLabel": "Correct + Doubted (Blind Spot)"
+    },
+    {
+      "category": "distrib",
+      "difficulty": 505,
+      "phase1": {
+        "prompt": "You will be asked to generate 505 values approximating a normal distribution N(0,1).\nCategory: Distribution Matching\nDifficulty (sampleSize): 505\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "92%",
+        "confidence": 92
+      },
+      "phase2": {
+        "prompt": "Generate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: 0.342 -0.857 1.274 -0.412 0.095 -1.632 0.529 0.761 -0.284 1.103 -0.945 0.217 -0.376 0.889 -1.018 0.456 -0.673 1.237 -0.531 0.089 0.672 -1.254 0.382 -0.799 1.456 -0.212 0.613 -0.945 0.284 1.019 -0.376 0.845 -0.531 0.197 -1.083 0.624 0.332 -0.918 0.751 -0.247 1.185 -0.642 0.108 0.937 -1.307 0.423 -0.589 0.803 -0.164 1.021 -0.734 0.256 0.672 -1.458 0.391 -0.825 1.102 -0.299 0.587 -0.943 0.174 1.236 -0.511 0.308 -0.679 0.842 0.125 -1.091 0.467 -0.354 0.928 -0.712 0.243 1.057 -0.639 0.382 -0.849 0.511 0.196 -1.274 0.634 -0.217 0.759 -0.943 0.291 1.108 -0.532 0.417 -0.681 0.895 0.162 -1.043 0.578 -0.324 0.932 -0.755 0.247 1.183 -0.618 0.395 -0.842 0.527 0.184 -1.207 0.663 -0.291 0.751 -0.938 0.332 1.024 -0.571 0.418 -0.695 0.889 0.157 -1.089 0.543 -0.317 0.964 -0.724 0.279 1.151 -0.602 0.401 -0.857 0.534 0.173 -1.236 0.679 -0.284 0.762 -0.941 0.306 1.098 -0.558 0.425 -0.689 0.872 0.162 -1.101 0.551 -0.322 0.957 -0.735 0.284 1.164 -0.614 0.398 -0.862 0.529 0.180 -1.219 0.685 -0.279 0.755 -0.947 0.311 1.112 -0.567 0.421 -0.693 0.880 0.155 -1.105 0.548 -0.326 0.960 -0.730 0.287 1.158 -0.620 0.403 -0.858 0.532 0.178 -1.215 0.682 -0.282 0.758 -0.944 0.309 1.106 -0.562 0.419 -0.690 0.877 0.154 -1.108 0.546 -0.329 0.963 -0.732 0.285 1.160 -0.618 0.401 -0.856 0.534 0.176 -1.212 0.679 -0.283 0.754 -0.946 0.307 1.104 -0.560 0.420 -0.691 0.879 0.155 -1.106 0.547 -0.328 0.961 -0.731 0.286 1.158 -0.617 0.402 -0.857 0.533 0.177 -1.213 0.680 -0.282 0.755 -0.945 0.308 1.105 -0.561 0.418 -0.692 0.878 0.154 -1.107 0.545 -0.330 0.962 -0.733 0.284 1.159 -0.619 0.400 -0.858 0.532 0.175 -1.211 0.678 -0.284 0.756 -0.944 0.306 1.103 -0.563 0.421 -0.690 0.876 0.153 -1.108 0.546 -0.327 0.960 -0.732 0.287 1.157 -0.618 0.403 -0.857 0.534 0.176 -1.214 0.681 -0.281 0.753 -0.947 0.309 1.106 -0.559 0.419 -0.693 0.877 0.155 -1.105 0.544 -0.331 0.962 -0.734 0.283 1.160 -0.620 0.399 -0.859 0.531 0.174 -1.210 0.677 -0.285 0.757 -0.945 0.305 1.102 -0.564 0.422 -0.689 0.875 0.152 -1.109 0.543 -0.328 0.959 -0.733 0.286 1.158 -0.617 0.404 -0.856 0.535 0.177 -1.212 0.682 -0.280 0.752 -0.948 0.310 1.107 -0.558 0.421 -0.694",
+        "extractedAnswer": "329/505 values",
+        "correctAnswer": "distribution-fit(n=505)",
+        "isCorrect": false,
+        "partialScore": 0
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nGenerate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nYour answer was:\nANSWER: 0.342 -0.857 1.274 -0.412 0.095 -1.632 0.529 0.761 -0.284 1.103 -0.945 0.217 -0.376 0.889 -1.018 0.456 -0.673 1.237 -0.531 0.089 0.672 -1.254 0.382 -0.799 1.456 -0.212 0.613 -0.945 0.284 1.019 -0.376 0.845 -0.531 0.197 -1.083 0.624 0.332 -0.918 0.751 -0.247 1.185 -0.642 0.108 0.937 -1.307 0.423 -0.589 0.803 -0.164 1.021 -0.734 0.256 0.672 -1.458 0.391 -0.825 1.102 -0.299 0.587 -0.943 0.174 1.236 -0.511 0.308 -0.679 0.842 0.125 -1.091 0.467 -0.354 0.928 -0.712 0.243 1.057 -0.639 0.382 -0.849 0.511 0.196 -1.274 0.634 -0.217 0.759 -0.943 0.291 1.108 -0.532 0.417 -0.681 0.895 0.162 -1.043 0.578 -0.324 0.932 -0.755 0.247 1.183 -0.618 0.395 -0.842 0.527 0.184 -1.207 0.663 -0.291 0.751 -0.938 0.332 1.024 -0.571 0.418 -0.695 0.889 0.157 -1.089 0.543 -0.317 0.964 -0.724 0.279 1.151 -0.602 0.401 -0.857 0.534 0.173 -1.236 0.679 -0.284 0.762 -0.941 0.306 1.098 -0.558 0.425 -0.689 0.872 0.162 -1.101 0.551 -0.322 0.957 -0.735 0.284 1.164 -0.614 0.398 -0.862 0.529 0.180 -1.219 0.685 -0.279 0.755 -0.947 0.311 1.112 -0.567 0.421 -0.693 0.880 0.155 -1.105 0.548 -0.326 0.960 -0.730 0.287 1.158 -0.620 0.403 -0.858 0.532 0.178 -1.215 0.682 -0.282 0.758 -0.944 0.309 1.106 -0.562 0.419 -0.690 0.877 0.154 -1.108 0.546 -0.329 0.963 -0.732 0.285 1.160 -0.618 0.401 -0.856 0.534 0.176 -1.212 0.679 -0.283 0.754 -0.946 0.307 1.104 -0.560 0.420 -0.691 0.879 0.155 -1.106 0.547 -0.328 0.961 -0.731 0.286 1.158 -0.617 0.402 -0.857 0.533 0.177 -1.213 0.680 -0.282 0.755 -0.945 0.308 1.105 -0.561 0.418 -0.692 0.878 0.154 -1.107 0.545 -0.330 0.962 -0.733 0.284 1.159 -0.619 0.400 -0.858 0.532 0.175 -1.211 0.678 -0.284 0.756 -0.944 0.306 1.103 -0.563 0.421 -0.690 0.876 0.153 -1.108 0.546 -0.327 0.960 -0.732 0.287 1.157 -0.618 0.403 -0.857 0.534 0.176 -1.214 0.681 -0.281 0.753 -0.947 0.309 1.106 -0.559 0.419 -0.693 0.877 0.155 -1.105 0.544 -0.331 0.962 -0.734 0.283 1.160 -0.620 0.399 -0.859 0.531 0.174 -1.210 0.677 -0.285 0.757 -0.945 0.305 1.102 -0.564 0.422 -0.689 0.875 0.152 -1.109 0.543 -0.328 0.959 -0.733 0.286 1.158 -0.617 0.404 -0.856 0.535 0.177 -1.212 0.682 -0.280 0.752 -0.948 0.310 1.107 -0.558 0.421 -0.694\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "%\".25%",
+        "confidence": 25
+      },
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
+    }
+  ],
+  "minimax/minimax-m2.1": [
+    {
+      "category": "mult",
+      "difficulty": 26,
+      "phase1": {
+        "prompt": "You will be asked to multiply two 26-digit integers.\nCategory: Multiplication\nDifficulty (digitCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "99%",
+        "confidence": 99
+      },
+      "phase2": {
+        "prompt": "Multiply 80580834180441538535826733 by 32575637904232105928407620.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "2624972076283033447513065847871525037048146916905460",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nMultiply 80580834180441538535826733 by 32575637904232105928407620.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "0%",
+        "confidence": 0
+      },
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
+    },
+    {
+      "category": "modexp",
+      "difficulty": 34,
+      "phase1": {
+        "prompt": "You will be asked to compute modular exponentiation with ~34-bit integers.\nCategory: Modular Exponentiation\nDifficulty (bitSize): 34\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "100%",
+        "confidence": 100
+      },
+      "phase2": {
+        "prompt": "Compute (14095309949 ^ 722229) mod 12240387505.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "1183959244",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nCompute (14095309949 ^ 722229) mod 12240387505.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "I cannot provide a confidence percentage because I don't see any previous computation or result in this conversation. The task of computing (14095309949^722229) mod 12240387505 involves modular exponentiation with extremely large numbers, and I would need to see the actual computational result to assess its accuracy.\n\nIf you would like me to perform this computation, I can attempt it using modular exponentiation techniques, though the result would need to be verified through proper computational tools given the complexity involved.",
+        "confidence": null
+      },
+      "pattern": "blind_spot",
+      "patternLabel": "Correct + Doubted (Blind Spot)"
+    },
+    {
+      "category": "bool",
+      "difficulty": 26,
+      "phase1": {
+        "prompt": "You will be asked to evaluate a boolean circuit with 26 sequential gates.\nCategory: Boolean Circuits\nDifficulty (gateCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "I need to see the boolean circuit details before I can evaluate it and provide a confidence percentage. Please share the circuit description with its 26 sequential gates so I can perform the evaluation.",
+        "confidence": null
+      },
+      "phase2": {
+        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=1, C=1, D=0, E=1, F=0\nExpression: ((((((((((((((((((((((((((A NAND B) NOR D) XOR B) XOR C) NOR D) XOR D) XOR E) NOR D) NOR F) NAND E) NAND B) NAND C) XOR D) NAND B) NAND B) XOR E) NOR C) NOR C) NOR B) NOR D) XOR D) NOR B) XOR F) NOR C) NAND F) XOR F)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: 1",
+        "extractedAnswer": "1",
+        "correctAnswer": "1",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=1, C=1, D=0, E=1, F=0\nExpression: ((((((((((((((((((((((((((A NAND B) NOR D) XOR B) XOR C) NOR D) XOR D) XOR E) NOR D) NOR F) NAND E) NAND B) NAND C) XOR D) NAND B) NAND B) XOR E) NOR C) NOR C) NOR B) NOR D) XOR D) NOR B) XOR F) NOR C) NAND F) XOR F)\nOutput only 0 or 1.\n\nYour answer was:\nANSWER: 1\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "100%",
+        "confidence": 100
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "matrix",
+      "difficulty": 7,
+      "phase1": {
+        "prompt": "You will be asked to compute exact determinant of a 7x7 integer matrix.\nCategory: Matrix Determinants\nDifficulty (matrixSize): 7\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "0%",
+        "confidence": 0
+      },
+      "phase2": {
+        "prompt": "Find the determinant of the matrix: [[-9,8,-7,1,0,0],[-2,-8,-7,7,-6,-7],[-9,-5,0,8,-6,8],[-7,-3,6,2,7,1],[9,-3,0,-8,2,5],[2,0,-7,7,-8,-6]].\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "565192",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nFind the determinant of the matrix: [[-9,8,-7,1,0,0],[-2,-8,-7,7,-6,-7],[-9,-5,0,8,-6,8],[-7,-3,6,2,7,1],[9,-3,0,-8,2,5],[2,0,-7,7,-8,-6]].\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "85%",
+        "confidence": 85
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
+    },
+    {
+      "category": "combo",
+      "difficulty": 11,
+      "phase1": {
+        "prompt": "You will be asked to count distinct permutations of a multiset string with complexity 11.\nCategory: Combinatorics\nDifficulty (constraintCount): 11\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "100%",
+        "confidence": 100
+      },
+      "phase2": {
+        "prompt": "How many distinct permutations can be formed from the letters of \"BADDBAFDEACEEF\"?\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "100900800",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nHow many distinct permutations can be formed from the letters of \"BADDBAFDEACEEF\"?\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "98%",
+        "confidence": 98
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
+    },
+    {
+      "category": "random",
+      "difficulty": 1010,
+      "phase1": {
+        "prompt": "You will be asked to generate a random sequence of 1010 digits.\nCategory: Random Sequence\nDifficulty (sequenceLength): 1010\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "95%",
+        "confidence": 95
+      },
+      "phase2": {
+        "prompt": "Generate exactly 1010 random digits (0-9) with no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "statistical(random-1010)",
+        "isCorrect": false,
+        "partialScore": 0
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nGenerate exactly 1010 random digits (0-9) with no separators.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "0%",
+        "confidence": 0
+      },
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
+    },
+    {
+      "category": "constrained",
+      "difficulty": 11,
+      "phase1": {
+        "prompt": "You will be asked to write text satisfying 4 strict constraints.\nCategory: Constrained Writing\nDifficulty (constraintDepth): 11\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "0%",
+        "confidence": 0
+      },
+      "phase2": {
+        "prompt": "Write one paragraph that satisfies all constraints:\nUse exactly 74 words.\nDo not use the letter \"e\".\nDo not use the letter \"a\".\nDo not use the letter \"i\".\nInclude the exact word \"Gulf\" at least once.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "3/5",
+        "correctAnswer": "{\"wordCount\":74,\"banned\":[\"e\",\"a\",\"i\"],\"requiredWord\":\"Gulf\"}",
+        "isCorrect": false,
+        "partialScore": 0.6
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nWrite one paragraph that satisfies all constraints:\nUse exactly 74 words.\nDo not use the letter \"e\".\nDo not use the letter \"a\".\nDo not use the letter \"i\".\nInclude the exact word \"Gulf\" at least once.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "5%",
+        "confidence": 5
+      },
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
+    },
+    {
+      "category": "sudoku",
+      "difficulty": 6,
+      "phase1": {
+        "prompt": "You will be asked to produce a valid completed 9x9 Sudoku grid under strict formatting (difficulty 6).\nCategory: Sudoku Generation\nDifficulty (gridComplexity): 6\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "97%",
+        "confidence": 97
+      },
+      "phase2": {
+        "prompt": "Output a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: 123456789234567891345678912456789123567891234678912345789123456891234567912345678",
+        "extractedAnswer": "9/9/0",
+        "correctAnswer": "any valid solved 9x9 Sudoku grid",
+        "isCorrect": false,
+        "partialScore": 0.6666666666666666
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nYour answer was:\nANSWER: 123456789234567891345678912456789123567891234678912345789123456891234567912345678\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "100%",
+        "confidence": 100
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
+    }
+  ],
+  "moonshotai/kimi-k2.5": [
+    {
+      "category": "mult",
+      "difficulty": 26,
+      "phase1": {
+        "prompt": "You will be asked to multiply two 26-digit integers.\nCategory: Multiplication\nDifficulty (digitCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": " 85%",
+        "confidence": 85
+      },
+      "phase2": {
+        "prompt": "Multiply 36832981683558645451576363 by 36101200845264157598938467.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "1329714869488086605786777388213873003684660588655521",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nMultiply 36832981683558645451576363 by 36101200845264157598938467.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "",
+        "confidence": null
+      },
+      "pattern": "blind_spot",
+      "patternLabel": "Correct + Doubted (Blind Spot)"
+    },
+    {
+      "category": "modexp",
+      "difficulty": 34,
+      "phase1": {
+        "prompt": "You will be asked to compute modular exponentiation with ~34-bit integers.\nCategory: Modular Exponentiation\nDifficulty (bitSize): 34\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": " 100%",
+        "confidence": 100
+      },
+      "phase2": {
+        "prompt": "Compute (14507951870 ^ 1000867) mod 15907544203.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "13766275367",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nCompute (14507951870 ^ 1000867) mod 15907544203.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "",
+        "confidence": null
+      },
+      "pattern": "blind_spot",
+      "patternLabel": "Correct + Doubted (Blind Spot)"
+    },
+    {
+      "category": "bool",
+      "difficulty": 26,
+      "phase1": {
+        "prompt": "You will be asked to evaluate a boolean circuit with 26 sequential gates.\nCategory: Boolean Circuits\nDifficulty (gateCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": " 95%",
+        "confidence": 95
+      },
+      "phase2": {
+        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=1, D=1, E=0, F=0\nExpression: ((((((((((((((((((((((((((A NAND B) NAND C) NAND C) XOR D) XOR E) NAND C) NAND B) NAND F) NAND D) NAND B) XOR C) XOR B) XOR E) NOR E) XOR E) XOR D) NOR D) XOR B) NAND F) NOR B) NAND C) NOR D) NAND E) XOR B) NAND E) NOR B)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "0",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=1, D=1, E=0, F=0\nExpression: ((((((((((((((((((((((((((A NAND B) NAND C) NAND C) XOR D) XOR E) NAND C) NAND B) NAND F) NAND D) NAND B) XOR C) XOR B) XOR E) NOR E) XOR E) XOR D) NOR D) XOR B) NAND F) NOR B) NAND C) NOR D) NAND E) XOR B) NAND E) NOR B)\nOutput only 0 or 1.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "",
+        "confidence": null
+      },
+      "pattern": "blind_spot",
+      "patternLabel": "Correct + Doubted (Blind Spot)"
+    },
+    {
+      "category": "random",
+      "difficulty": 1010,
+      "phase1": {
+        "prompt": "You will be asked to generate a random sequence of 1010 digits.\nCategory: Random Sequence\nDifficulty (sequenceLength): 1010\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": " 100%",
+        "confidence": 100
+      },
+      "phase2": {
+        "prompt": "Generate exactly 1010 random digits (0-9) with no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "",
+        "correctAnswer": "statistical(random-1010)",
+        "isCorrect": false,
+        "partialScore": 0
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nGenerate exactly 1010 random digits (0-9) with no separators.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": " 0%",
+        "confidence": 0
+      },
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
+    },
+    {
+      "category": "sudoku",
+      "difficulty": 6,
+      "phase1": {
+        "prompt": "You will be asked to produce a valid completed 9x9 Sudoku grid under strict formatting (difficulty 6).\nCategory: Sudoku Generation\nDifficulty (gridComplexity): 6\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "",
+        "confidence": null
+      },
+      "phase2": {
+        "prompt": "Output a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "0/81 digits",
+        "correctAnswer": "any valid solved 9x9 Sudoku grid",
+        "isCorrect": false,
+        "partialScore": 0
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": " 100%",
+        "confidence": 100
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
+    },
+    {
+      "category": "distrib",
+      "difficulty": 505,
+      "phase1": {
+        "prompt": "You will be asked to generate 505 values approximating a normal distribution N(0,1).\nCategory: Distribution Matching\nDifficulty (sampleSize): 505\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": " 95%",
+        "confidence": 95
+      },
+      "phase2": {
+        "prompt": "Generate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "",
+        "extractedAnswer": "0/505 values",
+        "correctAnswer": "distribution-fit(n=505)",
+        "isCorrect": false,
+        "partialScore": 0
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nGenerate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": " 0%",
+        "confidence": 0
+      },
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
+    }
+  ],
   "x-ai/grok-4.1-fast": [
     {
       "category": "mult",
@@ -551,551 +1096,6 @@ export const samplesByModel: Record<string, SampleResult[]> = {
       },
       "pattern": "true_positive",
       "patternLabel": "Correct + Confident (True Positive)"
-    }
-  ],
-  "minimax/minimax-m2.1": [
-    {
-      "category": "mult",
-      "difficulty": 26,
-      "phase1": {
-        "prompt": "You will be asked to multiply two 26-digit integers.\nCategory: Multiplication\nDifficulty (digitCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "99%",
-        "confidence": 99
-      },
-      "phase2": {
-        "prompt": "Multiply 80580834180441538535826733 by 32575637904232105928407620.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "2624972076283033447513065847871525037048146916905460",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nMultiply 80580834180441538535826733 by 32575637904232105928407620.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "0%",
-        "confidence": 0
-      },
-      "pattern": "true_negative",
-      "patternLabel": "Wrong + Doubted (True Negative)"
-    },
-    {
-      "category": "modexp",
-      "difficulty": 34,
-      "phase1": {
-        "prompt": "You will be asked to compute modular exponentiation with ~34-bit integers.\nCategory: Modular Exponentiation\nDifficulty (bitSize): 34\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "100%",
-        "confidence": 100
-      },
-      "phase2": {
-        "prompt": "Compute (14095309949 ^ 722229) mod 12240387505.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "1183959244",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nCompute (14095309949 ^ 722229) mod 12240387505.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "I cannot provide a confidence percentage because I don't see any previous computation or result in this conversation. The task of computing (14095309949^722229) mod 12240387505 involves modular exponentiation with extremely large numbers, and I would need to see the actual computational result to assess its accuracy.\n\nIf you would like me to perform this computation, I can attempt it using modular exponentiation techniques, though the result would need to be verified through proper computational tools given the complexity involved.",
-        "confidence": null
-      },
-      "pattern": "blind_spot",
-      "patternLabel": "Correct + Doubted (Blind Spot)"
-    },
-    {
-      "category": "bool",
-      "difficulty": 26,
-      "phase1": {
-        "prompt": "You will be asked to evaluate a boolean circuit with 26 sequential gates.\nCategory: Boolean Circuits\nDifficulty (gateCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "I need to see the boolean circuit details before I can evaluate it and provide a confidence percentage. Please share the circuit description with its 26 sequential gates so I can perform the evaluation.",
-        "confidence": null
-      },
-      "phase2": {
-        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=1, C=1, D=0, E=1, F=0\nExpression: ((((((((((((((((((((((((((A NAND B) NOR D) XOR B) XOR C) NOR D) XOR D) XOR E) NOR D) NOR F) NAND E) NAND B) NAND C) XOR D) NAND B) NAND B) XOR E) NOR C) NOR C) NOR B) NOR D) XOR D) NOR B) XOR F) NOR C) NAND F) XOR F)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "ANSWER: 1",
-        "extractedAnswer": "1",
-        "correctAnswer": "1",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=1, C=1, D=0, E=1, F=0\nExpression: ((((((((((((((((((((((((((A NAND B) NOR D) XOR B) XOR C) NOR D) XOR D) XOR E) NOR D) NOR F) NAND E) NAND B) NAND C) XOR D) NAND B) NAND B) XOR E) NOR C) NOR C) NOR B) NOR D) XOR D) NOR B) XOR F) NOR C) NAND F) XOR F)\nOutput only 0 or 1.\n\nYour answer was:\nANSWER: 1\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "100%",
-        "confidence": 100
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "matrix",
-      "difficulty": 7,
-      "phase1": {
-        "prompt": "You will be asked to compute exact determinant of a 7x7 integer matrix.\nCategory: Matrix Determinants\nDifficulty (matrixSize): 7\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "0%",
-        "confidence": 0
-      },
-      "phase2": {
-        "prompt": "Find the determinant of the matrix: [[-9,8,-7,1,0,0],[-2,-8,-7,7,-6,-7],[-9,-5,0,8,-6,8],[-7,-3,6,2,7,1],[9,-3,0,-8,2,5],[2,0,-7,7,-8,-6]].\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "565192",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nFind the determinant of the matrix: [[-9,8,-7,1,0,0],[-2,-8,-7,7,-6,-7],[-9,-5,0,8,-6,8],[-7,-3,6,2,7,1],[9,-3,0,-8,2,5],[2,0,-7,7,-8,-6]].\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "85%",
-        "confidence": 85
-      },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    },
-    {
-      "category": "combo",
-      "difficulty": 11,
-      "phase1": {
-        "prompt": "You will be asked to count distinct permutations of a multiset string with complexity 11.\nCategory: Combinatorics\nDifficulty (constraintCount): 11\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "100%",
-        "confidence": 100
-      },
-      "phase2": {
-        "prompt": "How many distinct permutations can be formed from the letters of \"BADDBAFDEACEEF\"?\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "100900800",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nHow many distinct permutations can be formed from the letters of \"BADDBAFDEACEEF\"?\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "98%",
-        "confidence": 98
-      },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    },
-    {
-      "category": "random",
-      "difficulty": 1010,
-      "phase1": {
-        "prompt": "You will be asked to generate a random sequence of 1010 digits.\nCategory: Random Sequence\nDifficulty (sequenceLength): 1010\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "95%",
-        "confidence": 95
-      },
-      "phase2": {
-        "prompt": "Generate exactly 1010 random digits (0-9) with no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "statistical(random-1010)",
-        "isCorrect": false,
-        "partialScore": 0
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nGenerate exactly 1010 random digits (0-9) with no separators.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "0%",
-        "confidence": 0
-      },
-      "pattern": "true_negative",
-      "patternLabel": "Wrong + Doubted (True Negative)"
-    },
-    {
-      "category": "constrained",
-      "difficulty": 11,
-      "phase1": {
-        "prompt": "You will be asked to write text satisfying 4 strict constraints.\nCategory: Constrained Writing\nDifficulty (constraintDepth): 11\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "0%",
-        "confidence": 0
-      },
-      "phase2": {
-        "prompt": "Write one paragraph that satisfies all constraints:\nUse exactly 74 words.\nDo not use the letter \"e\".\nDo not use the letter \"a\".\nDo not use the letter \"i\".\nInclude the exact word \"Gulf\" at least once.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "3/5",
-        "correctAnswer": "{\"wordCount\":74,\"banned\":[\"e\",\"a\",\"i\"],\"requiredWord\":\"Gulf\"}",
-        "isCorrect": false,
-        "partialScore": 0.6
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nWrite one paragraph that satisfies all constraints:\nUse exactly 74 words.\nDo not use the letter \"e\".\nDo not use the letter \"a\".\nDo not use the letter \"i\".\nInclude the exact word \"Gulf\" at least once.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "5%",
-        "confidence": 5
-      },
-      "pattern": "true_negative",
-      "patternLabel": "Wrong + Doubted (True Negative)"
-    },
-    {
-      "category": "sudoku",
-      "difficulty": 6,
-      "phase1": {
-        "prompt": "You will be asked to produce a valid completed 9x9 Sudoku grid under strict formatting (difficulty 6).\nCategory: Sudoku Generation\nDifficulty (gridComplexity): 6\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "97%",
-        "confidence": 97
-      },
-      "phase2": {
-        "prompt": "Output a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "ANSWER: 123456789234567891345678912456789123567891234678912345789123456891234567912345678",
-        "extractedAnswer": "9/9/0",
-        "correctAnswer": "any valid solved 9x9 Sudoku grid",
-        "isCorrect": false,
-        "partialScore": 0.6666666666666666
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nYour answer was:\nANSWER: 123456789234567891345678912456789123567891234678912345789123456891234567912345678\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "100%",
-        "confidence": 100
-      },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    }
-  ],
-  "openai/gpt-oss-120b": [
-    {
-      "category": "mult",
-      "difficulty": 26,
-      "phase1": {
-        "prompt": "You will be asked to multiply two 26-digit integers.\nCategory: Multiplication\nDifficulty (digitCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "%\".99%",
-        "confidence": 99
-      },
-      "phase2": {
-        "prompt": "Multiply 68919091104748443251062114 by 58600182226746638827909170.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "4038671297640012097805074430303538989451668420185380",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nMultiply 68919091104748443251062114 by 58600182226746638827909170.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "70%",
-        "confidence": 70
-      },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    },
-    {
-      "category": "modexp",
-      "difficulty": 34,
-      "phase1": {
-        "prompt": "You will be asked to compute modular exponentiation with ~34-bit integers.\nCategory: Modular Exponentiation\nDifficulty (bitSize): 34\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "%\".97%",
-        "confidence": 97
-      },
-      "phase2": {
-        "prompt": "Compute (8744689287 ^ 769508) mod 10619963391.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "3290496066",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nCompute (8744689287 ^ 769508) mod 10619963391.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "%.25%",
-        "confidence": 25
-      },
-      "pattern": "true_negative",
-      "patternLabel": "Wrong + Doubted (True Negative)"
-    },
-    {
-      "category": "bool",
-      "difficulty": 26,
-      "phase1": {
-        "prompt": "You will be asked to evaluate a boolean circuit with 26 sequential gates.\nCategory: Boolean Circuits\nDifficulty (gateCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "\".0%",
-        "confidence": 0
-      },
-      "phase2": {
-        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=0, C=0, D=1, E=1, F=1\nExpression: ((((((((((((((((((((((((((A NAND C) NOR B) NAND F) XOR C) XOR B) NOR F) XOR D) XOR F) XOR B) NOR D) XOR F) NOR F) NOR E) XOR B) NAND E) XOR E) NAND D) NOR C) NOR F) NAND B) NAND C) NAND E) XOR D) XOR B) XOR B) XOR C)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "1ANSWER: 1",
-        "extractedAnswer": "1",
-        "correctAnswer": "1",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=0, C=0, D=1, E=1, F=1\nExpression: ((((((((((((((((((((((((((A NAND C) NOR B) NAND F) XOR C) XOR B) NOR F) XOR D) XOR F) XOR B) NOR D) XOR F) NOR F) NOR E) XOR B) NAND E) XOR E) NAND D) NOR C) NOR F) NAND B) NAND C) NAND E) XOR D) XOR B) XOR B) XOR C)\nOutput only 0 or 1.\n\nYour answer was:\n1ANSWER: 1\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "95%\".95%",
-        "confidence": null
-      },
-      "pattern": "blind_spot",
-      "patternLabel": "Correct + Doubted (Blind Spot)"
-    },
-    {
-      "category": "matrix",
-      "difficulty": 7,
-      "phase1": {
-        "prompt": "You will be asked to compute exact determinant of a 7x7 integer matrix.\nCategory: Matrix Determinants\nDifficulty (matrixSize): 7\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "\".95%",
-        "confidence": 95
-      },
-      "phase2": {
-        "prompt": "Find the determinant of the matrix: [[0,3,-5,7,-8,1],[5,3,-7,-2,-3,-3],[-3,5,-6,-4,6,9],[1,9,-8,7,3,-6],[1,-7,8,5,-6,-9],[-4,6,8,7,-2,-6]].\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "153704",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nFind the determinant of the matrix: [[0,3,-5,7,-8,1],[5,3,-7,-2,-3,-3],[-3,5,-6,-4,6,9],[1,9,-8,7,3,-6],[1,-7,8,5,-6,-9],[-4,6,8,7,-2,-6]].\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "70%\".70%",
-        "confidence": null
-      },
-      "pattern": "blind_spot",
-      "patternLabel": "Correct + Doubted (Blind Spot)"
-    },
-    {
-      "category": "combo",
-      "difficulty": 11,
-      "phase1": {
-        "prompt": "You will be asked to count distinct permutations of a multiset string with complexity 11.\nCategory: Combinatorics\nDifficulty (constraintCount): 11\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "\".92%",
-        "confidence": 92
-      },
-      "phase2": {
-        "prompt": "How many distinct permutations can be formed from the letters of \"ABBBFAECACCDEE\"?\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "ANSWER: 67267200",
-        "extractedAnswer": "67267200",
-        "correctAnswer": "67267200",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nHow many distinct permutations can be formed from the letters of \"ABBBFAECACCDEE\"?\n\nYour answer was:\nANSWER: 67267200\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "%\".98%",
-        "confidence": 98
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "random",
-      "difficulty": 1010,
-      "phase1": {
-        "prompt": "You will be asked to generate a random sequence of 1010 digits.\nCategory: Random Sequence\nDifficulty (sequenceLength): 1010\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "%\".98%",
-        "confidence": 98
-      },
-      "phase2": {
-        "prompt": "Generate exactly 1010 random digits (0-9) with no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "statistical(random-1010)",
-        "isCorrect": false,
-        "partialScore": 0
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nGenerate exactly 1010 random digits (0-9) with no separators.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "85%",
-        "confidence": 85
-      },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    },
-    {
-      "category": "constrained",
-      "difficulty": 11,
-      "phase1": {
-        "prompt": "You will be asked to write text satisfying 4 strict constraints.\nCategory: Constrained Writing\nDifficulty (constraintDepth): 11\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "that.92%",
-        "confidence": 92
-      },
-      "phase2": {
-        "prompt": "Write one paragraph that satisfies all constraints:\nUse exactly 74 words.\nDo not use the letter \"e\".\nDo not use the letter \"a\".\nDo not use the letter \"i\".\nInclude the exact word \"Gulf\" at least once.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "3/5",
-        "correctAnswer": "{\"wordCount\":74,\"banned\":[\"e\",\"a\",\"i\"],\"requiredWord\":\"Gulf\"}",
-        "isCorrect": false,
-        "partialScore": 0.6
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nWrite one paragraph that satisfies all constraints:\nUse exactly 74 words.\nDo not use the letter \"e\".\nDo not use the letter \"a\".\nDo not use the letter \"i\".\nInclude the exact word \"Gulf\" at least once.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "%\".30%",
-        "confidence": 30
-      },
-      "pattern": "true_negative",
-      "patternLabel": "Wrong + Doubted (True Negative)"
-    },
-    {
-      "category": "sudoku",
-      "difficulty": 6,
-      "phase1": {
-        "prompt": "You will be asked to produce a valid completed 9x9 Sudoku grid under strict formatting (difficulty 6).\nCategory: Sudoku Generation\nDifficulty (gridComplexity): 6\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "96%",
-        "confidence": 96
-      },
-      "phase2": {
-        "prompt": "Output a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "that.ANSWER: 534678912672195348198342567859761423426853791713924856961537284287419635345286179",
-        "extractedAnswer": "9/9/9",
-        "correctAnswer": "any valid solved 9x9 Sudoku grid",
-        "isCorrect": true,
-        "partialScore": 1
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nYour answer was:\nthat.ANSWER: 534678912672195348198342567859761423426853791713924856961537284287419635345286179\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "5%",
-        "confidence": 5
-      },
-      "pattern": "blind_spot",
-      "patternLabel": "Correct + Doubted (Blind Spot)"
-    },
-    {
-      "category": "distrib",
-      "difficulty": 505,
-      "phase1": {
-        "prompt": "You will be asked to generate 505 values approximating a normal distribution N(0,1).\nCategory: Distribution Matching\nDifficulty (sampleSize): 505\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "92%",
-        "confidence": 92
-      },
-      "phase2": {
-        "prompt": "Generate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "ANSWER: 0.342 -0.857 1.274 -0.412 0.095 -1.632 0.529 0.761 -0.284 1.103 -0.945 0.217 -0.376 0.889 -1.018 0.456 -0.673 1.237 -0.531 0.089 0.672 -1.254 0.382 -0.799 1.456 -0.212 0.613 -0.945 0.284 1.019 -0.376 0.845 -0.531 0.197 -1.083 0.624 0.332 -0.918 0.751 -0.247 1.185 -0.642 0.108 0.937 -1.307 0.423 -0.589 0.803 -0.164 1.021 -0.734 0.256 0.672 -1.458 0.391 -0.825 1.102 -0.299 0.587 -0.943 0.174 1.236 -0.511 0.308 -0.679 0.842 0.125 -1.091 0.467 -0.354 0.928 -0.712 0.243 1.057 -0.639 0.382 -0.849 0.511 0.196 -1.274 0.634 -0.217 0.759 -0.943 0.291 1.108 -0.532 0.417 -0.681 0.895 0.162 -1.043 0.578 -0.324 0.932 -0.755 0.247 1.183 -0.618 0.395 -0.842 0.527 0.184 -1.207 0.663 -0.291 0.751 -0.938 0.332 1.024 -0.571 0.418 -0.695 0.889 0.157 -1.089 0.543 -0.317 0.964 -0.724 0.279 1.151 -0.602 0.401 -0.857 0.534 0.173 -1.236 0.679 -0.284 0.762 -0.941 0.306 1.098 -0.558 0.425 -0.689 0.872 0.162 -1.101 0.551 -0.322 0.957 -0.735 0.284 1.164 -0.614 0.398 -0.862 0.529 0.180 -1.219 0.685 -0.279 0.755 -0.947 0.311 1.112 -0.567 0.421 -0.693 0.880 0.155 -1.105 0.548 -0.326 0.960 -0.730 0.287 1.158 -0.620 0.403 -0.858 0.532 0.178 -1.215 0.682 -0.282 0.758 -0.944 0.309 1.106 -0.562 0.419 -0.690 0.877 0.154 -1.108 0.546 -0.329 0.963 -0.732 0.285 1.160 -0.618 0.401 -0.856 0.534 0.176 -1.212 0.679 -0.283 0.754 -0.946 0.307 1.104 -0.560 0.420 -0.691 0.879 0.155 -1.106 0.547 -0.328 0.961 -0.731 0.286 1.158 -0.617 0.402 -0.857 0.533 0.177 -1.213 0.680 -0.282 0.755 -0.945 0.308 1.105 -0.561 0.418 -0.692 0.878 0.154 -1.107 0.545 -0.330 0.962 -0.733 0.284 1.159 -0.619 0.400 -0.858 0.532 0.175 -1.211 0.678 -0.284 0.756 -0.944 0.306 1.103 -0.563 0.421 -0.690 0.876 0.153 -1.108 0.546 -0.327 0.960 -0.732 0.287 1.157 -0.618 0.403 -0.857 0.534 0.176 -1.214 0.681 -0.281 0.753 -0.947 0.309 1.106 -0.559 0.419 -0.693 0.877 0.155 -1.105 0.544 -0.331 0.962 -0.734 0.283 1.160 -0.620 0.399 -0.859 0.531 0.174 -1.210 0.677 -0.285 0.757 -0.945 0.305 1.102 -0.564 0.422 -0.689 0.875 0.152 -1.109 0.543 -0.328 0.959 -0.733 0.286 1.158 -0.617 0.404 -0.856 0.535 0.177 -1.212 0.682 -0.280 0.752 -0.948 0.310 1.107 -0.558 0.421 -0.694",
-        "extractedAnswer": "329/505 values",
-        "correctAnswer": "distribution-fit(n=505)",
-        "isCorrect": false,
-        "partialScore": 0
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nGenerate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nYour answer was:\nANSWER: 0.342 -0.857 1.274 -0.412 0.095 -1.632 0.529 0.761 -0.284 1.103 -0.945 0.217 -0.376 0.889 -1.018 0.456 -0.673 1.237 -0.531 0.089 0.672 -1.254 0.382 -0.799 1.456 -0.212 0.613 -0.945 0.284 1.019 -0.376 0.845 -0.531 0.197 -1.083 0.624 0.332 -0.918 0.751 -0.247 1.185 -0.642 0.108 0.937 -1.307 0.423 -0.589 0.803 -0.164 1.021 -0.734 0.256 0.672 -1.458 0.391 -0.825 1.102 -0.299 0.587 -0.943 0.174 1.236 -0.511 0.308 -0.679 0.842 0.125 -1.091 0.467 -0.354 0.928 -0.712 0.243 1.057 -0.639 0.382 -0.849 0.511 0.196 -1.274 0.634 -0.217 0.759 -0.943 0.291 1.108 -0.532 0.417 -0.681 0.895 0.162 -1.043 0.578 -0.324 0.932 -0.755 0.247 1.183 -0.618 0.395 -0.842 0.527 0.184 -1.207 0.663 -0.291 0.751 -0.938 0.332 1.024 -0.571 0.418 -0.695 0.889 0.157 -1.089 0.543 -0.317 0.964 -0.724 0.279 1.151 -0.602 0.401 -0.857 0.534 0.173 -1.236 0.679 -0.284 0.762 -0.941 0.306 1.098 -0.558 0.425 -0.689 0.872 0.162 -1.101 0.551 -0.322 0.957 -0.735 0.284 1.164 -0.614 0.398 -0.862 0.529 0.180 -1.219 0.685 -0.279 0.755 -0.947 0.311 1.112 -0.567 0.421 -0.693 0.880 0.155 -1.105 0.548 -0.326 0.960 -0.730 0.287 1.158 -0.620 0.403 -0.858 0.532 0.178 -1.215 0.682 -0.282 0.758 -0.944 0.309 1.106 -0.562 0.419 -0.690 0.877 0.154 -1.108 0.546 -0.329 0.963 -0.732 0.285 1.160 -0.618 0.401 -0.856 0.534 0.176 -1.212 0.679 -0.283 0.754 -0.946 0.307 1.104 -0.560 0.420 -0.691 0.879 0.155 -1.106 0.547 -0.328 0.961 -0.731 0.286 1.158 -0.617 0.402 -0.857 0.533 0.177 -1.213 0.680 -0.282 0.755 -0.945 0.308 1.105 -0.561 0.418 -0.692 0.878 0.154 -1.107 0.545 -0.330 0.962 -0.733 0.284 1.159 -0.619 0.400 -0.858 0.532 0.175 -1.211 0.678 -0.284 0.756 -0.944 0.306 1.103 -0.563 0.421 -0.690 0.876 0.153 -1.108 0.546 -0.327 0.960 -0.732 0.287 1.157 -0.618 0.403 -0.857 0.534 0.176 -1.214 0.681 -0.281 0.753 -0.947 0.309 1.106 -0.559 0.419 -0.693 0.877 0.155 -1.105 0.544 -0.331 0.962 -0.734 0.283 1.160 -0.620 0.399 -0.859 0.531 0.174 -1.210 0.677 -0.285 0.757 -0.945 0.305 1.102 -0.564 0.422 -0.689 0.875 0.152 -1.109 0.543 -0.328 0.959 -0.733 0.286 1.158 -0.617 0.404 -0.856 0.535 0.177 -1.212 0.682 -0.280 0.752 -0.948 0.310 1.107 -0.558 0.421 -0.694\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "%\".25%",
-        "confidence": 25
-      },
-      "pattern": "true_negative",
-      "patternLabel": "Wrong + Doubted (True Negative)"
-    }
-  ],
-  "moonshotai/kimi-k2.5": [
-    {
-      "category": "mult",
-      "difficulty": 26,
-      "phase1": {
-        "prompt": "You will be asked to multiply two 26-digit integers.\nCategory: Multiplication\nDifficulty (digitCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 85%",
-        "confidence": 85
-      },
-      "phase2": {
-        "prompt": "Multiply 36832981683558645451576363 by 36101200845264157598938467.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "1329714869488086605786777388213873003684660588655521",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nMultiply 36832981683558645451576363 by 36101200845264157598938467.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "",
-        "confidence": null
-      },
-      "pattern": "blind_spot",
-      "patternLabel": "Correct + Doubted (Blind Spot)"
-    },
-    {
-      "category": "modexp",
-      "difficulty": 34,
-      "phase1": {
-        "prompt": "You will be asked to compute modular exponentiation with ~34-bit integers.\nCategory: Modular Exponentiation\nDifficulty (bitSize): 34\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 100%",
-        "confidence": 100
-      },
-      "phase2": {
-        "prompt": "Compute (14507951870 ^ 1000867) mod 15907544203.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "13766275367",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nCompute (14507951870 ^ 1000867) mod 15907544203.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "",
-        "confidence": null
-      },
-      "pattern": "blind_spot",
-      "patternLabel": "Correct + Doubted (Blind Spot)"
-    },
-    {
-      "category": "bool",
-      "difficulty": 26,
-      "phase1": {
-        "prompt": "You will be asked to evaluate a boolean circuit with 26 sequential gates.\nCategory: Boolean Circuits\nDifficulty (gateCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 95%",
-        "confidence": 95
-      },
-      "phase2": {
-        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=1, D=1, E=0, F=0\nExpression: ((((((((((((((((((((((((((A NAND B) NAND C) NAND C) XOR D) XOR E) NAND C) NAND B) NAND F) NAND D) NAND B) XOR C) XOR B) XOR E) NOR E) XOR E) XOR D) NOR D) XOR B) NAND F) NOR B) NAND C) NOR D) NAND E) XOR B) NAND E) NOR B)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "0",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=1, D=1, E=0, F=0\nExpression: ((((((((((((((((((((((((((A NAND B) NAND C) NAND C) XOR D) XOR E) NAND C) NAND B) NAND F) NAND D) NAND B) XOR C) XOR B) XOR E) NOR E) XOR E) XOR D) NOR D) XOR B) NAND F) NOR B) NAND C) NOR D) NAND E) XOR B) NAND E) NOR B)\nOutput only 0 or 1.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "",
-        "confidence": null
-      },
-      "pattern": "blind_spot",
-      "patternLabel": "Correct + Doubted (Blind Spot)"
-    },
-    {
-      "category": "random",
-      "difficulty": 1010,
-      "phase1": {
-        "prompt": "You will be asked to generate a random sequence of 1010 digits.\nCategory: Random Sequence\nDifficulty (sequenceLength): 1010\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 100%",
-        "confidence": 100
-      },
-      "phase2": {
-        "prompt": "Generate exactly 1010 random digits (0-9) with no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "",
-        "correctAnswer": "statistical(random-1010)",
-        "isCorrect": false,
-        "partialScore": 0
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nGenerate exactly 1010 random digits (0-9) with no separators.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 0%",
-        "confidence": 0
-      },
-      "pattern": "true_negative",
-      "patternLabel": "Wrong + Doubted (True Negative)"
-    },
-    {
-      "category": "sudoku",
-      "difficulty": 6,
-      "phase1": {
-        "prompt": "You will be asked to produce a valid completed 9x9 Sudoku grid under strict formatting (difficulty 6).\nCategory: Sudoku Generation\nDifficulty (gridComplexity): 6\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "",
-        "confidence": null
-      },
-      "phase2": {
-        "prompt": "Output a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "0/81 digits",
-        "correctAnswer": "any valid solved 9x9 Sudoku grid",
-        "isCorrect": false,
-        "partialScore": 0
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 100%",
-        "confidence": 100
-      },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    },
-    {
-      "category": "distrib",
-      "difficulty": 505,
-      "phase1": {
-        "prompt": "You will be asked to generate 505 values approximating a normal distribution N(0,1).\nCategory: Distribution Matching\nDifficulty (sampleSize): 505\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 95%",
-        "confidence": 95
-      },
-      "phase2": {
-        "prompt": "Generate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "",
-        "extractedAnswer": "0/505 values",
-        "correctAnswer": "distribution-fit(n=505)",
-        "isCorrect": false,
-        "partialScore": 0
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nGenerate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 0%",
-        "confidence": 0
-      },
-      "pattern": "true_negative",
-      "patternLabel": "Wrong + Doubted (True Negative)"
     }
   ]
 };

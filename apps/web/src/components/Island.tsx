@@ -1,7 +1,6 @@
 "use client";
 
 import { categoryLabels } from "../data/results";
-import { normalizeLayersForDisplay } from "../lib/scoring";
 import { monotoneRadialPath, polarToXY } from "../lib/splines";
 import { CATEGORY_ORDER, type CategoryKey, type ModelResult } from "../lib/types";
 
@@ -36,15 +35,12 @@ export function Island({
   const rawSandVals = CATEGORY_ORDER.map((key) => model.categories[key]?.sand ?? 0);
   const rawSolidVals = CATEGORY_ORDER.map((key) => model.categories[key]?.solid ?? 0);
   const rawConcreteVals = CATEGORY_ORDER.map((key) => model.categories[key]?.concrete ?? 0);
-  const displayLayers = CATEGORY_ORDER.map((_, index) =>
-    normalizeLayersForDisplay(rawSandVals[index], rawSolidVals[index], rawConcreteVals[index])
-  );
-  const sandVals = displayLayers.map((layer) => layer.sand);
-  const solidVals = displayLayers.map((layer) => layer.solid);
-  const concreteVals = displayLayers.map((layer) => layer.concrete);
+  const sandVals = rawSandVals;
+  const solidVals = rawSolidVals;
+  const concreteVals = rawConcreteVals;
 
-  // Use monotone-preserving splines to prevent visual layer crossings
-  // Layer indices (0=concrete, 1=solid, 2=sand) provide deterministic organic variation
+  // Use monotone-preserving splines without rescaling so rendered radii stay faithful
+  // to raw score values (0..100).
   const sandPath = monotoneRadialPath(cx, cy, sandVals, maxR, 2);
   const solidPath = monotoneRadialPath(cx, cy, solidVals, maxR, 1);
   const concretePath = monotoneRadialPath(cx, cy, concreteVals, maxR, 0);

@@ -91,11 +91,10 @@ export function Tooltip({ content, children, position = "top", maxWidth = 280, c
 export const metricTooltips = {
   concrete: (
     <div>
-      <div className="mb-1 font-semibold text-[#8A9CAA]">Concrete (Buildable)</div>
+      <div className="mb-1 font-semibold text-[#8A9CAA]">Concrete (Failure-Aware)</div>
       <p>
-        The intersection of capability and self-awareness. Tasks where the model got the correct
-        answer <em>and</em> accurately assessed its own performance. This is what you can reliably
-        build on.
+        Wrong answers where the model correctly recognized risk and expressed low confidence
+        after answering. Higher concrete means fewer confident failures.
       </p>
     </div>
   ),
@@ -110,10 +109,10 @@ export const metricTooltips = {
   ),
   sand: (
     <div>
-      <div className="mb-1 font-semibold text-[#F59E0B]">Sand (Outer Envelope)</div>
+      <div className="mb-1 font-semibold text-[#F59E0B]">Sand (Claimed Depth)</div>
       <p>
-        The outer boundary encompassing both what the model claimed it could do and what it actually
-        achieved. Represents the maximum extent of confidence or capability in each category.
+        Phase 1 claim intensity: confidence weighted by normalized difficulty. Sand reaches 100 only
+        when the model expresses 100% confidence at the category's theoretical outer ceiling.
       </p>
     </div>
   ),
@@ -139,12 +138,12 @@ export const metricTooltips = {
   ),
   blindSpots: (
     <div>
-      <div className="mb-1 font-semibold text-[#F87171]">Blind Spots</div>
+      <div className="mb-1 font-semibold text-[#F87171]">Blind Spots (Missed Failures)</div>
       <p>
-        Tasks where the model succeeded but couldn't tell that it did. The gap between actual
-        performance and self-aware success. High blind spots indicate poor metacognitive monitoring.
+        Wrong answers where the model stayed confident. This is the dangerous case where the model
+        fails but does not detect its own failure.
       </p>
-      <p className="mt-1 text-[10px] text-[#887a69]">Formula: solid - concrete</p>
+      <p className="mt-1 text-[10px] text-[#887a69]">Formula: false confidence (wrong + high confidence)</p>
     </div>
   ),
   totalGap: (

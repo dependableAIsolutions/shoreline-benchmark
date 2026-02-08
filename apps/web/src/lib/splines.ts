@@ -21,7 +21,7 @@ export function getSmoothedPoints(cx: number, cy: number, values: number[], maxR
   const n = values.length;
   const step = 360 / n;
   return values.map((value, index) => {
-    const r = (Math.max(value, 2) / 100) * maxRadius;
+    const r = (Math.max(0, Math.min(value, 100)) / 100) * maxRadius;
     return polarToXY(cx, cy, index * step, r);
   });
 }
@@ -37,42 +37,27 @@ export function polygonPath(points: Point[]): string {
 }
 
 /**
- * Deterministic pseudo-random variation based on index.
- * Creates organic coastline variation that's consistent across renders.
- */
-function organicVariation(index: number, layerSeed: number): number {
-  // Simple hash-like function for deterministic variation
-  const x = Math.sin(index * 127.1 + layerSeed * 311.7) * 43758.5453;
-  return (x - Math.floor(x)) * 2 - 1; // Returns -1 to 1
-}
-
-/**
- * Monotone-preserving radial spline path with organic variation.
+ * Monotone-preserving radial spline path.
  * Uses quadratic Bezier curves with control points constrained to prevent overshoot.
- * Includes visual capping and organic variation to prevent perfect circles when scores max out.
+ * Uses raw metric values (0-100) without artificial capping/expansion so geometry
+ * directly reflects benchmark scores.
  *
- * @param layerIndex - 0 for concrete, 1 for solid, 2 for sand - used for deterministic variation
+ * @param _layerIndex - retained for API compatibility
  */
 export function monotoneRadialPath(
   cx: number,
   cy: number,
   values: number[],
   maxRadius: number,
-  layerIndex = 0
+  _layerIndex = 0
 ): string {
   const n = values.length;
   if (n < 2) return "";
 
   const step = 360 / n;
 
-  // Cap visual display at 92% to always leave room at the outer edge
-  // and add organic variation (±3%) for natural coastline appearance
-  const radii = values.map((v, i) => {
-    const baseValue = Math.min(Math.max(v, 2), 92); // Cap at 92%
-    const variation = organicVariation(i, layerIndex) * 3; // ±3% variation
-    const adjustedValue = baseValue + variation;
-    return (Math.max(adjustedValue, 2) / 100) * maxRadius;
-  });
+  // Preserve raw scale: 0 maps to center, 100 maps to maxRadius.
+  const radii = values.map((v) => (Math.max(0, Math.min(v, 100)) / 100) * maxRadius);
 
   const getRadius = (i: number) => radii[((i % n) + n) % n];
   const getPoint = (i: number, r: number) => polarToXY(cx, cy, i * step, r);
@@ -84,13 +69,11 @@ export function monotoneRadialPath(
     const p1 = getPoint(i, r1);
     const p2 = getPoint(i + 1, r2);
 
-    // Control point at midpoint angle, with radius slightly outside the max of endpoints
-    // but clamped to prevent overshoot beyond the larger value
+    // Control point at midpoint angle, slightly smoothed but never expanded past neighbors.
     const midAngle = (i + 0.5) * step;
     const avgR = (r1 + r2) / 2;
-    // Smooth outward bulge clamped to max of neighbors (no overshoot)
     const maxR = Math.max(r1, r2);
-    const controlR = Math.min(avgR * 1.08, maxR);
+    const controlR = Math.min(avgR * 1.02, maxR);
     const cp = polarToXY(cx, cy, midAngle, controlR);
 
     if (i === 0) path += `M ${p1.x},${p1.y} `;

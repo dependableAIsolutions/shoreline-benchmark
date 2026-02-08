@@ -5,7 +5,6 @@ import { OrbitControls, Html } from "@react-three/drei";
 import { useRef, useMemo, useState, useEffect } from "react";
 import * as THREE from "three";
 import { categoryLabels } from "../data/results";
-import { normalizeLayersForDisplay } from "../lib/scoring";
 import { CATEGORY_ORDER, type CategoryKey, type ModelResult } from "../lib/types";
 
 interface Island3DProps {
@@ -133,19 +132,21 @@ function IslandTerrain({
         const solidVal = interpolateAtAngle(solidValues, angle) / 100;
         const concreteVal = interpolateAtAngle(concreteValues, angle) / 100;
 
-        // Calculate zone radii
-        const sandRadius = Math.max(sandVal, solidVal, concreteVal) * maxRadius;
-        const solidRadius = Math.max(solidVal, concreteVal) * maxRadius * 0.8;
-        const concreteRadius = concreteVal * maxRadius * 0.5;
+        // Use raw radial extents from scores. This preserves cliff/valley topology:
+        // solid may extend beyond sand when observed capability exceeds claimed territory.
+        const sandRadius = sandVal * maxRadius;
+        const solidRadius = solidVal * maxRadius;
+        const concreteRadius = concreteVal * maxRadius;
+        const outerRadius = Math.max(sandRadius, solidRadius, concreteRadius);
 
         let height = WATER_HEIGHT;
         let color = new THREE.Color("#0a1628");
 
-        if (baseRadius <= sandRadius && sandRadius > 0.01) {
+        if (baseRadius <= outerRadius && outerRadius > 0.01) {
           // We're on the island
 
           if (baseRadius <= concreteRadius && concreteRadius > 0.01) {
-            // CONCRETE ZONE - flat plateau (buildable ground)
+            // CONCRETE ZONE - flat plateau
             height = CONCRETE_HEIGHT;
 
             // Very subtle texture variation, but keep it FLAT
@@ -173,7 +174,7 @@ function IslandTerrain({
             const colorVar = noise(baseRadius * 6, angle * 0.06, 4) * 0.5 + 0.5;
             color = grassColor.clone().lerp(grassDarkColor, colorVar * 0.4);
 
-          } else {
+          } else if (baseRadius <= sandRadius && sandRadius > 0.01) {
             // SAND ZONE - low beach
             const beachT = (baseRadius - solidRadius) / Math.max(sandRadius - solidRadius, 0.01);
 
@@ -190,6 +191,13 @@ function IslandTerrain({
             // Sand color variation
             const colorVar = noise(baseRadius * 10, angle * 0.1, 5) * 0.5 + 0.5;
             color = sandColor.clone().lerp(sandDarkColor, colorVar * 0.3);
+          } else {
+            // Outer cliff/rock when observed capability extends beyond claimed sand.
+            // Keep low-detail terrain with solid coloring to visualize "cliff" profiles.
+            const outerT = (baseRadius - solidRadius) / Math.max(outerRadius - solidRadius, 0.01);
+            height = SOLID_MIN_HEIGHT * (1 - outerT) + SAND_HEIGHT * outerT;
+            const colorVar = noise(baseRadius * 6, angle * 0.06, 6) * 0.5 + 0.5;
+            color = grassColor.clone().lerp(grassDarkColor, colorVar * 0.4);
           }
         }
 
@@ -344,11 +352,11 @@ function IslandScene({
   const categoryMetrics = useMemo((): CategoryMetrics[] => {
     return CATEGORY_ORDER.map((key) => {
       const score = model.categories[key];
-      return normalizeLayersForDisplay(
-        score?.sand ?? 0,
-        score?.solid ?? 0,
-        score?.concrete ?? 0
-      );
+      return {
+        sand: score?.sand ?? 0,
+        solid: score?.solid ?? 0,
+        concrete: score?.concrete ?? 0
+      };
     });
   }, [model]);
 

@@ -5,7 +5,7 @@
  *
  * LAYERS (radial extent + height):
  * - Sand (outer beach): claimedDepth - Phase 1 confidence × normalized difficulty
- *   Sand=100 means 100% confidence at maximum difficulty
+ *   Sand=100 means 100% confidence at the theoretical difficulty ceiling
  * - Solid (middle land): Phase 2 actual performance
  * - Concrete (inner foundation): Phase 3 verified self-assessment
  *

@@ -15,160 +15,108 @@ function makeTrial(difficulty: number, phase1Confidence: number, phase2Correct: 
 
 describe("computeCategoryScore - Sand/ClaimedDepth semantics", () => {
   // mult category: minDifficulty=2, maxDifficulty=50
+  const multMin = 2;
+  const multMax = 50;
+  const multSpan = multMax - multMin + 1;
+  const multTheoreticalCeiling = multMin + multSpan * 2 - 1;
 
-  it("claimedDepth=100 only when confidence=100% at maxDifficulty", () => {
-    // Single trial: 100% confidence at max difficulty (50)
-    const trials = [makeTrial(50, 100, true, 100)];
-    const score = computeCategoryScore("mult", trials, 50);
+  it("does not reach 100 at tested max difficulty", () => {
+    const trials = [makeTrial(multMax, 100, true, 100)];
+    const score = computeCategoryScore("mult", trials, multMax);
 
-    expect(score.claimedDepth).toBe(100);
-    expect(score.sand).toBe(100);
+    expect(score.claimedDepth).toBeGreaterThan(0);
+    expect(score.claimedDepth).toBeLessThan(100);
+    expect(score.sand).toBeLessThan(100);
   });
 
-  it("claimedDepth < 100 when confidence=75% at maxDifficulty", () => {
-    // 75% confidence at max difficulty should give claimedDepth=75
-    const trials = [makeTrial(50, 75, false, 50)];
-    const score = computeCategoryScore("mult", trials, 50);
+  it("reaches 100 only at the theoretical ceiling", () => {
+    const trials = [makeTrial(multTheoreticalCeiling, 100, true, 100)];
+    const score = computeCategoryScore("mult", trials, multMax);
 
-    expect(score.claimedDepth).toBe(75);
-    expect(score.sand).toBe(75);
+    expect(score.claimedDepth).toBeCloseTo(100, 6);
+    expect(score.sand).toBeCloseTo(100, 6);
   });
 
-  it("claimedDepth=0 when high confidence only at minDifficulty", () => {
-    // 100% confidence at min difficulty (normalized=0) should give claimedDepth=0
-    const trials = [makeTrial(2, 100, true, 100)];
-    const score = computeCategoryScore("mult", trials, 2);
+  it("difficulty contribution increases from min to mid to max", () => {
+    const minScore = computeCategoryScore("mult", [makeTrial(multMin, 100, true, 100)], multMax);
+    const midScore = computeCategoryScore("mult", [makeTrial(26, 100, true, 100)], multMax);
+    const maxScore = computeCategoryScore("mult", [makeTrial(multMax, 100, true, 100)], multMax);
 
-    expect(score.claimedDepth).toBe(0);
-    expect(score.sand).toBe(0);
+    expect(minScore.sand).toBeLessThan(midScore.sand);
+    expect(midScore.sand).toBeLessThan(maxScore.sand);
   });
 
-  it("claimedDepth=50 at mid-difficulty with 100% confidence", () => {
-    // At difficulty=26 (normalized=0.5), 100% confidence gives claimedDepth=50
-    const trials = [makeTrial(26, 100, true, 100)];
-    const score = computeCategoryScore("mult", trials, 26);
-
-    expect(score.claimedDepth).toBe(50);
-    expect(score.sand).toBe(50);
-  });
-
-  it("claimedDepth reflects max product across mixed trials", () => {
-    // Cliff profile: high confidence at low difficulty, low confidence at high difficulty
+  it("claimedDepth reflects max(confidence × normalizedDifficulty) across mixed trials", () => {
     const trials = [
-      makeTrial(2, 100, true, 100),   // norm=0, contribution=0
-      makeTrial(26, 50, true, 100),   // norm=0.5, contribution=25
-      makeTrial(50, 0, false, 0)      // norm=1.0, contribution=0
+      makeTrial(multMin, 100, true, 100), // low diff, high confidence
+      makeTrial(26, 50, true, 100),       // mid diff, medium confidence
+      makeTrial(multMax, 0, false, 0)     // max diff, zero confidence
     ];
-    const score = computeCategoryScore("mult", trials, 26);
+    const score = computeCategoryScore("mult", trials, multMax);
+    const midOnly = computeCategoryScore("mult", [makeTrial(26, 50, true, 100)], multMax);
 
-    // Max contribution is 0.5 * 0.5 = 0.25 → 25
-    expect(score.claimedDepth).toBe(25);
-    expect(score.sand).toBe(25);
+    expect(score.claimedDepth).toBeCloseTo(midOnly.claimedDepth ?? 0, 6);
+    expect(score.sand).toBeCloseTo(midOnly.sand, 6);
   });
 
-  it("sand is independent of solid/concrete (pure claims)", () => {
-    // Even with 100% solid performance, sand should reflect only Phase 1 claims
+  it("sand is independent of Phase 2 correctness", () => {
     const trials = [
-      makeTrial(2, 50, true, 100),   // low diff, medium confidence → low contribution
-      makeTrial(26, 50, true, 100),  // mid diff, medium confidence → 25 contribution
-      makeTrial(50, 50, true, 100)   // max diff, medium confidence → 50 contribution
+      makeTrial(multMin, 70, false, 20),
+      makeTrial(26, 70, false, 20),
+      makeTrial(multMax, 70, false, 20)
     ];
-    const score = computeCategoryScore("mult", trials, 26);
-
-    // All trials correct → solid=100
-    expect(score.solid).toBe(100);
-    // But sand should be based on claimedDepth (50% confidence at max diff = 50)
-    expect(score.claimedDepth).toBe(50);
-    expect(score.sand).toBe(50);
+    const score = computeCategoryScore("mult", trials, multMax);
+    expect(score.solid).toBe(0);
+    expect(score.sand).toBeGreaterThan(0);
   });
 
-  it("claimedLoose tracks >=50% confidence frontier", () => {
-    const trials = [
-      makeTrial(2, 100, true, 100),  // norm=0, confidence=100% → qualifies
-      makeTrial(26, 60, true, 100),  // norm=0.5, confidence=60% → qualifies
-      makeTrial(50, 40, false, 20)   // norm=1.0, confidence=40% → doesn't qualify
-    ];
-    const score = computeCategoryScore("mult", trials, 26);
-
-    // Max normalized difficulty where confidence >= 50% is 0.5
-    expect(score.claimedLoose).toBe(50);
-  });
-
-  it("claimedThick tracks >=80% confidence frontier", () => {
-    const trials = [
-      makeTrial(2, 100, true, 100),  // norm=0, confidence=100% → qualifies
-      makeTrial(26, 80, true, 100),  // norm=0.5, confidence=80% → qualifies
-      makeTrial(50, 70, false, 20)   // norm=1.0, confidence=70% → doesn't qualify
-    ];
-    const score = computeCategoryScore("mult", trials, 26);
-
-    // Max normalized difficulty where confidence >= 80% is 0.5
-    expect(score.claimedThick).toBe(50);
-  });
-
-  it("handles full range with varying confidences", () => {
-    const trials = [
-      makeTrial(2, 90, true, 100),   // min: norm=0
-      makeTrial(26, 70, true, 100),  // mid: norm=0.5
-      makeTrial(50, 100, true, 100)  // max: norm=1.0, this wins
-    ];
-    const score = computeCategoryScore("mult", trials, 26);
-
-    // Max is 1.0 * 1.0 = 1.0 → claimedDepth=100
-    expect(score.claimedDepth).toBe(100);
-    expect(score.sand).toBe(100);
-    expect(score.claimedLoose).toBe(100); // 100% >= 50% at max diff
-    expect(score.claimedThick).toBe(100); // 100% >= 80% at max diff
+  it("claimedLoose and claimedThick stay below 100 within tested range", () => {
+    const score = computeCategoryScore(
+      "mult",
+      [makeTrial(multMax, 90, true, 100), makeTrial(multMax, 60, true, 100)],
+      multMax
+    );
+    expect(score.claimedLoose).toBeLessThan(100);
+    expect(score.claimedThick).toBeLessThan(100);
   });
 });
 
 describe("computeCategoryScore - Phase 3 metacognition metrics", () => {
-  it("concrete requires both success and high Phase 3 confidence", () => {
+  it("concrete counts wrong answers with low post-answer confidence", () => {
     const trials = [
-      makeTrial(26, 80, true, 80),   // correct + confident → counts
-      makeTrial(26, 80, true, 50),   // correct + not confident → doesn't count
-      makeTrial(26, 80, false, 80)   // wrong + confident → doesn't count
+      makeTrial(26, 80, true, 80),   // correct + confident -> no concrete credit
+      makeTrial(26, 80, false, 20),  // wrong + uncertain -> concrete credit
+      makeTrial(26, 80, false, 80)   // wrong + confident -> no concrete credit
     ];
     const score = computeCategoryScore("mult", trials, 26);
 
-    // Only 1 of 3 trials contributes to concrete
+    // 1 of 3 trials contributes
     expect(score.concrete).toBeCloseTo(33.33, 1);
-    expect(score.solid).toBeCloseTo(66.67, 1);
+    expect(score.trueUncertainty).toBeCloseTo(score.concrete, 6);
   });
 
-  it("discernment rewards correct self-assessment in both directions", () => {
+  it("concrete is zero when failures are confident", () => {
     const trials = [
-      makeTrial(26, 80, true, 80),   // correct + confident → TP
-      makeTrial(26, 80, false, 20),  // wrong + uncertain → TN
-      makeTrial(26, 80, false, 80)   // wrong + confident → FP (bad)
+      makeTrial(26, 80, false, 80),
+      makeTrial(26, 80, false, 70),
+      makeTrial(26, 80, true, 80)
     ];
     const score = computeCategoryScore("mult", trials, 26);
 
-    // 2 of 3 correct self-assessments
-    expect(score.discernment).toBeCloseTo(66.67, 1);
-  });
-
-  it("falseConfidence tracks wrong answers with high Phase 3 confidence", () => {
-    const trials = [
-      makeTrial(26, 80, false, 80),  // wrong + confident → bad
-      makeTrial(26, 80, false, 80),  // wrong + confident → bad
-      makeTrial(26, 80, true, 80)    // correct + confident → fine
-    ];
-    const score = computeCategoryScore("mult", trials, 26);
-
-    // 2 of 3 trials show false confidence
+    expect(score.concrete).toBe(0);
     expect(score.falseConfidence).toBeCloseTo(66.67, 1);
   });
 
-  it("trueUncertainty tracks wrong answers with appropriate doubt", () => {
+  it("discernment still rewards both true positives and true negatives", () => {
     const trials = [
-      makeTrial(26, 80, false, 20),  // wrong + uncertain → good metacognition
-      makeTrial(26, 80, false, 30),  // wrong + uncertain → good metacognition
-      makeTrial(26, 80, true, 80)    // correct + confident → not counted
+      makeTrial(26, 80, true, 80),   // TP
+      makeTrial(26, 80, false, 20),  // TN
+      makeTrial(26, 80, false, 80)   // FP
     ];
     const score = computeCategoryScore("mult", trials, 26);
 
-    // 2 of 3 trials show true uncertainty
-    expect(score.trueUncertainty).toBeCloseTo(66.67, 1);
+    expect(score.discernment).toBeCloseTo(66.67, 1);
+    expect(score.falseConfidence).toBeCloseTo(33.33, 1);
+    expect(score.trueUncertainty).toBeCloseTo(33.33, 1);
   });
 });

@@ -283,10 +283,15 @@ async function main(): Promise<void> {
   const resumeIncomplete = config.resumeIncomplete ?? true;
   const continueOnError = config.continueOnError ?? true;
   const quickMode = config.quickMode ?? false;
-  const quickPoints = Math.max(1, Number.parseInt(quickPointsOverride ?? String(config.quickPoints ?? 1), 10));
+  const quickPointsDefault = quickMode ? 3 : 1;
+  const quickPoints = Math.max(
+    1,
+    Number.parseInt(quickPointsOverride ?? String(config.quickPoints ?? quickPointsDefault), 10)
+  );
+  const categoryConcurrencyDefault = quickMode ? categories.length : 1;
   const categoryConcurrency = Math.max(
     1,
-    Number.parseInt(categoryConcurrencyOverride ?? String(config.categoryConcurrency ?? 1), 10)
+    Number.parseInt(categoryConcurrencyOverride ?? String(config.categoryConcurrency ?? categoryConcurrencyDefault), 10)
   );
   const rampMode: "balanced" | "fast" =
     rampModeOverride === "fast" || rampModeOverride === "balanced" ? rampModeOverride : (config.rampMode ?? "balanced");

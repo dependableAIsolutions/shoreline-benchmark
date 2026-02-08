@@ -52,12 +52,12 @@ export interface TrialResult {
 export interface CategoryScore {
   category: CategoryKey;
   claimed?: number;                // Raw Phase 1 confidence average (0-100)
-  claimedDepth?: number;           // max(confidence × normalizedDifficulty): 100 = 100% at max difficulty (0-100)
+  claimedDepth?: number;           // max(confidence × normalizedDifficulty): 100 = 100% at theoretical ceiling (0-100)
   claimedLoose?: number;           // Max normalized difficulty where confidence >= 50% (0-100)
   claimedThick?: number;           // Max normalized difficulty where confidence >= 80% (0-100)
-  sand: number;                    // = claimedDepth: claimed territory intensity (100 = perfect confidence at max difficulty)
+  sand: number;                    // = claimedDepth: claimed territory intensity (100 = confidence at theoretical ceiling)
   solid: number;                   // Phase 2 actual performance (0-100)
-  concrete: number;                // Phase 3 verified self-evaluation (0-100)
+  concrete: number;                // Phase 3 failure-awareness: wrong answers correctly flagged with low confidence (0-100)
   discernment?: number;            // Correctly identifies success/failure in both directions (0-100)
   falseConfidence?: number;        // Wrong but confident: model doesn't know what it doesn't know (0-100, lower is better)
   trueUncertainty?: number;        // Wrong and knows it: good metacognition about failures (0-100, higher is better)
@@ -86,7 +86,7 @@ export interface ModelResult {
     avgCapability?: number;        // Average normalized capability percentile
     overconfidence: number;
     underconfidence?: number;
-    blindSpots: number;
+    blindSpots: number;            // Missed failures: wrong but confident (alias view metric)
     falseConfidence?: number;      // Alias for avgFalseConfidence for clearer API
     totalGap: number;
   };

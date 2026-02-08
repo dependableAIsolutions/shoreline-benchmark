@@ -42,8 +42,8 @@ async function main(): Promise<void> {
 
   const trialsPerDifficulty = Number.parseInt(parseArg("trials") ?? "20", 10);
   const temperature = Number.parseFloat(parseArg("temperature") ?? "0.7");
-  const quickPoints = Math.max(1, Number.parseInt(parseArg("quick-points") ?? "1", 10));
-  const categoryConcurrency = Math.max(1, Number.parseInt(parseArg("category-concurrency") ?? "1", 10));
+  const quickPointsArg = parseArg("quick-points");
+  const categoryConcurrencyArg = parseArg("category-concurrency");
   const rampModeArg = parseArg("ramp-mode") ?? parseArg("ramp");
   const rampMode: "balanced" | "fast" = rampModeArg === "fast" ? "fast" : "balanced";
 
@@ -72,6 +72,12 @@ async function main(): Promise<void> {
     );
     process.exit(1);
   }
+
+  const quickPoints = Math.max(1, Number.parseInt(quickPointsArg ?? (quick ? "3" : "1"), 10));
+  const categoryConcurrency = Math.max(
+    1,
+    Number.parseInt(categoryConcurrencyArg ?? (quick ? String(categories.length) : "1"), 10)
+  );
 
   let adapter: ModelAdapter;
   let finalAdapterName: "openrouter" | "lmstudio" | "localapi" = "localapi";

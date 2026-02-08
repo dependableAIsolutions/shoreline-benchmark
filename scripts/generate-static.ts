@@ -174,11 +174,11 @@ async function main(): Promise<void> {
   }
 
   // Keep only the latest run per model
-  const latestByModel = new Map<string, { result: ModelResult; samples: SampleResult[] }>();
-  for (const { result, samples } of results) {
+  const latestByModel = new Map<string, { result: ModelResult; samples: SampleResult[]; runDir: string }>();
+  for (const { result, samples, runDir } of results) {
     const existing = latestByModel.get(result.modelId);
     if (!existing || isBetterRun({ result, samples }, existing)) {
-      latestByModel.set(result.modelId, { result, samples });
+      latestByModel.set(result.modelId, { result, samples, runDir });
     }
   }
 
@@ -220,6 +220,13 @@ export const samplesByModel: Record<string, SampleResult[]> = ${JSON.stringify(s
 
   await writeFile(samplesPath, samplesContent);
   await writeFile(samplesJson, JSON.stringify(samplesByModel, null, 2));
+
+  for (const selected of latest) {
+    const coverage = categoriesWithTrials(selected.result);
+    console.log(
+      `Selected ${selected.result.modelId}: timestamp=${selected.result.timestamp} coverage=${coverage} categories totalTrials=${selected.result.metadata.totalTrials} run=${selected.runDir}`
+    );
+  }
 
   console.log(`Wrote ${latestResults.length} model result(s) to ${jsonPath}`);
   console.log(`Wrote ${tsPath}`);

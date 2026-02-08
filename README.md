@@ -5,14 +5,17 @@ Shoreline measures model capability and metacognitive calibration across 11 reas
 ## Scoring model
 
 - `claimed`: raw Phase 1 confidence before solving (0-100)
+- `claimedDepth`: max(`phase1Confidence × normalizedDifficulty`) across sampled trials
+- `sand`: phase-1 claimed depth intensity (`sand = claimedDepth`)
+  - normalized difficulty uses a model-agnostic theoretical ceiling beyond the tested range
+  - `sand = 100` means confidence at that theoretical outer ceiling, not at tested max difficulty
 - `solid`: actual Phase 2 task performance (0-100)
-- `concrete`: buildable subset of `solid` where the model both succeeds and recognizes success (0-100)
-- `sand`: visualization envelope, defined as `max(claimed, solid, concrete)` to keep layer nesting stable
+- `concrete`: failure-awareness rate: wrong answers correctly flagged with low Phase 3 confidence (0-100)
 
 Derived aggregate metrics:
 - `overconfidence`: `max(0, claimed - solid)`
 - `underconfidence`: `max(0, solid - claimed)`
-- `blindSpots`: `max(0, solid - concrete)`
+- `blindSpots`: missed failures (`wrong + high confidence`, aligned with `falseConfidence`)
 - `calibrationIndex`: `100 - avgCalibrationError`
 - `capabilityIndex`: normalized transition-zone percentile by category difficulty range
 
@@ -73,7 +76,7 @@ Common keys:
 
 Optional overrides:
 - `WEB_PORT=3000`
-- `REFRESH_STATIC=1` (default)
+- `SKIP_REFRESH=1` (skip recompute/generate; default refreshes static data)
 - `RESULTS_INPUT=results`
 
 ## Run benchmark suites
@@ -115,9 +118,9 @@ corepack pnpm benchmark --adapter localapi --model "qwen/qwen3-coder-next" --all
 ```
 
 Speed/cost tuning:
-- `--category-concurrency <n>`: run up to `n` categories in parallel (default `1`)
+- `--category-concurrency <n>`: run up to `n` categories in parallel (default: quick mode = all selected categories, otherwise `1`)
 - `--ramp-mode <balanced|fast>`: transition search profile for non-quick mode (`balanced` default)
-- `--quick-points <n>`: in quick mode, sample `n` difficulty anchors per category (default `1`)
+- `--quick-points <n>`: in quick mode, sample `n` difficulty anchors per category (default `3`)
 
 Resume a run:
 
@@ -138,6 +141,10 @@ Regenerate static web data:
 ```bash
 corepack pnpm generate-static --input results --output apps/web/src/data
 ```
+
+Selection policy for static data:
+- Per model, the generator prefers the run with the highest category coverage.
+- Ties break by newer run timestamp, then higher total trials.
 
 ## Local model API smoke test
 

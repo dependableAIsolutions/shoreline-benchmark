@@ -8,7 +8,7 @@ export function Legend() {
           <div className="h-4 w-7 rounded border-2 border-[#64788C] bg-[rgba(85,100,115,0.6)]" />
           <div>
             <span className="font-mono text-[11px] font-semibold text-[#8A9CAA]">Concrete</span>
-            <span className="ml-2 text-[11px] text-[#6f6457]">Buildable. Correct + self-aware.</span>
+            <span className="ml-2 text-[11px] text-[#6f6457]">Failure-aware. Wrong + self-doubted.</span>
           </div>
         </div>
       </Tooltip>
@@ -26,7 +26,7 @@ export function Legend() {
           <div className="h-4 w-7 rounded border-2 border-dashed border-[#F59E0B] bg-[rgba(245,158,11,0.25)]" />
           <div>
             <span className="font-mono text-[11px] font-semibold text-[#F59E0B]">Sand</span>
-            <span className="ml-2 text-[11px] text-[#6f6457]">Outer shoreline envelope (claimed vs observed).</span>
+            <span className="ml-2 text-[11px] text-[#6f6457]">Phase 1 claim depth (confidence × difficulty).</span>
           </div>
         </div>
       </Tooltip>

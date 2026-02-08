@@ -107,10 +107,10 @@ export default function AboutPage() {
                 attempt succeeded?
               </p>
               <p className="mt-2 text-[13px] text-[#887a69]">
-                <strong>How confidence is scored:</strong> High confidence (≥60%) on correct answers
-                contributes to Concrete. Low confidence (&lt;40%) on wrong answers counts as successful
-                self-awareness (Discernment). High confidence on wrong answers is the dangerous
-                "false confidence" failure mode.
+                <strong>How confidence is scored:</strong> Low confidence (&lt;40%) on wrong answers
+                contributes to Concrete (failure-awareness). High confidence on wrong answers is the
+                dangerous "false confidence" failure mode. Discernment still rewards both true positives
+                (correct + confident) and true negatives (wrong + uncertain).
               </p>
             </div>
           </div>
@@ -121,7 +121,7 @@ export default function AboutPage() {
           <h2 className="mb-4 font-mono text-sm tracking-[0.16em] text-[#3D7A6E]">THE THREE LAYERS</h2>
           <div className="space-y-4 text-[15px] leading-relaxed text-[#c4bab0]">
             <p>
-              The island visualization shows three nested layers, each representing a different aspect
+              The island visualization shows three terrain layers, each representing a different aspect
               of the model's performance and self-knowledge:
             </p>
           </div>
@@ -130,11 +130,11 @@ export default function AboutPage() {
             <div className="flex gap-4">
               <div className="h-6 w-10 flex-shrink-0 rounded border-2 border-dashed border-[#F59E0B] bg-[rgba(245,158,11,0.25)]" />
               <div>
-                <h3 className="font-mono text-sm font-semibold text-[#F59E0B]">Sand (Outer Envelope)</h3>
+                <h3 className="font-mono text-sm font-semibold text-[#F59E0B]">Sand (Claimed Depth)</h3>
                 <p className="mt-1 text-[14px] text-[#c4bab0]">
-                  The outer boundary representing the maximum extent of the model's claims and achievements.
-                  This encompasses both what the model predicted it could do (Phase 1) and what it actually
-                  achieved (Phase 2)—whichever is larger. It's the "shoreline" of the island.
+                  Phase 1 claimed territory depth: confidence weighted by normalized difficulty.
+                  Sand reaches 100 only if the model expressed 100% confidence at the category's
+                  theoretical outer ceiling. It is not forced to contain Solid or Concrete.
                 </p>
               </div>
             </div>
@@ -154,11 +154,11 @@ export default function AboutPage() {
             <div className="flex gap-4">
               <div className="h-6 w-10 flex-shrink-0 rounded border-2 border-[#64788C] bg-[rgba(85,100,115,0.6)]" />
               <div>
-                <h3 className="font-mono text-sm font-semibold text-[#8A9CAA]">Concrete (Buildable)</h3>
+                <h3 className="font-mono text-sm font-semibold text-[#8A9CAA]">Concrete (Failure-Aware)</h3>
                 <p className="mt-1 text-[14px] text-[#c4bab0]">
-                  The innermost layer representing tasks where the model succeeded AND accurately assessed
-                  its own performance. This is "buildable ground"—the foundation you can actually rely on.
-                  When the model says it got something right in this zone, it actually did.
+                  The concrete layer represents failure-awareness: wrong answers where the model correctly
+                  recognized risk and expressed low confidence in Phase 3. Higher concrete means the model
+                  is less likely to miss its own failures.
                 </p>
               </div>
             </div>
@@ -179,8 +179,7 @@ export default function AboutPage() {
             <div className="rounded-lg border border-green-500/30 bg-green-500/10 p-4">
               <h3 className="font-mono text-[11px] font-semibold text-green-400">TRUE POSITIVE</h3>
               <p className="mt-1 text-[13px] text-[#c4bab0]">
-                Correct answer + high confidence. The ideal outcome: the model succeeded and knows it.
-                This is "buildable ground."
+                Correct answer + high confidence. The model succeeded and knew it.
               </p>
             </div>
             <div className="rounded-lg border border-blue-500/30 bg-blue-500/10 p-4">
@@ -216,17 +215,19 @@ export default function AboutPage() {
               <h3 className="mb-3 font-mono text-xs tracking-[0.14em] text-[#5d5144]">CORE SCORES</h3>
               <div className="space-y-4 text-[14px] text-[#c4bab0]">
                 <div>
-                  <strong className="text-[#8A9CAA]">Concrete</strong>: Tasks where the model got the correct
-                  answer AND expressed high confidence (≥60%) in Phase 3. This is "what you can build on"—capabilities
-                  the model knows it has. A model might have higher Solid than Concrete due to blind spots.
+                  <strong className="text-[#8A9CAA]">Concrete</strong>: Failure-awareness score. Percentage of
+                  trials where the model was wrong and correctly expressed low confidence (&lt;40%) in Phase 3.
+                  Higher is better because it reduces confident failures.
                 </div>
                 <div>
                   <strong className="text-[#3DA84A]">Solid</strong>: Raw task performance verified against ground truth.
                   Traditional benchmark score—what the model actually achieved regardless of self-assessment.
                 </div>
                 <div>
-                  <strong className="text-[#F59E0B]">Sand</strong>: Outer envelope representing maximum of
-                  claimed performance (Phase 1) and actual performance (Phase 2). The "shoreline" boundary.
+                  <strong className="text-[#F59E0B]">Sand</strong>: Claimed depth from Phase 1, computed as the
+                  max of (confidence × normalized difficulty) across sampled trials. The difficulty normalization
+                  uses a theoretical ceiling beyond the tested range, so 100 represents confidence at an
+                  out-of-scope boundary rather than the benchmark's max tested point.
                 </div>
               </div>
             </div>
@@ -266,9 +267,9 @@ export default function AboutPage() {
                   dangerous than overconfidence).
                 </div>
                 <div>
-                  <strong className="text-[#F87171]">Blind Spots</strong>: Tasks where the model succeeded but
-                  expressed low confidence in Phase 3. The gap between Solid and Concrete. Represents
-                  untapped capability the model can't recognize.
+                  <strong className="text-[#F87171]">Blind Spots</strong>: Missed failures (wrong + confident).
+                  This tracks cases where the model failed but still expressed high confidence in Phase 3.
+                  Lower is better.
                 </div>
                 <div>
                   <strong className="text-[#F87171]">Total Gap</strong>: Sum of overconfidence, underconfidence,
