@@ -9,9 +9,14 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@shoreline/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
   }
 }

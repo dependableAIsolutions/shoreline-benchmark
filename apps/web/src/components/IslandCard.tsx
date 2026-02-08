@@ -1,10 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { formatMetric, severityColor } from "../lib/scoring";
 import type { CategoryKey, ModelResult } from "../lib/types";
 import { Island } from "./Island";
+import { Island3D } from "./Island3D";
 import { StatBlock } from "./StatBlock";
 import { Tooltip, metricTooltips } from "./Tooltip";
+
+type ViewMode = "2D" | "3D";
 
 interface IslandCardProps {
   model: ModelResult;
@@ -14,6 +18,7 @@ interface IslandCardProps {
 }
 
 export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = false }: IslandCardProps) {
+  const [viewMode, setViewMode] = useState<ViewMode>("2D");
   const stats = model.aggregate;
   const totalTrials = model.metadata.totalTrials;
   const invalidRate = totalTrials > 0 ? (model.metadata.invalidTrials / totalTrials) * 100 : 0;
@@ -26,7 +31,32 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
 
   return (
     <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-      <h2 className="mb-3 font-mono text-base font-bold text-[#E8E0D4]">{model.modelDisplayName}</h2>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="font-mono text-base font-bold text-[#E8E0D4]">{model.modelDisplayName}</h2>
+        {/* View mode toggle */}
+        <div className="flex rounded border border-white/10 font-mono text-[10px]">
+          <button
+            onClick={() => setViewMode("2D")}
+            className={`px-2 py-0.5 transition-colors ${
+              viewMode === "2D"
+                ? "bg-white/10 text-[#E8E0D4]"
+                : "text-[#6f6457] hover:text-[#E8E0D4]"
+            }`}
+          >
+            2D
+          </button>
+          <button
+            onClick={() => setViewMode("3D")}
+            className={`px-2 py-0.5 transition-colors ${
+              viewMode === "3D"
+                ? "bg-white/10 text-[#E8E0D4]"
+                : "text-[#6f6457] hover:text-[#E8E0D4]"
+            }`}
+          >
+            3D
+          </button>
+        </div>
+      </div>
       <div className="mb-3 flex flex-wrap gap-2 font-mono text-[10px] text-[#6f6457]">
         <span className="rounded border border-white/10 px-2 py-0.5">{totalTrials} trials</span>
         {isLowSampleRun && <span className="rounded border border-[#F59E0B]/40 px-2 py-0.5 text-[#F59E0B]">quick run</span>}
@@ -37,12 +67,21 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
         )}
       </div>
 
-      <Island
-        model={model}
-        size={compact ? 420 : 520}
-        hoveredCategory={hoveredCategory}
-        onHoverCategory={onHoverCategory}
-      />
+      {viewMode === "2D" ? (
+        <Island
+          model={model}
+          size={compact ? 420 : 520}
+          hoveredCategory={hoveredCategory}
+          onHoverCategory={onHoverCategory}
+        />
+      ) : (
+        <Island3D
+          model={model}
+          size={compact ? 420 : 520}
+          hoveredCategory={hoveredCategory}
+          onHoverCategory={onHoverCategory}
+        />
+      )}
 
       <div className="mt-3 flex gap-3 rounded-xl bg-white/[0.02] px-3 py-3">
         <Tooltip content={metricTooltips.concrete} className="flex-1">

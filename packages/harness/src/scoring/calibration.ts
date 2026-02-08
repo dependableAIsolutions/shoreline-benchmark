@@ -89,11 +89,22 @@ export function computeCategoryScore(
     (currentMax, point) => (point.confidence01 >= 0.8 ? Math.max(currentMax, point.normalizedDifficulty) : currentMax),
     0
   );
+  // claimedDepth = max(confidence × normalizedDifficulty) across all trials
+  // This product formula ensures:
+  //   - claimedDepth=100 ONLY when confidence=100% at normalizedDifficulty=1.0 (max difficulty)
+  //   - High confidence at low difficulty yields low claimedDepth (e.g., 100% × 0.5 = 50)
+  //   - Low confidence at high difficulty yields low claimedDepth (e.g., 50% × 1.0 = 50)
+  //   - This captures both "how confident" and "at what difficulty level"
   const claimedDepth01 = Math.max(
-    claimedLoose01,
-    avg(phase1Depth.map((point) => point.confidence01 * point.normalizedDifficulty))
+    0,
+    ...phase1Depth.map((point) => point.confidence01 * point.normalizedDifficulty)
   );
-  const sand = Math.max(claimedDepth01 * 100, solid, concrete);
+
+  // Sand represents Phase 1 claimed territory intensity (0-100).
+  // Sand=100 means: model expressed 100% confidence at the category's maximum difficulty.
+  // Note: For display purposes, normalizeLayersForDisplay() expands sand to envelope
+  // solid/concrete, ensuring proper layer nesting in the visualization.
+  const sand = claimedDepth01 * 100;
 
   const predicted01 = claimed / 100;
   const calibrationError = Math.abs(predicted01 - solid01) * 100;
