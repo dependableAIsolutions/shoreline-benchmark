@@ -146,8 +146,8 @@ async function recomputeRun(modelDirPath: string, runDirPath: string, modelDirNa
     .length;
 
   const timestamp = previousScore?.timestamp ?? trials[0]?.timestamp ?? new Date().toISOString();
-  const modelId = previousScore?.modelId ?? checkpoint?.modelId ?? modelDirName;
-  const modelDisplayName = previousScore?.modelDisplayName ?? checkpoint?.modelId ?? modelId;
+  const modelId = checkpoint?.modelId ?? previousScore?.modelId ?? modelDirName;
+  const modelDisplayName = checkpoint?.modelId ?? previousScore?.modelDisplayName ?? modelId;
 
   const updated: ModelResult = {
     modelId,

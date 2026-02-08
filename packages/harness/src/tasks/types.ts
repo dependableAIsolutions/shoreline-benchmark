@@ -27,7 +27,8 @@ export function extractAnswerLine(response: string): string | null {
 
   for (let i = matches.length - 1; i >= 0; i -= 1) {
     const match = matches[i];
-    const candidate = (match[1] ?? "").trim().replace(/^[*_`~\s-]+|[*_`~\s-]+$/g, "");
+    // Keep leading +/- signs for numeric answers (e.g. negative determinants).
+    const candidate = (match[1] ?? "").trim().replace(/^[*_`~\s]+|[*_`~\s]+$/g, "");
     if (candidate.length > 0 && /[a-z0-9]/i.test(candidate)) return candidate;
 
     // Handle cases like "Final Answer:" where the value appears on the next line.
@@ -36,7 +37,7 @@ export function extractAnswerLine(response: string): string | null {
       .split(/\r?\n/)
       .map((line) => line.trim())
       .find((line) => line.length > 0);
-    const normalizedNext = (nextLine ?? "").replace(/^[*_`~\s-]+|[*_`~\s-]+$/g, "");
+    const normalizedNext = (nextLine ?? "").replace(/^[*_`~\s]+|[*_`~\s]+$/g, "");
     if (normalizedNext.length > 0 && /[a-z0-9]/i.test(normalizedNext)) return normalizedNext;
   }
 

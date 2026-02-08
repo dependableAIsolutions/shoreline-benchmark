@@ -42,6 +42,10 @@ async function main(): Promise<void> {
 
   const trialsPerDifficulty = Number.parseInt(parseArg("trials") ?? "20", 10);
   const temperature = Number.parseFloat(parseArg("temperature") ?? "0.7");
+  const quickPoints = Math.max(1, Number.parseInt(parseArg("quick-points") ?? "1", 10));
+  const categoryConcurrency = Math.max(1, Number.parseInt(parseArg("category-concurrency") ?? "1", 10));
+  const rampModeArg = parseArg("ramp-mode") ?? parseArg("ramp");
+  const rampMode: "balanced" | "fast" = rampModeArg === "fast" ? "fast" : "balanced";
 
   if (!dryRun && (!adapterName || !model)) {
     console.error("Missing required flags. Use --adapter <openrouter|lmstudio|localapi> and --model <id>.");
@@ -125,6 +129,9 @@ async function main(): Promise<void> {
   console.log(`Categories: ${categories.join(", ")}`);
   console.log(`Trials/difficulty: ${trialsPerDifficulty}`);
   console.log(`Quick mode: ${quick ? "on" : "off"}`);
+  if (quick) console.log(`Quick points/category: ${quickPoints}`);
+  console.log(`Category concurrency: ${categoryConcurrency}`);
+  console.log(`Ramp mode: ${rampMode}`);
   console.log(`Resume mode: ${resume ? "on" : "off"}`);
   console.log(`Output: ${outputDir}`);
 
@@ -137,6 +144,9 @@ async function main(): Promise<void> {
     temperature,
     probeTrials: Math.min(5, Math.max(1, Number.parseInt(parseArg("probe-trials") ?? "3", 10))),
     quickMode: quick,
+    quickPoints,
+    categoryConcurrency,
+    rampMode,
     resume
   });
 

@@ -52,6 +52,9 @@ export interface TrialResult {
 export interface CategoryScore {
   category: CategoryKey;
   claimed?: number;                // Raw Phase 1 confidence before envelope normalization (0-100)
+  claimedDepth?: number;           // Difficulty-normalized claimed frontier (0-100)
+  claimedLoose?: number;           // Frontier where confidence >= 50% (0-100)
+  claimedThick?: number;           // Frontier where confidence >= 80% (0-100)
   sand: number;
   solid: number;
   concrete: number;

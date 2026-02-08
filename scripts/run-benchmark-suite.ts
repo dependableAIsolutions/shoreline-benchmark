@@ -26,6 +26,9 @@ interface SuiteConfig {
   trialsPerDifficulty: number;
   probeTrials?: number;
   quickMode?: boolean;
+  quickPoints?: number;
+  categoryConcurrency?: number;
+  rampMode?: "balanced" | "fast";
   temperature?: number;
   outputRoot?: string;
   staticOutput?: string;
@@ -210,6 +213,26 @@ async function findScoreFiles(inputDir: string): Promise<string[]> {
   return scoreFiles;
 }
 
+function categoriesWithTrials(result: ModelResult): number {
+  return Object.values(result.categories).filter((category) => category.trialCount > 0).length;
+}
+
+function isBetterRun(incoming: ModelResult, current: ModelResult): boolean {
+  const incomingCoverage = categoriesWithTrials(incoming);
+  const currentCoverage = categoriesWithTrials(current);
+  if (incomingCoverage !== currentCoverage) return incomingCoverage > currentCoverage;
+
+  const incomingTimestamp = new Date(incoming.timestamp).getTime();
+  const currentTimestamp = new Date(current.timestamp).getTime();
+  if (incomingTimestamp !== currentTimestamp) return incomingTimestamp > currentTimestamp;
+
+  const incomingTrials = incoming.metadata.totalTrials;
+  const currentTrials = current.metadata.totalTrials;
+  if (incomingTrials !== currentTrials) return incomingTrials > currentTrials;
+
+  return false;
+}
+
 async function refreshStaticData(inputDir: string, outputDir: string): Promise<void> {
   const files = await findScoreFiles(inputDir);
   const results: ModelResult[] = [];
@@ -220,11 +243,8 @@ async function refreshStaticData(inputDir: string, outputDir: string): Promise<v
 
   const latestByModel = new Map<string, ModelResult>();
   for (const result of results) {
-    const hasAllCategories = CATEGORY_ORDER.every((category) => (result.categories[category]?.trialCount ?? 0) > 0);
-    if (!hasAllCategories) continue;
-
     const current = latestByModel.get(result.modelId);
-    if (!current || new Date(result.timestamp).getTime() > new Date(current.timestamp).getTime()) {
+    if (!current || isBetterRun(result, current)) {
       latestByModel.set(result.modelId, result);
     }
   }
@@ -244,6 +264,9 @@ async function main(): Promise<void> {
   const statePath = path.resolve(parseArg("state") ?? defaultStatePath(configPath));
   const dryRun = hasFlag("dry-run");
   const force = hasFlag("force");
+  const quickPointsOverride = parseArg("quick-points");
+  const categoryConcurrencyOverride = parseArg("category-concurrency");
+  const rampModeOverride = parseArg("ramp-mode") ?? parseArg("ramp");
   const modelFilter = parseArg("models")?.split(",").map((item) => item.trim()).filter(Boolean);
   const limitArg = parseArg("limit");
   const limit = limitArg ? Math.max(1, Number.parseInt(limitArg, 10)) : undefined;
@@ -260,6 +283,13 @@ async function main(): Promise<void> {
   const resumeIncomplete = config.resumeIncomplete ?? true;
   const continueOnError = config.continueOnError ?? true;
   const quickMode = config.quickMode ?? false;
+  const quickPoints = Math.max(1, Number.parseInt(quickPointsOverride ?? String(config.quickPoints ?? 1), 10));
+  const categoryConcurrency = Math.max(
+    1,
+    Number.parseInt(categoryConcurrencyOverride ?? String(config.categoryConcurrency ?? 1), 10)
+  );
+  const rampMode: "balanced" | "fast" =
+    rampModeOverride === "fast" || rampModeOverride === "balanced" ? rampModeOverride : (config.rampMode ?? "balanced");
 
   const selected = config.models.filter((model) => {
     if (model.enabled === false) return false;
@@ -273,6 +303,9 @@ async function main(): Promise<void> {
   console.log(`[suite] State: ${statePath}`);
   console.log(`[suite] Output root: ${outputRoot}`);
   console.log(`[suite] Models queued: ${runModels.length}`);
+  console.log(`[suite] Category concurrency: ${categoryConcurrency}`);
+  console.log(`[suite] Ramp mode: ${rampMode}`);
+  if (quickMode) console.log(`[suite] Quick points/category: ${quickPoints}`);
 
   let completedCount = 0;
   let failedCount = 0;
@@ -323,6 +356,9 @@ async function main(): Promise<void> {
         temperature: config.temperature ?? 0.7,
         probeTrials: config.probeTrials ?? 3,
         quickMode,
+        quickPoints,
+        categoryConcurrency,
+        rampMode,
         resume: canResume
       });
 

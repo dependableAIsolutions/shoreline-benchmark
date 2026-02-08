@@ -1,5 +1,5 @@
 import { CATEGORY_DEFINITIONS, type CategoryKey, type CategoryScore, type TrialResult } from "@shoreline/shared";
-import { avg } from "../utils/math";
+import { avg, clamp } from "../utils/math";
 
 export function computeCategoryScore(
   category: CategoryKey,
@@ -10,6 +10,7 @@ export function computeCategoryScore(
     .map((trial) => trial.phase1.confidence)
     .filter((value): value is number => value !== null);
   const claimed = avg(phase1Confidences);
+  const categoryDef = CATEGORY_DEFINITIONS.find((item) => item.key === category);
 
   const solid01 = avg(
     trials.map((trial) => {
@@ -67,12 +68,36 @@ export function computeCategoryScore(
 
   const solid = solid01 * 100;
   const concrete = concrete01 * 100;
-  const sand = Math.max(claimed, solid, concrete);
+  const normalizeDifficulty = (difficulty: number): number => {
+    if (!categoryDef || categoryDef.maxDifficulty <= categoryDef.minDifficulty) return 0;
+    return clamp((difficulty - categoryDef.minDifficulty) / (categoryDef.maxDifficulty - categoryDef.minDifficulty), 0, 1);
+  };
+
+  const phase1Depth = trials.map((trial) => {
+    const confidence01 = clamp((trial.phase1.confidence ?? 0) / 100, 0, 1);
+    return {
+      confidence01,
+      normalizedDifficulty: normalizeDifficulty(trial.difficulty)
+    };
+  });
+
+  const claimedLoose01 = phase1Depth.reduce(
+    (currentMax, point) => (point.confidence01 >= 0.5 ? Math.max(currentMax, point.normalizedDifficulty) : currentMax),
+    0
+  );
+  const claimedThick01 = phase1Depth.reduce(
+    (currentMax, point) => (point.confidence01 >= 0.8 ? Math.max(currentMax, point.normalizedDifficulty) : currentMax),
+    0
+  );
+  const claimedDepth01 = Math.max(
+    claimedLoose01,
+    avg(phase1Depth.map((point) => point.confidence01 * point.normalizedDifficulty))
+  );
+  const sand = Math.max(claimedDepth01 * 100, solid, concrete);
 
   const predicted01 = claimed / 100;
   const calibrationError = Math.abs(predicted01 - solid01) * 100;
 
-  const categoryDef = CATEGORY_DEFINITIONS.find((item) => item.key === category);
   const capability =
     categoryDef && categoryDef.maxDifficulty > categoryDef.minDifficulty
       ? ((transitionZone - categoryDef.minDifficulty) / (categoryDef.maxDifficulty - categoryDef.minDifficulty)) * 100
@@ -85,6 +110,9 @@ export function computeCategoryScore(
   return {
     category,
     claimed,
+    claimedDepth: claimedDepth01 * 100,
+    claimedLoose: claimedLoose01 * 100,
+    claimedThick: claimedThick01 * 100,
     sand,
     solid,
     concrete,

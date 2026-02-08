@@ -34,7 +34,6 @@ export function Island({
   const step = 360 / CATEGORY_ORDER.length;
 
   const rawSandVals = CATEGORY_ORDER.map((key) => model.categories[key]?.sand ?? 0);
-  const rawClaimedVals = CATEGORY_ORDER.map((key) => model.categories[key]?.claimed ?? model.categories[key]?.sand ?? 0);
   const rawSolidVals = CATEGORY_ORDER.map((key) => model.categories[key]?.solid ?? 0);
   const rawConcreteVals = CATEGORY_ORDER.map((key) => model.categories[key]?.concrete ?? 0);
   const displayLayers = CATEGORY_ORDER.map((_, index) =>
@@ -151,6 +150,11 @@ export function Island({
           const rad = ((angle - 90) * Math.PI) / 180;
           const anchor = Math.abs(Math.cos(rad)) < 0.25 ? "middle" : Math.cos(rad) > 0 ? "start" : "end";
           const isHovered = hoveredCategory === category;
+          const cardRows = [
+            { label: "Sand", value: rawSandVals[index], color: "#F59E0B" },
+            { label: "Solid", value: rawSolidVals[index], color: "#3DA84A" },
+            { label: "Concrete", value: rawConcreteVals[index], color: "#8A9CAA" }
+          ] as const;
 
           const sandDot = polarToXY(cx, cy, angle, (sandVals[index] / 100) * maxR);
           const solidDot = polarToXY(cx, cy, angle, (solidVals[index] / 100) * maxR);
@@ -187,10 +191,10 @@ export function Island({
 
                   <g>
                     <rect
-                      x={cx - 78}
-                      y={cy - 42}
-                      width={156}
-                      height={84}
+                      x={cx - 82}
+                      y={cy - 44}
+                      width={164}
+                      height={88}
                       rx={8}
                       fill="rgba(8,12,26,0.96)"
                       stroke="rgba(255,255,255,0.15)"
@@ -198,7 +202,7 @@ export function Island({
                     />
                     <text
                       x={cx}
-                      y={cy - 24}
+                      y={cy - 26}
                       textAnchor="middle"
                       fontSize={10}
                       fontFamily="'JetBrains Mono', monospace"
@@ -207,18 +211,29 @@ export function Island({
                     >
                       {categoryLabels[category as CategoryKey]}
                     </text>
-                    <text x={cx - 58} y={cy - 6} fontSize={9} fontFamily="'JetBrains Mono', monospace" fill="#FBBF24">
-                      Claimed: {rawClaimedVals[index].toFixed(1)}
-                    </text>
-                    <text x={cx - 58} y={cy + 8} fontSize={9} fontFamily="'JetBrains Mono', monospace" fill="#F59E0B">
-                      Sand: {rawSandVals[index].toFixed(1)}
-                    </text>
-                    <text x={cx - 58} y={cy + 22} fontSize={9} fontFamily="'JetBrains Mono', monospace" fill="#3DA84A">
-                      Solid: {rawSolidVals[index].toFixed(1)}
-                    </text>
-                    <text x={cx + 20} y={cy + 22} fontSize={9} fontFamily="'JetBrains Mono', monospace" fill="#8A9CAA">
-                      Concrete: {rawConcreteVals[index].toFixed(1)}
-                    </text>
+                    {cardRows.map((row, rowIndex) => (
+                      <g key={row.label}>
+                        <text
+                          x={cx - 62}
+                          y={cy - 8 + rowIndex * 14}
+                          fontSize={9}
+                          fontFamily="'JetBrains Mono', monospace"
+                          fill={row.color}
+                        >
+                          {row.label}
+                        </text>
+                        <text
+                          x={cx + 62}
+                          y={cy - 8 + rowIndex * 14}
+                          textAnchor="end"
+                          fontSize={9}
+                          fontFamily="'JetBrains Mono', monospace"
+                          fill={row.color}
+                        >
+                          {row.value.toFixed(1)}
+                        </text>
+                      </g>
+                    ))}
                   </g>
                 </g>
               )}

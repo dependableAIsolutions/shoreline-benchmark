@@ -5,6 +5,7 @@
   "trialsPerDifficulty": 1,
   "probeTrials": 1,
   "quickMode": true,
+  "quickPoints": 3,
   "temperature": 0.7,
   "outputRoot": "results",
   "staticOutput": "apps/web/src/data",

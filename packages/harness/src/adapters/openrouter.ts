@@ -58,9 +58,8 @@ export class OpenRouterAdapter implements ModelAdapter {
     const started = Date.now();
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
-    let response: Response;
     try {
-      response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${this.apiKey}`,
@@ -80,6 +79,20 @@ export class OpenRouterAdapter implements ModelAdapter {
         }),
         signal: controller.signal
       });
+
+      if (!response.ok) {
+        const body = await response.text();
+        throw new Error(`OpenRouter error ${response.status}: ${body}`);
+      }
+
+      const json = (await response.json()) as OpenRouterResponse;
+      const content = flattenMessageContent(json.choices?.[0]?.message?.content);
+
+      return {
+        content,
+        tokensUsed: json.usage?.total_tokens ?? 0,
+        latencyMs: Date.now() - started
+      };
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") {
         throw new Error(`OpenRouter timeout after ${this.timeoutMs}ms for model ${this.model}`);
@@ -88,19 +101,5 @@ export class OpenRouterAdapter implements ModelAdapter {
     } finally {
       clearTimeout(timeout);
     }
-
-    if (!response.ok) {
-      const body = await response.text();
-      throw new Error(`OpenRouter error ${response.status}: ${body}`);
-    }
-
-    const json = (await response.json()) as OpenRouterResponse;
-    const content = flattenMessageContent(json.choices?.[0]?.message?.content);
-
-    return {
-      content,
-      tokensUsed: json.usage?.total_tokens ?? 0,
-      latencyMs: Date.now() - started
-    };
   }
 }

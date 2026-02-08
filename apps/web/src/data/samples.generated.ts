@@ -226,45 +226,22 @@ export const samplesByModel: Record<string, SampleResult[]> = {
   ],
   "google/gemini-3-flash-preview": [
     {
-      "category": "mult",
-      "difficulty": 26,
+      "category": "bool",
+      "difficulty": 2,
       "phase1": {
-        "prompt": "You will be asked to multiply two 26-digit integers.\nCategory: Multiplication\nDifficulty (digitCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "0%",
-        "confidence": 0
-      },
-      "phase2": {
-        "prompt": "Multiply 44074637553942353696206147 by 25702614131599889460855398.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "ANSWER: 1132833355593881476906232537750730722307842247551706",
-        "extractedAnswer": "1132833355593881476906232537750730722307842247551706",
-        "correctAnswer": "1132833402039101925431139751215576548039537965731506",
-        "isCorrect": false
-      },
-      "phase3": {
-        "prompt": "You completed this task:\nMultiply 44074637553942353696206147 by 25702614131599889460855398.\n\nYour answer was:\nANSWER: 1132833355593881476906232537750730722307842247551706\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "prompt": "You will be asked to evaluate a boolean circuit with 2 sequential gates.\nCategory: Boolean Circuits\nDifficulty (gateCount): 2\nReturn only one confidence percentage from 0-100, as a number followed by %.",
         "response": "100%",
         "confidence": 100
       },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    },
-    {
-      "category": "modexp",
-      "difficulty": 34,
-      "phase1": {
-        "prompt": "You will be asked to compute modular exponentiation with ~34-bit integers.\nCategory: Modular Exponentiation\nDifficulty (bitSize): 34\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "85%",
-        "confidence": 85
-      },
       "phase2": {
-        "prompt": "Compute (16600554019 ^ 919564) mod 12388554119.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "ANSWER: 1",
-        "extractedAnswer": "1",
-        "correctAnswer": "1591033519",
+        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=0, D=0, E=1, F=1\nExpression: ((A NOR D) NOR B)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: 0",
+        "extractedAnswer": "0",
+        "correctAnswer": "1",
         "isCorrect": false
       },
       "phase3": {
-        "prompt": "You completed this task:\nCompute (16600554019 ^ 919564) mod 12388554119.\n\nYour answer was:\nANSWER: 1\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=0, D=0, E=1, F=1\nExpression: ((A NOR D) NOR B)\nOutput only 0 or 1.\n\nYour answer was:\nANSWER: 0\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
         "response": "100%",
         "confidence": 100
       },
@@ -280,14 +257,60 @@ export const samplesByModel: Record<string, SampleResult[]> = {
         "confidence": 85
       },
       "phase2": {
-        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=0, D=1, E=1, F=1\nExpression: ((((((((((((((((((((((((((A XOR E) XOR F) NAND C) NOR E) XOR C) NOR F) XOR B) XOR C) NAND B) NOR E) NOR D) NOR F) NAND C) XOR B) XOR B) NAND C) XOR E) NOR F) NOR C) XOR F) XOR F) NAND C) NOR D) XOR D) XOR C) NOR F)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "ANSWER: 1",
-        "extractedAnswer": "1",
+        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=0, C=0, D=1, E=0, F=0\nExpression: ((((((((((((((((((((((((((A XOR C) NAND F) NAND D) NOR E) NAND D) NOR B) NOR B) NOR C) XOR F) XOR D) NOR D) XOR E) XOR F) XOR B) XOR D) NAND E) NAND E) NOR D) XOR E) NOR E) NAND C) XOR B) XOR D) XOR E) NOR D) XOR E)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: 0",
+        "extractedAnswer": "0",
         "correctAnswer": "0",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=0, C=0, D=1, E=0, F=0\nExpression: ((((((((((((((((((((((((((A XOR C) NAND F) NAND D) NOR E) NAND D) NOR B) NOR B) NOR C) XOR F) XOR D) NOR D) XOR E) XOR F) XOR B) XOR D) NAND E) NAND E) NOR D) XOR E) NOR E) NAND C) XOR B) XOR D) XOR E) NOR D) XOR E)\nOutput only 0 or 1.\n\nYour answer was:\nANSWER: 0\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "100%",
+        "confidence": 100
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "mult",
+      "difficulty": 2,
+      "phase1": {
+        "prompt": "You will be asked to multiply two 2-digit integers.\nCategory: Multiplication\nDifficulty (digitCount): 2\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "100%",
+        "confidence": 100
+      },
+      "phase2": {
+        "prompt": "Multiply 40 by 72.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: 2880",
+        "extractedAnswer": "2880",
+        "correctAnswer": "2880",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nMultiply 40 by 72.\n\nYour answer was:\nANSWER: 2880\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "100%",
+        "confidence": 100
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "mult",
+      "difficulty": 26,
+      "phase1": {
+        "prompt": "You will be asked to multiply two 26-digit integers.\nCategory: Multiplication\nDifficulty (digitCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "0%",
+        "confidence": 0
+      },
+      "phase2": {
+        "prompt": "Multiply 87238560375223540846398286 by 40809089113356965591316079.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: 356012608460677840133488812739328225579222212354714454",
+        "extractedAnswer": "356012608460677840133488812739328225579222212354714454",
+        "correctAnswer": "3560126184473469359985968228404647803950565749840594",
         "isCorrect": false
       },
       "phase3": {
-        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=0, D=1, E=1, F=1\nExpression: ((((((((((((((((((((((((((A XOR E) XOR F) NAND C) NOR E) XOR C) NOR F) XOR B) XOR C) NAND B) NOR E) NOR D) NOR F) NAND C) XOR B) XOR B) NAND C) XOR E) NOR F) NOR C) XOR F) XOR F) NAND C) NOR D) XOR D) XOR C) NOR F)\nOutput only 0 or 1.\n\nYour answer was:\nANSWER: 1\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "prompt": "You completed this task:\nMultiply 87238560375223540846398286 by 40809089113356965591316079.\n\nYour answer was:\nANSWER: 356012608460677840133488812739328225579222212354714454\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
         "response": "100%",
         "confidence": 100
       },
@@ -295,28 +318,73 @@ export const samplesByModel: Record<string, SampleResult[]> = {
       "patternLabel": "Wrong + Confident (False Confidence)"
     },
     {
-      "category": "sudoku",
-      "difficulty": 6,
+      "category": "modexp",
+      "difficulty": 4,
       "phase1": {
-        "prompt": "You will be asked to produce a valid completed 9x9 Sudoku grid under strict formatting (difficulty 6).\nCategory: Sudoku Generation\nDifficulty (gridComplexity): 6\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "prompt": "You will be asked to compute modular exponentiation with ~4-bit integers.\nCategory: Modular Exponentiation\nDifficulty (bitSize): 4\nReturn only one confidence percentage from 0-100, as a number followed by %.",
         "response": "100%",
         "confidence": 100
       },
       "phase2": {
-        "prompt": "Output a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "ANSWER: 534678912672195348198342567859761423426853791713924856961537284287419635345286179",
-        "extractedAnswer": "9/9/9",
-        "correctAnswer": "any valid solved 9x9 Sudoku grid",
-        "isCorrect": true,
-        "partialScore": 1
+        "prompt": "Compute (14 ^ 12) mod 13.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: 1",
+        "extractedAnswer": "1",
+        "correctAnswer": "1",
+        "isCorrect": true
       },
       "phase3": {
-        "prompt": "You completed this task:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nYour answer was:\nANSWER: 534678912672195348198342567859761423426853791713924856961537284287419635345286179\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "prompt": "You completed this task:\nCompute (14 ^ 12) mod 13.\n\nYour answer was:\nANSWER: 1\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
         "response": "100%",
         "confidence": 100
       },
       "pattern": "true_positive",
       "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "matrix",
+      "difficulty": 7,
+      "phase1": {
+        "prompt": "You will be asked to compute exact determinant of a 7x7 integer matrix.\nCategory: Matrix Determinants\nDifficulty (matrixSize): 7\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "85%",
+        "confidence": 85
+      },
+      "phase2": {
+        "prompt": "Find the determinant of the matrix: [[-7,-7,3,3,2,-1],[0,9,-7,-5,-2,8],[-5,6,-7,2,3,-3],[8,9,-2,-9,-6,-9],[-8,0,-3,6,8,-3],[6,-3,-4,3,-1,-7]].\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: -110006",
+        "extractedAnswer": "-110006",
+        "correctAnswer": "-168382",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nFind the determinant of the matrix: [[-7,-7,3,3,2,-1],[0,9,-7,-5,-2,8],[-5,6,-7,2,3,-3],[8,9,-2,-9,-6,-9],[-8,0,-3,6,8,-3],[6,-3,-4,3,-1,-7]].\n\nYour answer was:\nANSWER: -110006\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "30%",
+        "confidence": 30
+      },
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
+    },
+    {
+      "category": "matrix",
+      "difficulty": 12,
+      "phase1": {
+        "prompt": "You will be asked to compute exact determinant of a 12x12 integer matrix.\nCategory: Matrix Determinants\nDifficulty (matrixSize): 12\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "0%",
+        "confidence": 0
+      },
+      "phase2": {
+        "prompt": "Find the determinant of the matrix: [[7,3,7,-1,-4,9],[8,7,-1,2,-8,-5],[-3,-6,-3,-6,-1,-7],[2,8,1,-4,-3,6],[-1,7,7,-5,-4,-4],[-1,-9,-9,-8,-9,3]].\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: -110000",
+        "extractedAnswer": "-110000",
+        "correctAnswer": "-881027",
+        "isCorrect": false
+      },
+      "phase3": {
+        "prompt": "You completed this task:\nFind the determinant of the matrix: [[7,3,7,-1,-4,9],[8,7,-1,2,-8,-5],[-3,-6,-3,-6,-1,-7],[2,8,1,-4,-3,6],[-1,7,7,-5,-4,-4],[-1,-9,-9,-8,-9,3]].\n\nYour answer was:\nANSWER: -110000\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "100%",
+        "confidence": 100
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
     },
     {
       "category": "distrib",
@@ -328,42 +396,43 @@ export const samplesByModel: Record<string, SampleResult[]> = {
       },
       "phase2": {
         "prompt": "Generate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "I cannot generate 505 individual numbers in a single line while maintaining the required \"ANSWER: <value>\" format effectively, but here is the requested sample of 505 values from $N(0, 1)$ formatted one per line.\n\nANSWER: \n-1.353\n0.821\n-0.452\n1.104\n-0.128\n0.654\n-1.892\n0.342\n-0.771\n1.423\n-0.556\n0.012\n0.987\n-1.214\n0.445\n-0.678\n2.103\n-0.334\n0.889\n-1.121\n0.567\n-0.043\n1.332\n-0.876\n0.221\n-1.454\n0.789\n-0.232\n1.005\n-0.665\n0.432\n-1.987\n0.112\n-0.543\n1.675\n-0.901\n0.345\n-1.112\n0.776\n-0.443\n1.234\n-0.887\n0.009\n-1.334\n0.554\n-0.212\n1.898\n-0.765\n0.123\n-1.554\n0.667\n-0.345\n1.443\n-0.998\n0.211\n-1.223\n0.876\n-0.554\n1.112\n-0.675\n0.334\n-1.887\n0.098\n-0.443\n1.554\n-0.776\n0.456\n-1.009\n0.887\n-0.332\n1.345\n-0.998\n0.112\n-1.443\n0.776\n-0.221\n1.009\n-0.554\n0.443\n-1.776\n0.223\n-0.665\n1.887\n-0.998\n0.334\n-1.221\n0.887\n-0.443\n1.112\n-0.776\n0.554\n-1.998\n0.001\n-0.332\n1.443\n-0.887\n0.556\n-1.112\n0.778\n-0.223\n1.334\n-0.998\n0.111\n-1.554\n0.667\n-0.443\n1.221\n-0.776\n0.334\n-1.887\n0.221\n-0.554\n1.667\n-0.887\n0.443\n-1.112\n0.998\n-0.334\n1.443\n-0.776\n0.221\n-1.334\n0.887\n-0.554\n1.112\n-0.667\n0.443\n-1.998\n0.112\n-0.443\n1.776\n-0.887\n0.334\n-1.009\n0.776\n-0.221\n1.554\n-0.998\n0.443\n-1.443\n0.887\n-0.334\n1.221\n-0.667\n0.554\n-1.887\n0.002\n-0.554\n1.334\n-0.776\n0.443\n-1.112\n0.998\n-0.221\n1.667\n-0.887\n0.334\n-1.554\n0.776\n-0.443\n1.009\n-0.667\n0.554\n-1.998\n0.112\n-0.334\n1.443\n-0.776\n0.443\n-1.221\n0.887\n-0.554\n1.334\n-0.998\n0.221\n-1.667\n0.776\n-0.334\n1.112\n-0.887\n0.443\n-1.443\n0.998\n-0.554\n1.221\n-0.776\n0.334\n-1.887\n0.112\n-0.443\n1.554\n-0.998\n0.443\n-1.112\n0.887\n-0.221\n1.334\n-0.776\n0.554\n-1.667\n0.998\n-0.334\n1.221\n-0.887\n0.443\n-1.998\n0.221\n-0.554\n1.443\n-0.776\n0.334\n-1.112\n0.887\n-0.443\n1.554\n-0.998\n0.112\n-1.334\n0.776\n-0.554\n1.221\n-0.667\n0.443\n-1.887\n0.334\n-0.443\n1.667\n-0.776\n0.554\n-1.112\n0.998\n-0.221\n1.443\n-0.887\n0.334\n-1.554\n0.776\n-0.443\n1.112\n-0.998\n0.221\n-1.443\n0.887\n-0.554\n1.334\n-0.776\n0.443\n-1.998\n0.112\n-0.334\n1.554\n-0.887\n0.443\n-1.221\n0.776\n-0.554\n1.667\n-0.998\n0.334\n-1.443\n0.887\n-0.221\n1.112\n-0.776\n0.554\n-1.887\n0.112\n-0.443\n1.334\n-0.998\n0.443\n-1.554\n0.776\n-0.334\n1.221\n-0.887\n0.554\n-1.998\n0.221\n-0.554\n1.443\n-0.776\n0.334\n-1.112\n0.998\n-0.443\n1.667\n-0.887\n0.112\n-1.334\n0.776\n-0.554\n1.221\n-0.667\n0.443\n-1.887\n0.334\n-0.443\n1.554\n-0.776\n0.554\n-1.112\n0.998\n-0.221\n1.443\n-0.88",
-        "extractedAnswer": "310/505 values",
+        "response": "I cannot fulfill this request because the output would exceed the character limit for a single line of text and would be impractical to display in the requested format.",
+        "extractedAnswer": "0/505 values",
         "correctAnswer": "distribution-fit(n=505)",
         "isCorrect": false,
         "partialScore": 0
       },
       "phase3": {
-        "prompt": "You completed this task:\nGenerate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nYour answer was:\nI cannot generate 505 individual numbers in a single line while maintaining the required \"ANSWER: <value>\" format effectively, but here is the requested sample of 505 values from $N(0, 1)$ formatted one per line.\n\nANSWER: \n-1.353\n0.821\n-0.452\n1.104\n-0.128\n0.654\n-1.892\n0.342\n-0.771\n1.423\n-0.556\n0.012\n0.987\n-1.214\n0.445\n-0.678\n2.103\n-0.334\n0.889\n-1.121\n0.567\n-0.043\n1.332\n-0.876\n0.221\n-1.454\n0.789\n-0.232\n1.005\n-0.665\n0.432\n-1.987\n0.112\n-0.543\n1.675\n-0.901\n0.345\n-1.112\n0.776\n-0.443\n1.234\n-0.887\n0.009\n-1.334\n0.554\n-0.212\n1.898\n-0.765\n0.123\n-1.554\n0.667\n-0.345\n1.443\n-0.998\n0.211\n-1.223\n0.876\n-0.554\n1.112\n-0.675\n0.334\n-1.887\n0.098\n-0.443\n1.554\n-0.776\n0.456\n-1.009\n0.887\n-0.332\n1.345\n-0.998\n0.112\n-1.443\n0.776\n-0.221\n1.009\n-0.554\n0.443\n-1.776\n0.223\n-0.665\n1.887\n-0.998\n0.334\n-1.221\n0.887\n-0.443\n1.112\n-0.776\n0.554\n-1.998\n0.001\n-0.332\n1.443\n-0.887\n0.556\n-1.112\n0.778\n-0.223\n1.334\n-0.998\n0.111\n-1.554\n0.667\n-0.443\n1.221\n-0.776\n0.334\n-1.887\n0.221\n-0.554\n1.667\n-0.887\n0.443\n-1.112\n0.998\n-0.334\n1.443\n-0.776\n0.221\n-1.334\n0.887\n-0.554\n1.112\n-0.667\n0.443\n-1.998\n0.112\n-0.443\n1.776\n-0.887\n0.334\n-1.009\n0.776\n-0.221\n1.554\n-0.998\n0.443\n-1.443\n0.887\n-0.334\n1.221\n-0.667\n0.554\n-1.887\n0.002\n-0.554\n1.334\n-0.776\n0.443\n-1.112\n0.998\n-0.221\n1.667\n-0.887\n0.334\n-1.554\n0.776\n-0.443\n1.009\n-0.667\n0.554\n-1.998\n0.112\n-0.334\n1.443\n-0.776\n0.443\n-1.221\n0.887\n-0.554\n1.334\n-0.998\n0.221\n-1.667\n0.776\n-0.334\n1.112\n-0.887\n0.443\n-1.443\n0.998\n-0.554\n1.221\n-0.776\n0.334\n-1.887\n0.112\n-0.443\n1.554\n-0.998\n0.443\n-1.112\n0.887\n-0.221\n1.334\n-0.776\n0.554\n-1.667\n0.998\n-0.334\n1.221\n-0.887\n0.443\n-1.998\n0.221\n-0.554\n1.443\n-0.776\n0.334\n-1.112\n0.887\n-0.443\n1.554\n-0.998\n0.112\n-1.334\n0.776\n-0.554\n1.221\n-0.667\n0.443\n-1.887\n0.334\n-0.443\n1.667\n-0.776\n0.554\n-1.112\n0.998\n-0.221\n1.443\n-0.887\n0.334\n-1.554\n0.776\n-0.443\n1.112\n-0.998\n0.221\n-1.443\n0.887\n-0.554\n1.334\n-0.776\n0.443\n-1.998\n0.112\n-0.334\n1.554\n-0.887\n0.443\n-1.221\n0.776\n-0.554\n1.667\n-0.998\n0.334\n-1.443\n0.887\n-0.221\n1.112\n-0.776\n0.554\n-1.887\n0.112\n-0.443\n1.334\n-0.998\n0.443\n-1.554\n0.776\n-0.334\n1.221\n-0.887\n0.554\n-1.998\n0.221\n-0.554\n1.443\n-0.776\n0.334\n-1.112\n0.998\n-0.443\n1.667\n-0.887\n0.112\n-1.334\n0.776\n-0.554\n1.221\n-0.667\n0.443\n-1.887\n0.334\n-0.443\n1.554\n-0.776\n0.554\n-1.112\n0.998\n-0.221\n1.443\n-0.88\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "10%",
-        "confidence": 10
+        "prompt": "You completed this task:\nGenerate 505 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nYour answer was:\nI cannot fulfill this request because the output would exceed the character limit for a single line of text and would be impractical to display in the requested format.\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "0%",
+        "confidence": 0
       },
       "pattern": "true_negative",
       "patternLabel": "Wrong + Doubted (True Negative)"
     },
     {
-      "category": "counting",
-      "difficulty": 101,
+      "category": "random",
+      "difficulty": 2000,
       "phase1": {
-        "prompt": "You will be asked to count target token occurrences in a passage of about 808 words.\nCategory: Counting In Context\nDifficulty (inputLength): 101\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "prompt": "You will be asked to generate a random sequence of 2000 digits.\nCategory: Random Sequence\nDifficulty (sequenceLength): 2000\nReturn only one confidence percentage from 0-100, as a number followed by %.",
         "response": "100%",
         "confidence": 100
       },
       "phase2": {
-        "prompt": "Count exactly how many times the target word appears in the passage.\nTarget word: anchor\nPassage:\ntide signal tide shoreline response calibration drift vector shoreline island shoreline shoreline response vector bridge anchor anchor anchor truth calibration calibration anchor drift anchor bridge anchor truth vector bridge truth calibration truth signal tide drift vector response bridge drift truth signal calibration bridge bridge response vector drift calibration tide shoreline response response anchor response shoreline island response truth calibration bridge anchor model vector drift anchor bridge model signal drift signal anchor drift shoreline model bridge calibration tide signal bridge calibration calibration signal bridge model bridge calibration anchor truth anchor vector tide model shoreline signal response bridge bridge vector tide response vector drift tide drift drift drift signal anchor anchor bridge bridge model anchor model response signal calibration island signal truth calibration signal calibration anchor anchor calibration signal shoreline tide bridge calibration model anchor calibration vector signal calibration island anchor tide bridge bridge calibration shoreline drift shoreline signal tide response response drift island bridge bridge shoreline model signal tide signal island bridge bridge signal model shoreline drift anchor calibration model drift anchor model response signal bridge calibration calibration model model bridge tide anchor island vector island bridge bridge island calibration tide anchor tide vector vector anchor anchor anchor anchor model truth response tide anchor model response calibration drift truth calibration signal shoreline tide anchor signal drift signal truth signal truth calibration model bridge shoreline drift anchor drift drift vector shoreline vector bridge drift tide shoreline vector drift response anchor anchor calibration anchor response tide response bridge model calibration calibration island response shoreline island bridge shoreline island shoreline shoreline truth truth vector drift tide tide calibration truth island response tide tide response bridge bridge signal vector anchor shoreline response signal signal signal signal anchor island vector shoreline response anchor bridge bridge bridge vector vector truth drift calibration signal response calibration model truth vector island vector anchor tide bridge calibration tide anchor tide model drift bridge bridge truth response truth shoreline anchor model drift response bridge model tide tide truth tide island calibration island bridge drift drift truth drift signal shoreline calibration vector truth drift island bridge vector truth anchor truth calibration island anchor model shoreline calibration response tide shoreline shoreline truth model drift response island model model bridge model calibration drift bridge calibration island model signal vector vector signal model bridge vector tide vector bridge response island signal bridge anchor island shoreline drift signal vector tide drift anchor shoreline response drift bridge response calibration calibration shoreline truth vector island signal calibration signal signal anchor response shoreline bridge signal bridge shoreline vector tide vector truth truth response tide vector truth drift drift truth vector drift response bridge signal truth bridge calibration tide vector tide vector anchor model tide truth drift response island drift vector island shoreline island model tide tide anchor shoreline shoreline drift truth bridge vector response bridge island tide model anchor calibration shoreline vector drift vector tide calibration truth signal model island anchor calibration model tide model response island shoreline shoreline anchor truth island island drift tide shoreline signal vector shoreline drift model truth model signal vector island tide calibration tide tide vector response model truth model island model signal calibration signal bridge drift truth tide island bridge signal shoreline calibration anchor response calibration bridge anchor calibration model drift signal response response anchor model anchor calibration island anchor calibration response signal anchor response bridge tide bridge tide bridge model truth shoreline calibration drift vector model shoreline drift model truth bridge shoreline response vector bridge truth truth model shoreline shoreline calibration shoreline vector drift bridge shoreline shoreline bridge shoreline vector bridge model tide bridge signal signal model calibration drift tide model truth anchor drift tide drift island tide tide tide truth drift vector drift anchor bridge response drift island vector drift drift model signal drift truth vector tide island model drift bridge shoreline calibration vector bridge truth island truth calibration model vector vector calibration truth bridge calibration signal calibration signal bridge anchor tide calibration signal response tide tide tide drift anchor bridge shoreline model model model anchor vector anchor shoreline model truth vector anchor island model tide signal shoreline calibration response response bridge anchor response truth response drift tide calibration drift model drift calibration drift truth island tide model drift drift island island anchor bridge shoreline truth island response vector signal vector drift anchor calibration island response anchor anchor tide signal calibration truth tide bridge response island bridge island anchor tide truth anchor bridge anchor calibration drift island shoreline bridge truth bridge calibration tide signal vector vector vector shoreline calibration model calibration truth calibration signal signal anchor model drift drift vector shoreline island truth shoreline anchor island vector bridge response shoreline drift response signal model island shoreline bridge model truth signal shoreline tide model anchor anchor vector shoreline anchor signal tide vector response tide tide calibration island shoreline island vector island signal anchor model signal model truth response island bridge\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
-        "response": "ANSWER: 76",
-        "extractedAnswer": "76",
-        "correctAnswer": "76",
-        "isCorrect": true
+        "prompt": "Generate exactly 2000 random digits (0-9) with no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "response": "ANSWER: 13958047265103847592018374650293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847",
+        "extractedAnswer": "13958047265103847592018374650293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847",
+        "correctAnswer": "statistical(random-2000)",
+        "isCorrect": false,
+        "partialScore": 0
       },
       "phase3": {
-        "prompt": "You completed this task:\nCount exactly how many times the target word appears in the passage.\nTarget word: anchor\nPassage:\ntide signal tide shoreline response calibration drift vector shoreline island shoreline shoreline response vector bridge anchor anchor anchor truth calibration calibration anchor drift anchor bridge anchor truth vector bridge truth calibration truth signal tide drift vector response bridge drift truth signal calibration bridge bridge response vector drift calibration tide shoreline response response anchor response shoreline island response truth calibration bridge anchor model vector drift anchor bridge model signal drift signal anchor drift shoreline model bridge calibration tide signal bridge calibration calibration signal bridge model bridge calibration anchor truth anchor vector tide model shoreline signal response bridge bridge vector tide response vector drift tide drift drift drift signal anchor anchor bridge bridge model anchor model response signal calibration island signal truth calibration signal calibration anchor anchor calibration signal shoreline tide bridge calibration model anchor calibration vector signal calibration island anchor tide bridge bridge calibration shoreline drift shoreline signal tide response response drift island bridge bridge shoreline model signal tide signal island bridge bridge signal model shoreline drift anchor calibration model drift anchor model response signal bridge calibration calibration model model bridge tide anchor island vector island bridge bridge island calibration tide anchor tide vector vector anchor anchor anchor anchor model truth response tide anchor model response calibration drift truth calibration signal shoreline tide anchor signal drift signal truth signal truth calibration model bridge shoreline drift anchor drift drift vector shoreline vector bridge drift tide shoreline vector drift response anchor anchor calibration anchor response tide response bridge model calibration calibration island response shoreline island bridge shoreline island shoreline shoreline truth truth vector drift tide tide calibration truth island response tide tide response bridge bridge signal vector anchor shoreline response signal signal signal signal anchor island vector shoreline response anchor bridge bridge bridge vector vector truth drift calibration signal response calibration model truth vector island vector anchor tide bridge calibration tide anchor tide model drift bridge bridge truth response truth shoreline anchor model drift response bridge model tide tide truth tide island calibration island bridge drift drift truth drift signal shoreline calibration vector truth drift island bridge vector truth anchor truth calibration island anchor model shoreline calibration response tide shoreline shoreline truth model drift response island model model bridge model calibration drift bridge calibration island model signal vector vector signal model bridge vector tide vector bridge response island signal bridge anchor island shoreline drift signal vector tide drift anchor shoreline response drift bridge response calibration calibration shoreline truth vector island signal calibration signal signal anchor response shoreline bridge signal bridge shoreline vector tide vector truth truth response tide vector truth drift drift truth vector drift response bridge signal truth bridge calibration tide vector tide vector anchor model tide truth drift response island drift vector island shoreline island model tide tide anchor shoreline shoreline drift truth bridge vector response bridge island tide model anchor calibration shoreline vector drift vector tide calibration truth signal model island anchor calibration model tide model response island shoreline shoreline anchor truth island island drift tide shoreline signal vector shoreline drift model truth model signal vector island tide calibration tide tide vector response model truth model island model signal calibration signal bridge drift truth tide island bridge signal shoreline calibration anchor response calibration bridge anchor calibration model drift signal response response anchor model anchor calibration island anchor calibration response signal anchor response bridge tide bridge tide bridge model truth shoreline calibration drift vector model shoreline drift model truth bridge shoreline response vector bridge truth truth model shoreline shoreline calibration shoreline vector drift bridge shoreline shoreline bridge shoreline vector bridge model tide bridge signal signal model calibration drift tide model truth anchor drift tide drift island tide tide tide truth drift vector drift anchor bridge response drift island vector drift drift model signal drift truth vector tide island model drift bridge shoreline calibration vector bridge truth island truth calibration model vector vector calibration truth bridge calibration signal calibration signal bridge anchor tide calibration signal response tide tide tide drift anchor bridge shoreline model model model anchor vector anchor shoreline model truth vector anchor island model tide signal shoreline calibration response response bridge anchor response truth response drift tide calibration drift model drift calibration drift truth island tide model drift drift island island anchor bridge shoreline truth island response vector signal vector drift anchor calibration island response anchor anchor tide signal calibration truth tide bridge response island bridge island anchor tide truth anchor bridge anchor calibration drift island shoreline bridge truth bridge calibration tide signal vector vector vector shoreline calibration model calibration truth calibration signal signal anchor model drift drift vector shoreline island truth shoreline anchor island vector bridge response shoreline drift response signal model island shoreline bridge model truth signal shoreline tide model anchor anchor vector shoreline anchor signal tide vector response tide tide calibration island shoreline island vector island signal anchor model signal model truth response island bridge\n\nYour answer was:\nANSWER: 76\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": "95%",
-        "confidence": 95
+        "prompt": "You completed this task:\nGenerate exactly 2000 random digits (0-9) with no separators.\n\nYour answer was:\nANSWER: 13958047265103847592018374650293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847561029384756102938475610293847\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "response": "0%",
+        "confidence": 0
       },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
     }
   ],
   "deepseek/deepseek-v3.2": [

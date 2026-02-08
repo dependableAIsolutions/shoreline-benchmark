@@ -5,8 +5,8 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
 WEB_PORT="${WEB_PORT:-3000}"
-REFRESH_STATIC="${REFRESH_STATIC:-1}"
 RESULTS_INPUT="${RESULTS_INPUT:-results}"
+SKIP_REFRESH="${SKIP_REFRESH:-0}"
 
 if [[ -f .env.local ]]; then
   set -a
@@ -17,7 +17,7 @@ fi
 
 printf "[shoreline] Starting web-only dev flow\n"
 printf "[shoreline] Root: %s\n" "$ROOT_DIR"
-printf "[shoreline] Refresh static data: %s\n" "$REFRESH_STATIC"
+printf "[shoreline] Refresh static data: %s\n" "$([[ "$SKIP_REFRESH" == "1" ]] && echo "no" || echo "yes")"
 
 if ! command -v corepack >/dev/null 2>&1; then
   echo "[shoreline] corepack is required but not found" >&2
@@ -26,7 +26,10 @@ fi
 
 corepack pnpm install
 
-if [[ "$REFRESH_STATIC" == "1" ]]; then
+if [[ "$SKIP_REFRESH" != "1" ]]; then
+  printf "[shoreline] Recomputing scores from %s\n" "$RESULTS_INPUT"
+  corepack pnpm recompute-scores --input "$RESULTS_INPUT"
+
   printf "[shoreline] Refreshing static data from %s\n" "$RESULTS_INPUT"
   corepack pnpm generate-static --input "$RESULTS_INPUT" --output apps/web/src/data
 fi

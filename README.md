@@ -96,6 +96,9 @@ Useful flags:
 - `--models modelA,modelB`
 - `--limit 2`
 - `--state benchmark/state/custom.state.json`
+- `--category-concurrency 3`
+- `--ramp-mode fast`
+- `--quick-points 3`
 
 ## Suite config files
 
@@ -110,6 +113,11 @@ Note: model IDs are source-of-truth in these JSON files. Update those files to c
 ```bash
 corepack pnpm benchmark --adapter localapi --model "qwen/qwen3-coder-next" --all --quick
 ```
+
+Speed/cost tuning:
+- `--category-concurrency <n>`: run up to `n` categories in parallel (default `1`)
+- `--ramp-mode <balanced|fast>`: transition search profile for non-quick mode (`balanced` default)
+- `--quick-points <n>`: in quick mode, sample `n` difficulty anchors per category (default `1`)
 
 Resume a run:
 
