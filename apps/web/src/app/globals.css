@@ -26,3 +26,14 @@ body {
 * {
   box-sizing: border-box;
 }
+
+/* Gradient text with solid color fallback */
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .shoreline-title {
+    background: linear-gradient(135deg, #E8E0D4 0%, #A89880 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+}

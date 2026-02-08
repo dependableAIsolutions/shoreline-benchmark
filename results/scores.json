@@ -1,0 +1,169 @@
+{
+  "modelId": "google/gemini-3-flash-preview",
+  "modelDisplayName": "google/gemini-3-flash-preview",
+  "timestamp": "2026-02-08T02:43:15.186Z",
+  "categories": {
+    "mult": {
+      "category": "mult",
+      "claimed": 7.5,
+      "sand": 58.333333333333336,
+      "solid": 58.333333333333336,
+      "concrete": 41.66666666666667,
+      "discernment": 75,
+      "falseConfidence": 0,
+      "trueUncertainty": 33.33333333333333,
+      "calibrationError": 50.83333333333334,
+      "capability": 20.833333333333336,
+      "trialCount": 12,
+      "difficultyRange": [
+        4,
+        20
+      ],
+      "transitionZone": 12
+    },
+    "modexp": {
+      "category": "modexp",
+      "sand": 0,
+      "solid": 0,
+      "concrete": 0,
+      "trialCount": 0,
+      "difficultyRange": [
+        0,
+        0
+      ],
+      "transitionZone": 0
+    },
+    "bool": {
+      "category": "bool",
+      "sand": 0,
+      "solid": 0,
+      "concrete": 0,
+      "trialCount": 0,
+      "difficultyRange": [
+        0,
+        0
+      ],
+      "transitionZone": 0
+    },
+    "matrix": {
+      "category": "matrix",
+      "sand": 0,
+      "solid": 0,
+      "concrete": 0,
+      "trialCount": 0,
+      "difficultyRange": [
+        0,
+        0
+      ],
+      "transitionZone": 0
+    },
+    "combo": {
+      "category": "combo",
+      "sand": 0,
+      "solid": 0,
+      "concrete": 0,
+      "trialCount": 0,
+      "difficultyRange": [
+        0,
+        0
+      ],
+      "transitionZone": 0
+    },
+    "random": {
+      "category": "random",
+      "sand": 0,
+      "solid": 0,
+      "concrete": 0,
+      "trialCount": 0,
+      "difficultyRange": [
+        0,
+        0
+      ],
+      "transitionZone": 0
+    },
+    "constrained": {
+      "category": "constrained",
+      "sand": 0,
+      "solid": 0,
+      "concrete": 0,
+      "trialCount": 0,
+      "difficultyRange": [
+        0,
+        0
+      ],
+      "transitionZone": 0
+    },
+    "sudoku": {
+      "category": "sudoku",
+      "sand": 0,
+      "solid": 0,
+      "concrete": 0,
+      "trialCount": 0,
+      "difficultyRange": [
+        0,
+        0
+      ],
+      "transitionZone": 0
+    },
+    "distrib": {
+      "category": "distrib",
+      "sand": 0,
+      "solid": 0,
+      "concrete": 0,
+      "trialCount": 0,
+      "difficultyRange": [
+        0,
+        0
+      ],
+      "transitionZone": 0
+    },
+    "selfref": {
+      "category": "selfref",
+      "sand": 0,
+      "solid": 0,
+      "concrete": 0,
+      "trialCount": 0,
+      "difficultyRange": [
+        0,
+        0
+      ],
+      "transitionZone": 0
+    },
+    "counting": {
+      "category": "counting",
+      "sand": 0,
+      "solid": 0,
+      "concrete": 0,
+      "trialCount": 0,
+      "difficultyRange": [
+        0,
+        0
+      ],
+      "transitionZone": 0
+    }
+  },
+  "aggregate": {
+    "avgClaimed": 7.5,
+    "avgSand": 58.333333333333336,
+    "avgSolid": 58.333333333333336,
+    "avgConcrete": 41.66666666666667,
+    "avgDiscernment": 75,
+    "avgFalseConfidence": 0,
+    "avgTrueUncertainty": 33.33333333333333,
+    "avgCalibrationError": 50.83333333333334,
+    "calibrationIndex": 49.16666666666666,
+    "avgCapability": 20.833333333333336,
+    "overconfidence": 0,
+    "underconfidence": 50.833333333333336,
+    "blindSpots": 16.666666666666664,
+    "falseConfidence": 0,
+    "totalGap": 67.5
+  },
+  "metadata": {
+    "adapter": "openrouter",
+    "temperature": 0.7,
+    "totalTokensUsed": 40321,
+    "totalTrials": 12,
+    "invalidTrials": 8
+  }
+}

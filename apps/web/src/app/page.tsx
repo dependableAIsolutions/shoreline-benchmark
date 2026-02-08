@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { CompareView } from "../components/CompareView";
 import { IslandCard } from "../components/IslandCard";
 import { Legend } from "../components/Legend";
+import { ResultsViewer } from "../components/ResultsViewer";
 import { modelResults } from "../data/results";
 import type { CategoryKey } from "../lib/types";
 
@@ -33,8 +35,16 @@ export default function HomePage() {
   return (
     <main className="mx-auto max-w-[1120px] px-5 py-8 text-[#E8E0D4]">
       <header className="mb-6">
-        <div className="mb-1 font-mono text-[10px] tracking-[0.45em] text-[#3D7A6E]">METACOGNITIVE BENCHMARK</div>
-        <h1 className="font-serif text-5xl font-bold tracking-tight [background:linear-gradient(135deg,#E8E0D4_0%,#A89880_100%)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]">
+        <div className="flex items-center justify-between">
+          <div className="mb-1 font-mono text-[10px] tracking-[0.45em] text-[#3D7A6E]">METACOGNITIVE BENCHMARK</div>
+          <Link
+            href="/about"
+            className="font-mono text-[10px] tracking-[0.14em] text-[#5d5144] hover:text-[#7ab8ad]"
+          >
+            How it works &rarr;
+          </Link>
+        </div>
+        <h1 className="shoreline-title font-serif text-5xl font-bold tracking-tight text-[#E8E0D4]">
           Shoreline
         </h1>
         <p className="mt-1 font-serif text-lg italic text-[#817363]">Mapping where capability meets self-knowledge</p>
@@ -149,6 +159,8 @@ export default function HomePage() {
           </div>
         </section>
       ) : null}
+
+      <ResultsViewer modelId={modelA?.modelId} />
 
       <footer className="mt-6 border-t border-white/10 pt-3 text-center font-mono text-[9px] tracking-[0.08em] text-[#5d5144]">
         SHORELINE v1 FOUNDATION • Sand = Phase 1 prediction • Solid = Phase 2 performance • Concrete = Phase 3 self-evaluation

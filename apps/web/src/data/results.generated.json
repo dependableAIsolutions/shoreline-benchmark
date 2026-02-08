@@ -1,17 +1,73 @@
 [
   {
-    "modelId": "openai/gpt-5.2",
-    "modelDisplayName": "openai/gpt-5.2",
-    "timestamp": "2026-02-07T20:13:05.960Z",
+    "modelId": "x-ai/grok-4.1-fast",
+    "modelDisplayName": "x-ai/grok-4.1-fast",
+    "timestamp": "2026-02-08T03:28:15.016Z",
     "categories": {
       "mult": {
         "category": "mult",
-        "claimed": 98,
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 100,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          26,
+          26
+        ],
+        "transitionZone": 26
+      },
+      "modexp": {
+        "category": "modexp",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          34,
+          34
+        ],
+        "transitionZone": 34
+      },
+      "bool": {
+        "category": "bool",
+        "claimed": 100,
         "sand": 100,
         "solid": 100,
         "concrete": 100,
         "discernment": 100,
-        "calibrationError": 2.0000000000000018,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          26,
+          26
+        ],
+        "transitionZone": 26
+      },
+      "matrix": {
+        "category": "matrix",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
@@ -20,353 +76,113 @@
         ],
         "transitionZone": 7
       },
-      "modexp": {
-        "category": "modexp",
-        "claimed": 96,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 0,
-        "discernment": 0,
-        "calibrationError": 4.0000000000000036,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          16,
-          16
-        ],
-        "transitionZone": 16
-      },
-      "bool": {
-        "category": "bool",
-        "claimed": 1,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "discernment": 100,
-        "calibrationError": 99,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          9,
-          9
-        ],
-        "transitionZone": 9
-      },
-      "matrix": {
-        "category": "matrix",
-        "claimed": 95,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "discernment": 100,
-        "calibrationError": 5.000000000000004,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          4,
-          4
-        ],
-        "transitionZone": 4
-      },
       "combo": {
         "category": "combo",
-        "claimed": 93,
+        "claimed": 100,
         "sand": 100,
         "solid": 100,
         "concrete": 100,
         "discernment": 100,
-        "calibrationError": 6.999999999999995,
-        "capability": 57.14285714285714,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 52.63157894736842,
         "trialCount": 1,
         "difficultyRange": [
-          5,
-          5
+          11,
+          11
         ],
-        "transitionZone": 5
+        "transitionZone": 11
       },
       "random": {
         "category": "random",
-        "claimed": 87,
-        "sand": 87,
-        "solid": 79.24053274652235,
-        "concrete": 79.24053274652235,
-        "discernment": 100,
-        "calibrationError": 7.759467253477659,
+        "claimed": 100,
+        "sand": 100,
+        "solid": 43.39933993399339,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 56.60066006600661,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
-          260,
-          260
+          1010,
+          1010
         ],
-        "transitionZone": 260
+        "transitionZone": 1010
       },
       "constrained": {
         "category": "constrained",
-        "claimed": 92,
-        "sand": 92,
-        "solid": 20,
-        "concrete": 0,
-        "discernment": 100,
-        "calibrationError": 72,
-        "capability": 57.14285714285714,
+        "claimed": 85,
+        "sand": 85,
+        "solid": 40,
+        "concrete": 40,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 44.99999999999999,
+        "capability": 52.63157894736842,
         "trialCount": 1,
         "difficultyRange": [
-          5,
-          5
+          11,
+          11
         ],
-        "transitionZone": 5
+        "transitionZone": 11
       },
       "sudoku": {
         "category": "sudoku",
-        "claimed": 93,
+        "claimed": 100,
         "sand": 100,
         "solid": 100,
         "concrete": 100,
         "discernment": 100,
-        "calibrationError": 6.999999999999995,
-        "capability": 50,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 55.55555555555556,
         "trialCount": 1,
         "difficultyRange": [
-          3,
-          3
+          6,
+          6
         ],
-        "transitionZone": 3
+        "transitionZone": 6
       },
       "distrib": {
         "category": "distrib",
-        "claimed": 92,
-        "sand": 92,
-        "solid": 87.48076201266971,
+        "claimed": 95,
+        "sand": 95,
+        "solid": 0,
         "concrete": 0,
-        "discernment": 0,
-        "calibrationError": 4.5192379873302935,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 95,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
-          105,
-          105
+          505,
+          505
         ],
-        "transitionZone": 105
+        "transitionZone": 505
       },
       "selfref": {
         "category": "selfref",
-        "claimed": 92,
-        "sand": 92,
+        "claimed": 75,
+        "sand": 75,
         "solid": 50,
         "concrete": 50,
         "discernment": 0,
-        "calibrationError": 42.00000000000001,
-        "capability": 57.14285714285714,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 25,
+        "capability": 52.63157894736842,
         "trialCount": 1,
         "difficultyRange": [
-          5,
-          5
+          11,
+          11
         ],
-        "transitionZone": 5
-      },
-      "counting": {
-        "category": "counting",
-        "claimed": 52,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "discernment": 100,
-        "calibrationError": 48,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          21,
-          21
-        ],
-        "transitionZone": 21
-      }
-    },
-    "aggregate": {
-      "avgClaimed": 81,
-      "avgSand": 96.63636363636364,
-      "avgSolid": 85.15648134174474,
-      "avgConcrete": 66.2945938860475,
-      "avgDiscernment": 72.72727272727273,
-      "avgCalibrationError": 27.11624593098254,
-      "calibrationIndex": 72.88375406901746,
-      "avgCapability": 51.94805194805194,
-      "overconfidence": 11.479882294618903,
-      "underconfidence": 15.636363636363637,
-      "blindSpots": 18.861887455697246,
-      "totalGap": 45.97813338667979
-    },
-    "metadata": {
-      "adapter": "openrouter",
-      "temperature": 0.7,
-      "totalTokensUsed": 16813,
-      "totalTrials": 11,
-      "invalidTrials": 0
-    }
-  },
-  {
-    "modelId": "google/gemini-2.5-pro",
-    "modelDisplayName": "google/gemini-2.5-pro",
-    "timestamp": "2026-02-07T20:19:00.094Z",
-    "categories": {
-      "mult": {
-        "category": "mult",
-        "claimed": 100,
-        "sand": 100,
-        "solid": 0,
-        "concrete": 0,
-        "discernment": 0,
-        "calibrationError": 100,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          7,
-          7
-        ],
-        "transitionZone": 7
-      },
-      "modexp": {
-        "category": "modexp",
-        "claimed": 100,
-        "sand": 100,
-        "solid": 0,
-        "concrete": 0,
-        "discernment": 100,
-        "calibrationError": 100,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          16,
-          16
-        ],
-        "transitionZone": 16
-      },
-      "bool": {
-        "category": "bool",
-        "claimed": 100,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "discernment": 100,
-        "calibrationError": 0,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          9,
-          9
-        ],
-        "transitionZone": 9
-      },
-      "matrix": {
-        "category": "matrix",
-        "claimed": 100,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "discernment": 100,
-        "calibrationError": 0,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          4,
-          4
-        ],
-        "transitionZone": 4
-      },
-      "combo": {
-        "category": "combo",
-        "claimed": 99,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "discernment": 100,
-        "calibrationError": 1.0000000000000009,
-        "capability": 57.14285714285714,
-        "trialCount": 1,
-        "difficultyRange": [
-          5,
-          5
-        ],
-        "transitionZone": 5
-      },
-      "random": {
-        "category": "random",
-        "claimed": 100,
-        "sand": 100,
-        "solid": 0,
-        "concrete": 0,
-        "discernment": 100,
-        "calibrationError": 100,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          260,
-          260
-        ],
-        "transitionZone": 260
-      },
-      "constrained": {
-        "category": "constrained",
-        "claimed": 100,
-        "sand": 100,
-        "solid": 40,
-        "concrete": 0,
-        "discernment": 100,
-        "calibrationError": 60,
-        "capability": 57.14285714285714,
-        "trialCount": 1,
-        "difficultyRange": [
-          5,
-          5
-        ],
-        "transitionZone": 5
-      },
-      "sudoku": {
-        "category": "sudoku",
-        "claimed": 0,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "discernment": 100,
-        "calibrationError": 100,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          3,
-          3
-        ],
-        "transitionZone": 3
-      },
-      "distrib": {
-        "category": "distrib",
-        "claimed": 96,
-        "sand": 96,
-        "solid": 0,
-        "concrete": 0,
-        "discernment": 0,
-        "calibrationError": 96,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          105,
-          105
-        ],
-        "transitionZone": 105
-      },
-      "selfref": {
-        "category": "selfref",
-        "claimed": 100,
-        "sand": 100,
-        "solid": 50,
-        "concrete": 0,
-        "discernment": 100,
-        "calibrationError": 50,
-        "capability": 57.14285714285714,
-        "trialCount": 1,
-        "difficultyRange": [
-          5,
-          5
-        ],
-        "transitionZone": 5
+        "transitionZone": 11
       },
       "counting": {
         "category": "counting",
@@ -375,42 +191,276 @@
         "solid": 100,
         "concrete": 100,
         "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
         "calibrationError": 0,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
-          21,
-          21
+          101,
+          101
         ],
-        "transitionZone": 21
+        "transitionZone": 101
       }
     },
     "aggregate": {
-      "avgClaimed": 90.45454545454545,
-      "avgSand": 99.63636363636364,
-      "avgSolid": 53.63636363636363,
-      "avgConcrete": 45.45454545454545,
-      "avgDiscernment": 81.81818181818181,
-      "avgCalibrationError": 55.18181818181818,
-      "calibrationIndex": 44.81818181818182,
-      "avgCapability": 51.94805194805194,
-      "overconfidence": 46,
-      "underconfidence": 9.181818181818182,
-      "blindSpots": 8.181818181818182,
-      "totalGap": 63.36363636363636
+      "avgClaimed": 95.9090909090909,
+      "avgSand": 95.9090909090909,
+      "avgSolid": 57.581758175817576,
+      "avgConcrete": 53.63636363636363,
+      "avgDiscernment": 63.63636363636363,
+      "avgFalseConfidence": 27.272727272727273,
+      "avgTrueUncertainty": 18.181818181818183,
+      "avgCalibrationError": 38.32733273327333,
+      "calibrationIndex": 61.67266726672667,
+      "avgCapability": 51.22275385433281,
+      "overconfidence": 38.32733273327333,
+      "underconfidence": 0,
+      "blindSpots": 3.9453945394539445,
+      "falseConfidence": 27.272727272727273,
+      "totalGap": 42.27272727272727
     },
     "metadata": {
       "adapter": "openrouter",
       "temperature": 0.7,
-      "totalTokensUsed": 51876,
+      "totalTokensUsed": 221391,
       "totalTrials": 11,
       "invalidTrials": 1
     }
   },
   {
-    "modelId": "anthropic/claude-sonnet-4.5",
-    "modelDisplayName": "anthropic/claude-sonnet-4.5",
-    "timestamp": "2026-02-07T20:17:20.992Z",
+    "modelId": "google/gemini-3-flash-preview",
+    "modelDisplayName": "google/gemini-3-flash-preview",
+    "timestamp": "2026-02-08T03:28:15.016Z",
+    "categories": {
+      "mult": {
+        "category": "mult",
+        "claimed": 0,
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          26,
+          26
+        ],
+        "transitionZone": 26
+      },
+      "modexp": {
+        "category": "modexp",
+        "claimed": 85,
+        "sand": 85,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 85,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          34,
+          34
+        ],
+        "transitionZone": 34
+      },
+      "bool": {
+        "category": "bool",
+        "claimed": 85,
+        "sand": 85,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 85,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          26,
+          26
+        ],
+        "transitionZone": 26
+      },
+      "matrix": {
+        "category": "matrix",
+        "claimed": 0,
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          7,
+          7
+        ],
+        "transitionZone": 7
+      },
+      "combo": {
+        "category": "combo",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "random": {
+        "category": "random",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 51.231857185136356,
+        "concrete": 51.231857185136356,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 48.768142814863644,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          1010,
+          1010
+        ],
+        "transitionZone": 1010
+      },
+      "constrained": {
+        "category": "constrained",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 20,
+        "concrete": 20,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 80,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "sudoku": {
+        "category": "sudoku",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 55.55555555555556,
+        "trialCount": 1,
+        "difficultyRange": [
+          6,
+          6
+        ],
+        "transitionZone": 6
+      },
+      "distrib": {
+        "category": "distrib",
+        "claimed": 98,
+        "sand": 98,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 98,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          505,
+          505
+        ],
+        "transitionZone": 505
+      },
+      "selfref": {
+        "category": "selfref",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 50,
+        "concrete": 50,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 50,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "counting": {
+        "category": "counting",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          101,
+          101
+        ],
+        "transitionZone": 101
+      }
+    },
+    "aggregate": {
+      "avgClaimed": 78.9090909090909,
+      "avgSand": 78.9090909090909,
+      "avgSolid": 29.202896107739672,
+      "avgConcrete": 29.202896107739672,
+      "avgDiscernment": 27.272727272727273,
+      "avgFalseConfidence": 72.72727272727273,
+      "avgTrueUncertainty": 9.090909090909092,
+      "avgCalibrationError": 49.706194801351245,
+      "calibrationIndex": 50.293805198648755,
+      "avgCapability": 51.22275385433281,
+      "overconfidence": 49.706194801351245,
+      "underconfidence": 0,
+      "blindSpots": 0,
+      "falseConfidence": 72.72727272727273,
+      "totalGap": 49.706194801351245
+    },
+    "metadata": {
+      "adapter": "openrouter",
+      "temperature": 0.7,
+      "totalTokensUsed": 11258,
+      "totalTrials": 11,
+      "invalidTrials": 0
+    }
+  },
+  {
+    "modelId": "deepseek/deepseek-v3.2",
+    "modelDisplayName": "deepseek/deepseek-v3.2",
+    "timestamp": "2026-02-08T03:28:15.016Z",
     "categories": {
       "mult": {
         "category": "mult",
@@ -419,211 +469,63 @@
         "solid": 0,
         "concrete": 0,
         "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
         "calibrationError": 65,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
-          7,
-          7
+          26,
+          26
         ],
-        "transitionZone": 7
+        "transitionZone": 26
       },
       "modexp": {
         "category": "modexp",
-        "claimed": 75,
-        "sand": 75,
+        "claimed": 100,
+        "sand": 100,
         "solid": 0,
         "concrete": 0,
-        "discernment": 100,
-        "calibrationError": 75,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
-          16,
-          16
+          34,
+          34
         ],
-        "transitionZone": 16
+        "transitionZone": 34
       },
       "bool": {
         "category": "bool",
-        "claimed": 85,
+        "claimed": 0,
         "sand": 100,
         "solid": 100,
         "concrete": 100,
         "discernment": 100,
-        "calibrationError": 15.000000000000002,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
-          9,
-          9
+          26,
+          26
         ],
-        "transitionZone": 9
+        "transitionZone": 26
       },
       "matrix": {
         "category": "matrix",
-        "claimed": 85,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "discernment": 100,
-        "calibrationError": 15.000000000000002,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          4,
-          4
-        ],
-        "transitionZone": 4
-      },
-      "combo": {
-        "category": "combo",
-        "claimed": 65,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "discernment": 100,
-        "calibrationError": 35,
-        "capability": 57.14285714285714,
-        "trialCount": 1,
-        "difficultyRange": [
-          5,
-          5
-        ],
-        "transitionZone": 5
-      },
-      "random": {
-        "category": "random",
-        "claimed": 72,
-        "sand": 79.07704174647948,
-        "solid": 79.07704174647948,
-        "concrete": 0,
-        "discernment": 0,
-        "calibrationError": 7.077041746479484,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          260,
-          260
-        ],
-        "transitionZone": 260
-      },
-      "constrained": {
-        "category": "constrained",
-        "claimed": 72,
-        "sand": 72,
-        "solid": 20,
-        "concrete": 0,
-        "discernment": 100,
-        "calibrationError": 52,
-        "capability": 57.14285714285714,
-        "trialCount": 1,
-        "difficultyRange": [
-          5,
-          5
-        ],
-        "transitionZone": 5
-      },
-      "sudoku": {
-        "category": "sudoku",
-        "claimed": 72,
-        "sand": 72,
-        "solid": 25.925925925925924,
-        "concrete": 25.925925925925924,
-        "discernment": 0,
-        "calibrationError": 46.074074074074076,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          3,
-          3
-        ],
-        "transitionZone": 3
-      },
-      "distrib": {
-        "category": "distrib",
-        "claimed": 72,
-        "sand": 95.2449756703428,
-        "solid": 95.2449756703428,
-        "concrete": 0,
-        "discernment": 0,
-        "calibrationError": 23.244975670342793,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          105,
-          105
-        ],
-        "transitionZone": 105
-      },
-      "selfref": {
-        "category": "selfref",
-        "claimed": 68,
-        "sand": 68,
-        "solid": 50,
-        "concrete": 50,
-        "discernment": 0,
-        "calibrationError": 18.000000000000004,
-        "capability": 57.14285714285714,
-        "trialCount": 1,
-        "difficultyRange": [
-          5,
-          5
-        ],
-        "transitionZone": 5
-      },
-      "counting": {
-        "category": "counting",
-        "claimed": 75,
-        "sand": 75,
+        "claimed": 90,
+        "sand": 90,
         "solid": 0,
         "concrete": 0,
         "discernment": 0,
-        "calibrationError": 75,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          21,
-          21
-        ],
-        "transitionZone": 21
-      }
-    },
-    "aggregate": {
-      "avgClaimed": 73.27272727272727,
-      "avgSand": 81.93836521971112,
-      "avgSolid": 51.840722122068016,
-      "avgConcrete": 34.17508417508417,
-      "avgDiscernment": 45.45454545454545,
-      "avgCalibrationError": 38.76328104462694,
-      "calibrationIndex": 61.23671895537306,
-      "avgCapability": 51.94805194805194,
-      "overconfidence": 30.097643097643097,
-      "underconfidence": 8.665637946983843,
-      "blindSpots": 17.665637946983846,
-      "totalGap": 56.428918991610786
-    },
-    "metadata": {
-      "adapter": "openrouter",
-      "temperature": 0.7,
-      "totalTokensUsed": 10335,
-      "totalTrials": 11,
-      "invalidTrials": 0
-    }
-  },
-  {
-    "modelId": "qwen/qwen3-coder-next",
-    "modelDisplayName": "qwen/qwen3-coder-next",
-    "timestamp": "2026-02-07T20:12:19.364Z",
-    "categories": {
-      "mult": {
-        "category": "mult",
-        "claimed": 95,
-        "sand": 95,
-        "solid": 0,
-        "concrete": 0,
-        "discernment": 0,
-        "calibrationError": 95,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 90,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
@@ -632,149 +534,113 @@
         ],
         "transitionZone": 7
       },
-      "modexp": {
-        "category": "modexp",
-        "claimed": 95,
-        "sand": 95,
-        "solid": 0,
-        "concrete": 0,
-        "discernment": 0,
-        "calibrationError": 95,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          16,
-          16
-        ],
-        "transitionZone": 16
-      },
-      "bool": {
-        "category": "bool",
-        "claimed": 75,
-        "sand": 100,
-        "solid": 100,
-        "concrete": 100,
-        "discernment": 100,
-        "calibrationError": 25,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          9,
-          9
-        ],
-        "transitionZone": 9
-      },
-      "matrix": {
-        "category": "matrix",
-        "claimed": 98,
-        "sand": 98,
-        "solid": 0,
-        "concrete": 0,
-        "discernment": 0,
-        "calibrationError": 98,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          4,
-          4
-        ],
-        "transitionZone": 4
-      },
       "combo": {
         "category": "combo",
-        "claimed": 95,
-        "sand": 95,
+        "claimed": 70,
+        "sand": 70,
         "solid": 0,
         "concrete": 0,
         "discernment": 0,
-        "calibrationError": 95,
-        "capability": 57.14285714285714,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 70,
+        "capability": 52.63157894736842,
         "trialCount": 1,
         "difficultyRange": [
-          5,
-          5
+          11,
+          11
         ],
-        "transitionZone": 5
+        "transitionZone": 11
       },
       "random": {
         "category": "random",
-        "claimed": 26,
-        "sand": 26,
+        "claimed": 40,
+        "sand": 40,
         "solid": 0,
         "concrete": 0,
         "discernment": 0,
-        "calibrationError": 26,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 40,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
-          260,
-          260
+          1010,
+          1010
         ],
-        "transitionZone": 260
+        "transitionZone": 1010
       },
       "constrained": {
         "category": "constrained",
-        "claimed": 75,
-        "sand": 75,
+        "claimed": 45,
+        "sand": 45,
         "solid": 20,
         "concrete": 20,
         "discernment": 0,
-        "calibrationError": 55.00000000000001,
-        "capability": 57.14285714285714,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 25,
+        "capability": 52.63157894736842,
         "trialCount": 1,
         "difficultyRange": [
-          5,
-          5
+          11,
+          11
         ],
-        "transitionZone": 5
+        "transitionZone": 11
       },
       "sudoku": {
         "category": "sudoku",
-        "claimed": 85,
+        "claimed": 100,
         "sand": 100,
         "solid": 100,
         "concrete": 100,
         "discernment": 100,
-        "calibrationError": 15.000000000000002,
-        "capability": 50,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 55.55555555555556,
         "trialCount": 1,
         "difficultyRange": [
-          3,
-          3
+          6,
+          6
         ],
-        "transitionZone": 3
+        "transitionZone": 6
       },
       "distrib": {
         "category": "distrib",
-        "claimed": 95,
-        "sand": 95,
-        "solid": 82.00739377161796,
+        "claimed": 70,
+        "sand": 70,
+        "solid": 0,
         "concrete": 0,
         "discernment": 0,
-        "calibrationError": 12.992606228382042,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 70,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
-          105,
-          105
+          505,
+          505
         ],
-        "transitionZone": 105
+        "transitionZone": 505
       },
       "selfref": {
         "category": "selfref",
-        "claimed": 0,
-        "sand": 25,
+        "claimed": 97,
+        "sand": 97,
         "solid": 25,
         "concrete": 25,
         "discernment": 0,
-        "calibrationError": 25,
-        "capability": 57.14285714285714,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 72,
+        "capability": 52.63157894736842,
         "trialCount": 1,
         "difficultyRange": [
-          5,
-          5
+          11,
+          11
         ],
-        "transitionZone": 5
+        "transitionZone": 11
       },
       "counting": {
         "category": "counting",
@@ -783,36 +649,728 @@
         "solid": 0,
         "concrete": 0,
         "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
         "calibrationError": 85,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
-          21,
-          21
+          101,
+          101
         ],
-        "transitionZone": 21
+        "transitionZone": 101
       }
     },
     "aggregate": {
-      "avgClaimed": 74.9090909090909,
-      "avgSand": 80.81818181818181,
-      "avgSolid": 29.727944888328906,
+      "avgClaimed": 69.27272727272727,
+      "avgSand": 78.36363636363636,
+      "avgSolid": 22.272727272727273,
       "avgConcrete": 22.272727272727273,
       "avgDiscernment": 18.181818181818183,
-      "avgCalibrationError": 56.99932783894382,
-      "calibrationIndex": 43.00067216105618,
-      "avgCapability": 51.94805194805194,
-      "overconfidence": 51.09023692985292,
-      "underconfidence": 5.909090909090909,
-      "blindSpots": 7.455217615601632,
-      "totalGap": 64.45454545454545
+      "avgFalseConfidence": 81.81818181818181,
+      "avgTrueUncertainty": 0,
+      "avgCalibrationError": 65.18181818181819,
+      "calibrationIndex": 34.81818181818181,
+      "avgCapability": 51.22275385433281,
+      "overconfidence": 56.09090909090909,
+      "underconfidence": 9.090909090909092,
+      "blindSpots": 0,
+      "falseConfidence": 81.81818181818181,
+      "totalGap": 65.18181818181819
     },
     "metadata": {
-      "adapter": "localapi",
+      "adapter": "openrouter",
       "temperature": 0.7,
-      "totalTokensUsed": 7299,
+      "totalTokensUsed": 14631,
       "totalTrials": 11,
       "invalidTrials": 1
+    }
+  },
+  {
+    "modelId": "minimax/minimax-m2.1",
+    "modelDisplayName": "minimax/minimax-m2.1",
+    "timestamp": "2026-02-08T03:28:15.016Z",
+    "categories": {
+      "mult": {
+        "category": "mult",
+        "claimed": 99,
+        "sand": 99,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 99,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          26,
+          26
+        ],
+        "transitionZone": 26
+      },
+      "modexp": {
+        "category": "modexp",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          34,
+          34
+        ],
+        "transitionZone": 34
+      },
+      "bool": {
+        "category": "bool",
+        "claimed": 0,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          26,
+          26
+        ],
+        "transitionZone": 26
+      },
+      "matrix": {
+        "category": "matrix",
+        "claimed": 0,
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          7,
+          7
+        ],
+        "transitionZone": 7
+      },
+      "combo": {
+        "category": "combo",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "random": {
+        "category": "random",
+        "claimed": 95,
+        "sand": 95,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 95,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          1010,
+          1010
+        ],
+        "transitionZone": 1010
+      },
+      "constrained": {
+        "category": "constrained",
+        "claimed": 0,
+        "sand": 60,
+        "solid": 60,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 60,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "sudoku": {
+        "category": "sudoku",
+        "claimed": 97,
+        "sand": 97,
+        "solid": 66.66666666666666,
+        "concrete": 66.66666666666666,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 30.333333333333336,
+        "capability": 55.55555555555556,
+        "trialCount": 1,
+        "difficultyRange": [
+          6,
+          6
+        ],
+        "transitionZone": 6
+      },
+      "distrib": {
+        "category": "distrib",
+        "claimed": 0,
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 0,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          505,
+          505
+        ],
+        "transitionZone": 505
+      },
+      "selfref": {
+        "category": "selfref",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 50,
+        "concrete": 50,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 50,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "counting": {
+        "category": "counting",
+        "claimed": 0,
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          101,
+          101
+        ],
+        "transitionZone": 101
+      }
+    },
+    "aggregate": {
+      "avgClaimed": 53.72727272727273,
+      "avgSand": 68.27272727272727,
+      "avgSolid": 25.15151515151515,
+      "avgConcrete": 19.696969696969695,
+      "avgDiscernment": 45.45454545454545,
+      "avgFalseConfidence": 45.45454545454545,
+      "avgTrueUncertainty": 36.36363636363637,
+      "avgCalibrationError": 57.66666666666667,
+      "calibrationIndex": 42.33333333333333,
+      "avgCapability": 51.22275385433281,
+      "overconfidence": 43.121212121212125,
+      "underconfidence": 14.545454545454545,
+      "blindSpots": 5.454545454545454,
+      "falseConfidence": 45.45454545454545,
+      "totalGap": 63.121212121212125
+    },
+    "metadata": {
+      "adapter": "openrouter",
+      "temperature": 0.7,
+      "totalTokensUsed": 35439,
+      "totalTrials": 11,
+      "invalidTrials": 3
+    }
+  },
+  {
+    "modelId": "openai/gpt-oss-120b",
+    "modelDisplayName": "openai/gpt-oss-120b",
+    "timestamp": "2026-02-08T03:28:15.016Z",
+    "categories": {
+      "mult": {
+        "category": "mult",
+        "claimed": 99,
+        "sand": 99,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 99,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          26,
+          26
+        ],
+        "transitionZone": 26
+      },
+      "modexp": {
+        "category": "modexp",
+        "claimed": 97,
+        "sand": 97,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 97,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          34,
+          34
+        ],
+        "transitionZone": 34
+      },
+      "bool": {
+        "category": "bool",
+        "claimed": 0,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          26,
+          26
+        ],
+        "transitionZone": 26
+      },
+      "matrix": {
+        "category": "matrix",
+        "claimed": 95,
+        "sand": 95,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 95,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          7,
+          7
+        ],
+        "transitionZone": 7
+      },
+      "combo": {
+        "category": "combo",
+        "claimed": 92,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 100,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 7.9999999999999964,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "random": {
+        "category": "random",
+        "claimed": 98,
+        "sand": 98,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 98,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          1010,
+          1010
+        ],
+        "transitionZone": 1010
+      },
+      "constrained": {
+        "category": "constrained",
+        "claimed": 92,
+        "sand": 92,
+        "solid": 60,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 32.00000000000001,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "sudoku": {
+        "category": "sudoku",
+        "claimed": 96,
+        "sand": 100,
+        "solid": 100,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 4.0000000000000036,
+        "capability": 55.55555555555556,
+        "trialCount": 1,
+        "difficultyRange": [
+          6,
+          6
+        ],
+        "transitionZone": 6
+      },
+      "distrib": {
+        "category": "distrib",
+        "claimed": 92,
+        "sand": 92,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 92,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          505,
+          505
+        ],
+        "transitionZone": 505
+      },
+      "selfref": {
+        "category": "selfref",
+        "claimed": 94,
+        "sand": 94,
+        "solid": 25,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 69,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "counting": {
+        "category": "counting",
+        "claimed": 10,
+        "sand": 10,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 10,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          101,
+          101
+        ],
+        "transitionZone": 101
+      }
+    },
+    "aggregate": {
+      "avgClaimed": 78.63636363636364,
+      "avgSand": 88.81818181818181,
+      "avgSolid": 35,
+      "avgConcrete": 9.090909090909092,
+      "avgDiscernment": 36.36363636363637,
+      "avgFalseConfidence": 18.181818181818183,
+      "avgTrueUncertainty": 27.272727272727273,
+      "avgCalibrationError": 64,
+      "calibrationIndex": 36,
+      "avgCapability": 51.22275385433281,
+      "overconfidence": 53.81818181818182,
+      "underconfidence": 10.181818181818182,
+      "blindSpots": 25.90909090909091,
+      "falseConfidence": 18.181818181818183,
+      "totalGap": 89.9090909090909
+    },
+    "metadata": {
+      "adapter": "openrouter",
+      "temperature": 0.7,
+      "totalTokensUsed": 29650,
+      "totalTrials": 11,
+      "invalidTrials": 4
+    }
+  },
+  {
+    "modelId": "moonshotai/kimi-k2.5",
+    "modelDisplayName": "moonshotai/kimi-k2.5",
+    "timestamp": "2026-02-08T03:28:15.016Z",
+    "categories": {
+      "mult": {
+        "category": "mult",
+        "claimed": 95,
+        "sand": 95,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 95,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          26,
+          26
+        ],
+        "transitionZone": 26
+      },
+      "modexp": {
+        "category": "modexp",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          34,
+          34
+        ],
+        "transitionZone": 34
+      },
+      "bool": {
+        "category": "bool",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          26,
+          26
+        ],
+        "transitionZone": 26
+      },
+      "matrix": {
+        "category": "matrix",
+        "claimed": 95,
+        "sand": 95,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 95,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          7,
+          7
+        ],
+        "transitionZone": 7
+      },
+      "combo": {
+        "category": "combo",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 100,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "random": {
+        "category": "random",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 100,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          1010,
+          1010
+        ],
+        "transitionZone": 1010
+      },
+      "constrained": {
+        "category": "constrained",
+        "claimed": 85,
+        "sand": 85,
+        "solid": 60,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 25,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "sudoku": {
+        "category": "sudoku",
+        "claimed": 100,
+        "sand": 100,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 100,
+        "capability": 55.55555555555556,
+        "trialCount": 1,
+        "difficultyRange": [
+          6,
+          6
+        ],
+        "transitionZone": 6
+      },
+      "distrib": {
+        "category": "distrib",
+        "claimed": 95,
+        "sand": 95,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 95,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          505,
+          505
+        ],
+        "transitionZone": 505
+      },
+      "selfref": {
+        "category": "selfref",
+        "claimed": 0,
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 100,
+        "falseConfidence": 0,
+        "trueUncertainty": 100,
+        "calibrationError": 0,
+        "capability": 52.63157894736842,
+        "trialCount": 1,
+        "difficultyRange": [
+          11,
+          11
+        ],
+        "transitionZone": 11
+      },
+      "counting": {
+        "category": "counting",
+        "claimed": 0,
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          101,
+          101
+        ],
+        "transitionZone": 101
+      }
+    },
+    "aggregate": {
+      "avgClaimed": 79.0909090909091,
+      "avgSand": 79.0909090909091,
+      "avgSolid": 5.454545454545454,
+      "avgConcrete": 0,
+      "avgDiscernment": 36.36363636363637,
+      "avgFalseConfidence": 0,
+      "avgTrueUncertainty": 36.36363636363637,
+      "avgCalibrationError": 73.63636363636364,
+      "calibrationIndex": 26.36363636363636,
+      "avgCapability": 51.22275385433281,
+      "overconfidence": 73.63636363636364,
+      "underconfidence": 0,
+      "blindSpots": 5.454545454545454,
+      "falseConfidence": 0,
+      "totalGap": 79.0909090909091
+    },
+    "metadata": {
+      "adapter": "openrouter",
+      "temperature": 0.7,
+      "totalTokensUsed": 58539,
+      "totalTrials": 11,
+      "invalidTrials": 8
     }
   }
 ]

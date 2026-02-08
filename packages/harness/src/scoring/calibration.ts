@@ -41,6 +41,30 @@ export function computeCategoryScore(
     })
   );
 
+  // False confidence: wrong answers where model expressed high confidence (>=60%) in Phase 3.
+  // This is the dangerous case - model doesn't know what it doesn't know.
+  const falseConfidence01 = avg(
+    trials.map((trial) => {
+      const c = trial.phase3.confidence;
+      if (c === null) return 0;
+      // Wrong answer but confident about it
+      if (!trial.phase2.isCorrect && c >= 60) return 1;
+      return 0;
+    })
+  );
+
+  // True uncertainty: wrong answers where model correctly expressed low confidence (<40%).
+  // This is good metacognition - model knows when it might have failed.
+  const trueUncertainty01 = avg(
+    trials.map((trial) => {
+      const c = trial.phase3.confidence;
+      if (c === null) return 0;
+      // Wrong answer and appropriately uncertain
+      if (!trial.phase2.isCorrect && c < 40) return 1;
+      return 0;
+    })
+  );
+
   const solid = solid01 * 100;
   const concrete = concrete01 * 100;
   const sand = Math.max(claimed, solid, concrete);
@@ -65,6 +89,8 @@ export function computeCategoryScore(
     solid,
     concrete,
     discernment: discernment01 * 100,
+    falseConfidence: falseConfidence01 * 100,
+    trueUncertainty: trueUncertainty01 * 100,
     calibrationError,
     capability: Math.max(0, Math.min(100, capability)),
     trialCount: trials.length,
@@ -81,9 +107,15 @@ export function computeAggregateScores(scores: CategoryScore[]) {
   const avgDiscernment = avg(scores.map((score) => score.discernment ?? 0));
   const avgCalibrationError = avg(scores.map((score) => score.calibrationError ?? 0));
   const avgCapability = avg(scores.map((score) => score.capability ?? 0));
+  // Phase 1 miscalibration: prediction vs actual
   const overconfidence = avg(scores.map((score) => Math.max(0, (score.claimed ?? score.sand) - score.solid)));
   const underconfidence = avg(scores.map((score) => Math.max(0, score.solid - (score.claimed ?? score.sand))));
+  // Phase 3 miscalibration: self-assessment accuracy
   const blindSpots = avg(scores.map((score) => Math.max(0, score.solid - score.concrete)));
+  // Phase 3 false confidence: wrong answers where model was confident
+  const avgFalseConfidence = avg(scores.map((score) => score.falseConfidence ?? 0));
+  // Phase 3 true uncertainty: wrong answers where model correctly doubted itself
+  const avgTrueUncertainty = avg(scores.map((score) => score.trueUncertainty ?? 0));
 
   return {
     avgClaimed,
@@ -91,12 +123,15 @@ export function computeAggregateScores(scores: CategoryScore[]) {
     avgSolid,
     avgConcrete,
     avgDiscernment,
+    avgFalseConfidence,
+    avgTrueUncertainty,
     avgCalibrationError,
     calibrationIndex: Math.max(0, 100 - avgCalibrationError),
     avgCapability,
     overconfidence,
     underconfidence,
     blindSpots,
+    falseConfidence: avgFalseConfidence,
     totalGap: overconfidence + underconfidence + blindSpots
   };
 }

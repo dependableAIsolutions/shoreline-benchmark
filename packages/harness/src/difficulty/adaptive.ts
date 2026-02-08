@@ -10,37 +10,135 @@ export interface TransitionSearchResult {
   boundary: number;
   probeHistory: Array<{ difficulty: number; accuracy: number }>;
   sampleDifficulties: number[];
+  ceilingReached: boolean; // True if model aced max difficulty
 }
 
+/**
+ * Generate Fibonacci-like sequence for aggressive difficulty scaling.
+ * Sequence: 1, 2, 3, 5, 8, 13, 21, 34, 55, 89...
+ */
+function fibonacciScale(steps: number): number[] {
+  const seq = [1, 2];
+  while (seq.length < steps) {
+    seq.push(seq[seq.length - 1] + seq[seq.length - 2]);
+  }
+  return seq;
+}
+
+/**
+ * Find transition zone using exponential probing then Fibonacci refinement.
+ *
+ * Phase 1: Exponential probing - quickly find where model starts failing
+ *   - Start at minDifficulty, double until failure or max reached
+ *
+ * Phase 2: Fibonacci binary search - narrow down the exact boundary
+ *   - Use Fibonacci steps for faster convergence
+ *
+ * Phase 3: Sample around boundary using Fibonacci spacing
+ *   - Sample at boundary ±fib(n) for meaningful calibration range
+ */
 export async function findTransitionZone(
   config: TransitionSearchConfig,
   measureAccuracy: (difficulty: number, probeTrials: number) => Promise<number>
 ): Promise<TransitionSearchResult> {
-  let low = config.minDifficulty;
-  let high = config.maxDifficulty;
   const history: Array<{ difficulty: number; accuracy: number }> = [];
+  const range = config.maxDifficulty - config.minDifficulty;
 
-  while (high - low > 2) {
-    const mid = Math.round((low + high) / 2);
-    const accuracy = await measureAccuracy(mid, config.probeTrials);
-    history.push({ difficulty: mid, accuracy });
+  // Phase 1: Exponential probing to quickly find failure zone
+  // Start with small steps, double each time: 1, 2, 4, 8, 16...
+  let difficulty = config.minDifficulty;
+  let step = Math.max(1, Math.floor(range / 32)); // Start with ~3% of range
+  let lastPassingDifficulty = config.minDifficulty;
+  let firstFailingDifficulty = config.maxDifficulty;
+  let foundFailure = false;
 
-    if (accuracy > 0.8) {
-      low = mid;
+  // Exponential probing
+  while (difficulty <= config.maxDifficulty && !foundFailure) {
+    const accuracy = await measureAccuracy(difficulty, config.probeTrials);
+    history.push({ difficulty, accuracy });
+
+    if (accuracy > 0.7) {
+      lastPassingDifficulty = difficulty;
+      // Exponential increase: double the step each time
+      step = Math.min(step * 2, Math.floor(range / 4));
+      difficulty = Math.min(difficulty + step, config.maxDifficulty);
     } else {
-      high = mid;
+      firstFailingDifficulty = difficulty;
+      foundFailure = true;
     }
   }
 
-  const boundary = (low + high) / 2;
-  const raw = [boundary - 2, boundary - 1, boundary, boundary + 1, boundary + 2]
-    .map((value) => Math.round(clamp(value, config.minDifficulty, config.maxDifficulty)));
+  // Check if we hit the ceiling (model aced max difficulty)
+  const ceilingReached = !foundFailure && lastPassingDifficulty >= config.maxDifficulty - 1;
 
-  const sampleDifficulties = [...new Set(raw)].sort((a, b) => a - b);
+  // Phase 2: Fibonacci binary search to narrow down
+  if (foundFailure && firstFailingDifficulty - lastPassingDifficulty > 2) {
+    let low = lastPassingDifficulty;
+    let high = firstFailingDifficulty;
+    const fibSteps = fibonacciScale(10);
+    let fibIdx = fibSteps.length - 1;
+
+    // Find appropriate Fibonacci step size
+    while (fibIdx > 0 && fibSteps[fibIdx] > (high - low) / 2) {
+      fibIdx--;
+    }
+
+    while (high - low > 2 && fibIdx >= 0) {
+      const fibStep = fibSteps[fibIdx];
+      const mid = Math.round(low + fibStep);
+
+      if (mid >= high) {
+        fibIdx--;
+        continue;
+      }
+
+      const accuracy = await measureAccuracy(mid, config.probeTrials);
+      history.push({ difficulty: mid, accuracy });
+
+      if (accuracy > 0.7) {
+        low = mid;
+      } else {
+        high = mid;
+      }
+
+      fibIdx = Math.max(0, fibIdx - 1);
+    }
+
+    lastPassingDifficulty = low;
+    firstFailingDifficulty = high;
+  }
+
+  const boundary = (lastPassingDifficulty + firstFailingDifficulty) / 2;
+
+  // Phase 3: Generate Fibonacci-spaced sample difficulties around boundary
+  // This gives us good coverage of the transition zone
+  const fibSamples = [1, 2, 3, 5, 8]; // Fibonacci spacing
+  const rawSamples: number[] = [Math.round(boundary)];
+
+  for (const fib of fibSamples) {
+    rawSamples.push(Math.round(boundary - fib));
+    rawSamples.push(Math.round(boundary + fib));
+  }
+
+  // Also add some samples at regular intervals in the passing zone
+  // to measure calibration where model is confident
+  const passingZoneSamples = [
+    Math.round(config.minDifficulty + (boundary - config.minDifficulty) * 0.25),
+    Math.round(config.minDifficulty + (boundary - config.minDifficulty) * 0.5),
+    Math.round(config.minDifficulty + (boundary - config.minDifficulty) * 0.75),
+  ];
+  rawSamples.push(...passingZoneSamples);
+
+  const sampleDifficulties = [...new Set(
+    rawSamples
+      .map((v) => Math.round(clamp(v, config.minDifficulty, config.maxDifficulty)))
+      .filter((v) => v >= config.minDifficulty)
+  )].sort((a, b) => a - b);
 
   return {
     boundary,
     probeHistory: history,
-    sampleDifficulties
+    sampleDifficulties,
+    ceilingReached
   };
 }

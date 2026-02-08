@@ -56,6 +56,8 @@ export interface CategoryScore {
   solid: number;
   concrete: number;
   discernment?: number;            // Correctly identifies success/failure in both directions (0-100)
+  falseConfidence?: number;        // Wrong but confident: model doesn't know what it doesn't know (0-100, lower is better)
+  trueUncertainty?: number;        // Wrong and knows it: good metacognition about failures (0-100, higher is better)
   calibrationError?: number;       // |predicted confidence - realized accuracy| (0-100, lower is better)
   capability?: number;             // Normalized transition-zone capability percentile (0-100)
   trialCount: number;
@@ -74,12 +76,15 @@ export interface ModelResult {
     avgSolid: number;
     avgConcrete: number;
     avgDiscernment?: number;
+    avgFalseConfidence?: number;   // Wrong but confident (lower is better)
+    avgTrueUncertainty?: number;   // Wrong and knows it (higher is better)
     avgCalibrationError?: number;
     calibrationIndex?: number;     // 100 - avgCalibrationError
     avgCapability?: number;        // Average normalized capability percentile
     overconfidence: number;
     underconfidence?: number;
     blindSpots: number;
+    falseConfidence?: number;      // Alias for avgFalseConfidence for clearer API
     totalGap: number;
   };
   metadata: {

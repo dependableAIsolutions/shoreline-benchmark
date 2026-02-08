@@ -13,7 +13,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 1,
     difficultyParam: "digitCount",
     minDifficulty: 2,
-    maxDifficulty: 12,
+    maxDifficulty: 50, // Extended: 50-digit multiplication is challenging
     description: "multiply two random integers with the same digit count"
   },
   {
@@ -22,7 +22,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 1,
     difficultyParam: "bitSize",
     minDifficulty: 4,
-    maxDifficulty: 28,
+    maxDifficulty: 64, // Extended: larger bit sizes
     description: "compute modular exponentiation using exact arithmetic"
   },
   {
@@ -31,7 +31,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 1,
     difficultyParam: "gateCount",
     minDifficulty: 2,
-    maxDifficulty: 16,
+    maxDifficulty: 50, // Extended: complex circuits
     description: "evaluate a boolean expression over NAND, NOR, and XOR"
   },
   {
@@ -40,7 +40,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 1,
     difficultyParam: "matrixSize",
     minDifficulty: 2,
-    maxDifficulty: 6,
+    maxDifficulty: 12, // Extended: 12x12 matrices are very hard
     description: "compute the determinant of an integer matrix"
   },
   {
@@ -49,7 +49,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 1,
     difficultyParam: "constraintCount",
     minDifficulty: 1,
-    maxDifficulty: 8,
+    maxDifficulty: 20, // Extended: more complex problems
     description: "solve exact combinatorial counting tasks"
   },
   {
@@ -58,7 +58,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 2,
     difficultyParam: "sequenceLength",
     minDifficulty: 20,
-    maxDifficulty: 500,
+    maxDifficulty: 2000, // Extended: longer sequences
     description: "generate digit sequences tested for distribution quality"
   },
   {
@@ -67,7 +67,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 2,
     difficultyParam: "constraintDepth",
     minDifficulty: 1,
-    maxDifficulty: 8,
+    maxDifficulty: 20, // Extended: more constraints
     description: "generate text satisfying strict mechanical constraints"
   },
   {
@@ -76,7 +76,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 2,
     difficultyParam: "gridComplexity",
     minDifficulty: 1,
-    maxDifficulty: 5,
+    maxDifficulty: 10, // Extended: more complex requirements
     description: "produce Sudoku puzzles with validity constraints"
   },
   {
@@ -85,7 +85,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 2,
     difficultyParam: "sampleSize",
     minDifficulty: 10,
-    maxDifficulty: 200,
+    maxDifficulty: 1000, // Extended: larger samples
     description: "generate values that match a target distribution"
   },
   {
@@ -94,7 +94,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 2,
     difficultyParam: "propertyCount",
     minDifficulty: 1,
-    maxDifficulty: 8,
+    maxDifficulty: 20, // Extended: more properties to track
     description: "write text describing its own measurable properties"
   },
   {
@@ -103,7 +103,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     tier: 2,
     difficultyParam: "inputLength",
     minDifficulty: 2,
-    maxDifficulty: 40,
+    maxDifficulty: 200, // Extended: much longer texts
     description: "count target character or token occurrences in given text"
   }
 ];

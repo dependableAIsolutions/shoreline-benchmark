@@ -1,19 +1,37 @@
 # Shoreline Benchmark
 
-Shoreline measures model capability and metacognitive calibration in three layers:
-- Sand: predicted confidence before solving
-- Solid: ground-truth task performance
-- Concrete: self-evaluation aligned with correctness
+Shoreline measures model capability and metacognitive calibration across 11 reasoning categories.
 
-## Monorepo
+## Scoring model
 
-- `apps/web`: Next.js frontend (single view, compare view, leaderboard)
-- `packages/shared`: canonical Shoreline types/constants
-- `packages/harness`: adapters, tasks, scoring, adaptive runner, checkpoint resume
-- `scripts/run-benchmark.ts`: single-model benchmark CLI
-- `scripts/run-benchmark-suite.ts`: config-driven multi-model orchestrator with state tracking
+- `claimed`: raw Phase 1 confidence before solving (0-100)
+- `solid`: actual Phase 2 task performance (0-100)
+- `concrete`: buildable subset of `solid` where the model both succeeds and recognizes success (0-100)
+- `sand`: visualization envelope, defined as `max(claimed, solid, concrete)` to keep layer nesting stable
 
-## Install
+Derived aggregate metrics:
+- `overconfidence`: `max(0, claimed - solid)`
+- `underconfidence`: `max(0, solid - claimed)`
+- `blindSpots`: `max(0, solid - concrete)`
+- `calibrationIndex`: `100 - avgCalibrationError`
+- `capabilityIndex`: normalized transition-zone percentile by category difficulty range
+
+## Repository layout
+
+- `apps/web`: Next.js UI (single, compare, leaderboard)
+- `packages/shared`: shared types/constants
+- `packages/harness`: adapters, tasks, scoring, checkpoint/resume runner
+- `scripts/run-benchmark.ts`: single-model runner
+- `scripts/run-benchmark-suite.ts`: config-driven multi-model suite runner
+- `scripts/recompute-scores.ts`: recompute `scores.json` from `raw-responses.jsonl`
+- `scripts/generate-static.ts`: rebuild `apps/web/src/data/results.generated.*`
+
+## Prerequisites
+
+- Node.js 20+
+- `corepack` enabled
+
+Install:
 
 ```bash
 corepack pnpm install
@@ -21,93 +39,110 @@ corepack pnpm install
 
 ## Environment
 
-Create local env file:
+Create local env:
 
 ```bash
 cp .env.example .env.local
 ```
 
-`.env.local` is gitignored and loaded automatically by helper scripts.
+Common keys:
+- `OPENROUTER_API_KEY`
+- `LOCAL_MODEL_API_URL` (default: `http://localhost:5555/api/v1/chat`)
+- `LOCAL_MODEL_TIMEOUT_MS`
+- `LOCAL_MODEL_SYSTEM_PROMPT`
+- `LMSTUDIO_BASE_URL`
 
 ## Script split
 
 - `./start-dev.sh`
-  - Web-only script.
+  - Web-only flow.
   - Optionally regenerates static data from existing `results/`.
-  - Starts Next dev server so you can inspect visualization.
-
+  - Starts Next.js dev server.
 - `./run-benchmarks.sh`
-  - Benchmark execution script.
+  - Benchmark execution flow.
   - Uses suite config (`benchmark/suites/*.json`).
-  - Tracks progress/state in `benchmark/state/*.state.json`.
-  - Skips completed models and resumes incomplete/failed models when checkpoints exist.
+  - Maintains state in `benchmark/state/*.state.json`.
+  - Supports skip-completed and resume-incomplete behavior.
 
-## Website (render results only)
+## Run the web UI
 
 ```bash
 ./start-dev.sh
 ```
 
-Optional env overrides:
+Optional overrides:
 - `WEB_PORT=3000`
 - `REFRESH_STATIC=1` (default)
 - `RESULTS_INPUT=results`
 
-## Benchmark suite runs
+## Run benchmark suites
 
-Default local suite:
+Default (local):
 
 ```bash
 ./run-benchmarks.sh
 ```
 
-Run a specific suite:
+OpenRouter quick suite:
 
 ```bash
 CONFIG=benchmark/suites/openrouter.smoke.json ./run-benchmarks.sh
 ```
 
-Useful flags passed through to suite runner:
+Useful flags:
 - `--dry-run`
 - `--force`
 - `--models modelA,modelB`
 - `--limit 2`
 - `--state benchmark/state/custom.state.json`
 
-## Suite configs and state
+## Suite config files
 
-- Config examples:
-  - `benchmark/suites/localapi.default.json`
-  - `benchmark/suites/openrouter.smoke.json`
-  - `benchmark/suites/openrouter.launch-template.json`
-- Runtime state:
-  - `benchmark/state/<suite>.state.json` (gitignored)
+- `benchmark/suites/localapi.default.json`
+- `benchmark/suites/openrouter.smoke.json`
+- `benchmark/suites/openrouter.launch-template.json`
 
-State tracks for each model:
-- status (`in_progress`, `completed`, `failed`)
-- attempts
-- active run directory
-- timestamps and error info
+Note: model IDs are source-of-truth in these JSON files. Update those files to change the evaluated model roster.
 
 ## Single-model CLI (advanced)
 
 ```bash
-corepack pnpm benchmark --adapter localapi --model "qwen/qwen3-coder-next" --categories mult,bool,counting --quick
+corepack pnpm benchmark --adapter localapi --model "qwen/qwen3-coder-next" --all --quick
 ```
 
-Resume an interrupted run directory:
+Resume a run:
 
 ```bash
-corepack pnpm benchmark --adapter localapi --model "qwen/qwen3-coder-next" --categories mult,bool,counting --resume results/qwen-qwen3-coder-next/<timestamp>
+corepack pnpm benchmark --adapter localapi --model "qwen/qwen3-coder-next" --all --resume results/qwen-qwen3-coder-next/<timestamp>
 ```
 
-## Static data generation
+## Regenerate and repair outputs
+
+Recompute scores from raw logs:
+
+```bash
+corepack pnpm recompute-scores --input results
+```
+
+Regenerate static web data:
 
 ```bash
 corepack pnpm generate-static --input results --output apps/web/src/data
 ```
 
-## Build and checks
+## Local model API smoke test
+
+```bash
+curl http://localhost:5555/api/v1/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen/qwen3-coder-next",
+    "system_prompt": "You answer only in rhymes.",
+    "input": "What is your favorite color?"
+  }'
+```
+
+## Validation
 
 ```bash
 corepack pnpm typecheck

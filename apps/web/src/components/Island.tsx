@@ -2,7 +2,7 @@
 
 import { categoryLabels } from "../data/results";
 import { normalizeLayersForDisplay } from "../lib/scoring";
-import { catmullRom, getSmoothedPoints, polarToXY } from "../lib/splines";
+import { catmullRom, getSmoothedPoints, monotoneRadialPath, polarToXY } from "../lib/splines";
 import { CATEGORY_ORDER, type CategoryKey, type ModelResult } from "../lib/types";
 
 interface IslandProps {
@@ -36,9 +36,11 @@ export function Island({
   const solidVals = displayLayers.map((layer) => layer.solid);
   const concreteVals = displayLayers.map((layer) => layer.concrete);
 
-  const sandPath = catmullRom(getSmoothedPoints(cx, cy, sandVals, maxR));
-  const solidPath = catmullRom(getSmoothedPoints(cx, cy, solidVals, maxR));
-  const concretePath = catmullRom(getSmoothedPoints(cx, cy, concreteVals, maxR));
+  // Use monotone-preserving splines to prevent visual layer crossings
+  // Layer indices (0=concrete, 1=solid, 2=sand) provide deterministic organic variation
+  const sandPath = monotoneRadialPath(cx, cy, sandVals, maxR, 2);
+  const solidPath = monotoneRadialPath(cx, cy, solidVals, maxR, 1);
+  const concretePath = monotoneRadialPath(cx, cy, concreteVals, maxR, 0);
 
   const uid = model.modelId.replace(/[^a-zA-Z0-9_-]/g, "");
 
@@ -97,8 +99,9 @@ export function Island({
       <path d={solidPath} fill={`url(#solidGrad-${uid})`} stroke="rgba(60,150,70,0.6)" strokeWidth={2} />
       <path d={concretePath} fill={`url(#concreteGrad-${uid})`} stroke="rgba(100,120,140,0.7)" strokeWidth={2.5} />
 
-      {[0.6, 0.75, 0.9].map((scale) => {
-        const path = catmullRom(getSmoothedPoints(cx, cy, concreteVals.map((value) => value * scale), maxR));
+      {[0.6, 0.75, 0.9].map((scale, idx) => {
+        const scaledVals = concreteVals.map((value) => value * scale);
+        const path = monotoneRadialPath(cx, cy, scaledVals, maxR, idx + 3);
         return <path key={scale} d={path} fill="none" stroke="rgba(130,145,160,0.12)" strokeWidth={0.5} />;
       })}
 
@@ -132,18 +135,21 @@ export function Island({
               onMouseLeave={() => onHoverCategory?.(null)}
               style={{ cursor: "default" }}
             >
-              <text
-                x={pos.x}
-                y={pos.y}
-                textAnchor={anchor}
-                dominantBaseline="central"
-                fontSize={9}
-                fontFamily="'JetBrains Mono', monospace"
-                fill={isHovered ? "#E8E0D4" : "#3D3630"}
-                fontWeight={isHovered ? 600 : 400}
-              >
-                {categoryLabels[category as CategoryKey]}
-              </text>
+              {/* Hide outer label when tooltip is open to avoid overlap */}
+              {!isHovered && (
+                <text
+                  x={pos.x}
+                  y={pos.y}
+                  textAnchor={anchor}
+                  dominantBaseline="central"
+                  fontSize={9}
+                  fontFamily="'JetBrains Mono', monospace"
+                  fill="#3D3630"
+                  fontWeight={400}
+                >
+                  {categoryLabels[category as CategoryKey]}
+                </text>
+              )}
 
               {isHovered && (
                 <>
@@ -153,36 +159,36 @@ export function Island({
 
                   <g>
                     <rect
-                      x={cx - 84}
-                      y={cy - 52}
-                      width={168}
-                      height={104}
+                      x={cx - 78}
+                      y={cy - 42}
+                      width={156}
+                      height={84}
                       rx={8}
-                      fill="rgba(8,12,26,0.94)"
-                      stroke="rgba(255,255,255,0.1)"
+                      fill="rgba(8,12,26,0.96)"
+                      stroke="rgba(255,255,255,0.15)"
                       strokeWidth={1}
                     />
                     <text
                       x={cx}
                       y={cy - 24}
                       textAnchor="middle"
-                      fontSize={11}
+                      fontSize={10}
                       fontFamily="'JetBrains Mono', monospace"
                       fill="#E8E0D4"
                       fontWeight={700}
                     >
                       {categoryLabels[category as CategoryKey]}
                     </text>
-                    <text x={cx - 62} y={cy - 22} fontSize={10} fontFamily="'JetBrains Mono', monospace" fill="#FBBF24">
+                    <text x={cx - 58} y={cy - 6} fontSize={9} fontFamily="'JetBrains Mono', monospace" fill="#FBBF24">
                       Claimed: {rawClaimedVals[index].toFixed(1)}
                     </text>
-                    <text x={cx - 62} y={cy - 6} fontSize={10} fontFamily="'JetBrains Mono', monospace" fill="#F59E0B">
+                    <text x={cx - 58} y={cy + 8} fontSize={9} fontFamily="'JetBrains Mono', monospace" fill="#F59E0B">
                       Sand: {rawSandVals[index].toFixed(1)}
                     </text>
-                    <text x={cx - 62} y={cy + 10} fontSize={10} fontFamily="'JetBrains Mono', monospace" fill="#3DA84A">
+                    <text x={cx - 58} y={cy + 22} fontSize={9} fontFamily="'JetBrains Mono', monospace" fill="#3DA84A">
                       Solid: {rawSolidVals[index].toFixed(1)}
                     </text>
-                    <text x={cx - 62} y={cy + 26} fontSize={10} fontFamily="'JetBrains Mono', monospace" fill="#8A9CAA">
+                    <text x={cx + 20} y={cy + 22} fontSize={9} fontFamily="'JetBrains Mono', monospace" fill="#8A9CAA">
                       Concrete: {rawConcreteVals[index].toFixed(1)}
                     </text>
                   </g>

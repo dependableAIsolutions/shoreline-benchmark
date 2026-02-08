@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "modelId": "google/gemini-3-flash-preview",
+  "startedAt": "2026-02-08T02:43:15.186Z",
+  "updatedAt": "2026-02-08T02:48:46.798Z",
+  "quickMode": false,
+  "trialsPerDifficulty": 1,
+  "categories": {
+    "mult": {
+      "boundary": 12,
+      "sampleDifficulties": [
+        4,
+        5,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        17,
+        20
+      ],
+      "quickMode": false,
+      "completedByDifficulty": {
+        "4": 1,
+        "5": 1,
+        "7": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "17": 1,
+        "20": 1
+      }
+    }
+  }
+}

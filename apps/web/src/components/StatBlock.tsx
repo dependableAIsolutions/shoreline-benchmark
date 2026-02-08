@@ -7,7 +7,7 @@ interface StatBlockProps {
 
 export function StatBlock({ label, value, sub, color }: StatBlockProps) {
   return (
-    <div className="flex-1">
+    <div>
       <div className="mb-1 font-mono text-[8px] tracking-[0.18em] text-[#4A4038]">{label}</div>
       <div className="font-mono text-[26px] font-bold leading-none" style={{ color }}>
         {value}
