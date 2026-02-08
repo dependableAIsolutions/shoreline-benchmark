@@ -340,9 +340,23 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
         ? 0
         : categoryTrials.filter((trial) => trial.phase1.confidence === null || trial.phase3.confidence === null).length /
           categoryTrials.length;
+    const emptyPhase2Rate =
+      categoryTrials.length === 0
+        ? 0
+        : categoryTrials.filter((trial) => trial.phase2.response.trim().length === 0).length / categoryTrials.length;
+    const emptyPhase3Rate =
+      categoryTrials.length === 0
+        ? 0
+        : categoryTrials.filter((trial) => trial.phase3.response.trim().length === 0).length / categoryTrials.length;
 
     if (invalidRate > 0.2) {
       logWarn(`${category.label}: confidence extraction failed in ${(invalidRate * 100).toFixed(1)}% of trials.`);
+    }
+    if (emptyPhase2Rate > 0.2) {
+      logWarn(`${category.label}: Phase 2 returned empty output in ${(emptyPhase2Rate * 100).toFixed(1)}% of trials.`);
+    }
+    if (emptyPhase3Rate > 0.2) {
+      logWarn(`${category.label}: Phase 3 returned empty output in ${(emptyPhase3Rate * 100).toFixed(1)}% of trials.`);
     }
 
     scoresByCategory[categoryKey] = computeCategoryScore(categoryKey, categoryTrials, state.boundary);

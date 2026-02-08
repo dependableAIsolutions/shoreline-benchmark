@@ -57,10 +57,13 @@ export const constrainedTask: TaskGenerator = {
         }
 
         const passed = checks.filter(Boolean).length;
-        const partialScore = passed / checks.length;
+        const baseScore = passed / checks.length;
+        // Avoid rewarding trivially short/empty outputs that pass "banned letter" checks.
+        const coverage = Math.min(1, words.length / Math.max(1, wordCount));
+        const partialScore = baseScore * coverage;
 
         return {
-          extractedAnswer: `${passed}/${checks.length}`,
+          extractedAnswer: `${passed}/${checks.length} @ ${Math.round(coverage * 100)}% length`,
           isCorrect: passed === checks.length,
           partialScore
         };

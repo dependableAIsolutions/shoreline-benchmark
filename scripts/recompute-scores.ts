@@ -7,13 +7,20 @@ import {
   type ModelResult,
   type TrialResult
 } from "@shoreline/shared";
-import { computeAggregateScores, computeCategoryScore } from "@shoreline/harness";
+import {
+  computeAggregateScores,
+  computeCategoryScore,
+  extractAnswerLine,
+  extractConfidence,
+  extractLastInteger
+} from "@shoreline/harness";
 
 interface CheckpointCategory {
   boundary?: number;
 }
 
 interface CheckpointFile {
+  modelId?: string;
   categories?: Partial<Record<CategoryKey, CheckpointCategory>>;
 }
 
@@ -63,7 +70,38 @@ function parseRawTrials(content: string): TrialResult[] {
     .filter((line) => line.length > 0)
     .flatMap((line) => {
       try {
-        return [JSON.parse(line) as TrialResult];
+        const parsed = JSON.parse(line) as TrialResult;
+        const p1Confidence = extractConfidence(parsed.phase1.response);
+        const p3Confidence = extractConfidence(parsed.phase3.response);
+        const numericAnswerCategories: CategoryKey[] = ["mult", "modexp", "matrix", "combo", "counting", "bool"];
+        const shouldReextractPhase2 = numericAnswerCategories.includes(parsed.category);
+        const phase2AnswerText = shouldReextractPhase2 ? extractAnswerLine(parsed.phase2.response) ?? parsed.phase2.response : null;
+        const extractedPhase2 = shouldReextractPhase2 ? extractLastInteger(phase2AnswerText ?? "") ?? "" : parsed.phase2.extractedAnswer;
+        const normalizedPhase2 =
+          parsed.category === "bool" ? (extractedPhase2 === "0" || extractedPhase2 === "1" ? extractedPhase2 : "") : extractedPhase2;
+        const normalizedCorrect =
+          shouldReextractPhase2 ? String(parsed.phase2.correctAnswer ?? "").replaceAll(",", "").trim() : parsed.phase2.correctAnswer;
+
+        return [
+          {
+            ...parsed,
+            phase1: {
+              ...parsed.phase1,
+              confidence: p1Confidence
+            },
+            phase2: shouldReextractPhase2
+              ? {
+                  ...parsed.phase2,
+                  extractedAnswer: normalizedPhase2,
+                  isCorrect: normalizedPhase2 === normalizedCorrect
+                }
+              : parsed.phase2,
+            phase3: {
+              ...parsed.phase3,
+              confidence: p3Confidence
+            }
+          }
+        ];
       } catch {
         return [];
       }
@@ -108,8 +146,8 @@ async function recomputeRun(modelDirPath: string, runDirPath: string, modelDirNa
     .length;
 
   const timestamp = previousScore?.timestamp ?? trials[0]?.timestamp ?? new Date().toISOString();
-  const modelId = previousScore?.modelId ?? modelDirName;
-  const modelDisplayName = previousScore?.modelDisplayName ?? modelId;
+  const modelId = previousScore?.modelId ?? checkpoint?.modelId ?? modelDirName;
+  const modelDisplayName = previousScore?.modelDisplayName ?? checkpoint?.modelId ?? modelId;
 
   const updated: ModelResult = {
     modelId,

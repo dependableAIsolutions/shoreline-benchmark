@@ -3,11 +3,17 @@ export interface Point {
   y: number;
 }
 
+function quantize(value: number, precision = 3): number {
+  const factor = 10 ** precision;
+  return Math.round(value * factor) / factor;
+}
+
 export function polarToXY(cx: number, cy: number, angleDeg: number, radius: number): Point {
   const rad = ((angleDeg - 90) * Math.PI) / 180;
   return {
-    x: cx + radius * Math.cos(rad),
-    y: cy + radius * Math.sin(rad)
+    // Quantize coordinates so server/browser floating-point differences don't trigger hydration mismatches.
+    x: quantize(cx + radius * Math.cos(rad)),
+    y: quantize(cy + radius * Math.sin(rad))
   };
 }
 

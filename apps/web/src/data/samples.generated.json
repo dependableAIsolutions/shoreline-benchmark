@@ -880,18 +880,18 @@
       "difficulty": 26,
       "phase1": {
         "prompt": "You will be asked to multiply two 26-digit integers.\nCategory: Multiplication\nDifficulty (digitCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 95%",
-        "confidence": 95
+        "response": " 85%",
+        "confidence": 85
       },
       "phase2": {
-        "prompt": "Multiply 99241063121442615504592534 by 11285765410262657545533133.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "prompt": "Multiply 36832981683558645451576363 by 36101200845264157598938467.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
         "response": "",
         "extractedAnswer": "",
-        "correctAnswer": "1120011357453670113417236956313388217137578961429022",
+        "correctAnswer": "1329714869488086605786777388213873003684660588655521",
         "isCorrect": false
       },
       "phase3": {
-        "prompt": "You completed this task:\nMultiply 99241063121442615504592534 by 11285765410262657545533133.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "prompt": "You completed this task:\nMultiply 36832981683558645451576363 by 36101200845264157598938467.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
         "response": "",
         "confidence": null
       },
@@ -907,14 +907,14 @@
         "confidence": 100
       },
       "phase2": {
-        "prompt": "Compute (9686414582 ^ 770271) mod 16494769399.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "prompt": "Compute (14507951870 ^ 1000867) mod 15907544203.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
         "response": "",
         "extractedAnswer": "",
-        "correctAnswer": "7309447787",
+        "correctAnswer": "13766275367",
         "isCorrect": false
       },
       "phase3": {
-        "prompt": "You completed this task:\nCompute (9686414582 ^ 770271) mod 16494769399.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "prompt": "You completed this task:\nCompute (14507951870 ^ 1000867) mod 15907544203.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
         "response": "",
         "confidence": null
       },
@@ -926,18 +926,18 @@
       "difficulty": 26,
       "phase1": {
         "prompt": "You will be asked to evaluate a boolean circuit with 26 sequential gates.\nCategory: Boolean Circuits\nDifficulty (gateCount): 26\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 100%",
-        "confidence": 100
+        "response": " 95%",
+        "confidence": 95
       },
       "phase2": {
-        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=0, D=1, E=1, F=1\nExpression: ((((((((((((((((((((((((((A XOR B) XOR F) NOR F) XOR B) NAND F) NAND F) NAND C) NOR B) NOR F) NOR F) NOR D) NOR F) NOR D) XOR F) NOR D) XOR D) NAND E) XOR E) XOR F) NOR E) NAND F) XOR E) XOR E) NOR C) XOR F) NOR B)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
+        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=1, D=1, E=0, F=0\nExpression: ((((((((((((((((((((((((((A NAND B) NAND C) NAND C) XOR D) XOR E) NAND C) NAND B) NAND F) NAND D) NAND B) XOR C) XOR B) XOR E) NOR E) XOR E) XOR D) NOR D) XOR B) NAND F) NOR B) NAND C) NOR D) NAND E) XOR B) NAND E) NOR B)\nOutput only 0 or 1.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
         "response": "",
         "extractedAnswer": "",
         "correctAnswer": "0",
         "isCorrect": false
       },
       "phase3": {
-        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=0, D=1, E=1, F=1\nExpression: ((((((((((((((((((((((((((A XOR B) XOR F) NOR F) XOR B) NAND F) NAND F) NAND C) NOR B) NOR F) NOR F) NOR D) NOR F) NOR D) XOR F) NOR D) XOR D) NAND E) XOR E) XOR F) NOR E) NAND F) XOR E) XOR E) NOR C) XOR F) NOR B)\nOutput only 0 or 1.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
+        "prompt": "You completed this task:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=0, C=1, D=1, E=0, F=0\nExpression: ((((((((((((((((((((((((((A NAND B) NAND C) NAND C) XOR D) XOR E) NAND C) NAND B) NAND F) NAND D) NAND B) XOR C) XOR B) XOR E) NOR E) XOR E) XOR D) NOR D) XOR B) NAND F) NOR B) NAND C) NOR D) NAND E) XOR B) NAND E) NOR B)\nOutput only 0 or 1.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
         "response": "",
         "confidence": null
       },
@@ -973,8 +973,8 @@
       "difficulty": 6,
       "phase1": {
         "prompt": "You will be asked to produce a valid completed 9x9 Sudoku grid under strict formatting (difficulty 6).\nCategory: Sudoku Generation\nDifficulty (gridComplexity): 6\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 100%",
-        "confidence": 100
+        "response": "",
+        "confidence": null
       },
       "phase2": {
         "prompt": "Output a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nDo not explain. Output final answer only on one line exactly as: ANSWER: <value>",
@@ -986,11 +986,11 @@
       },
       "phase3": {
         "prompt": "You completed this task:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\n\nYour answer was:\n\n\nReturn only one confidence percentage from 0-100, as a number followed by %.",
-        "response": " 0%",
-        "confidence": 0
+        "response": " 100%",
+        "confidence": 100
       },
-      "pattern": "true_negative",
-      "patternLabel": "Wrong + Doubted (True Negative)"
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
     },
     {
       "category": "distrib",

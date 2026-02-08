@@ -2,7 +2,7 @@ import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
 import { createReadStream } from "node:fs";
 import { createInterface } from "node:readline";
 import path from "node:path";
-import type { ModelResult, CategoryKey } from "@shoreline/shared";
+import { CATEGORY_ORDER, type ModelResult, type CategoryKey } from "@shoreline/shared";
 
 interface RawTrial {
   category: CategoryKey;
@@ -111,6 +111,10 @@ interface RunInfo {
   runDir: string;
 }
 
+function hasFullCategoryCoverage(result: ModelResult): boolean {
+  return CATEGORY_ORDER.every((category) => (result.categories[category]?.trialCount ?? 0) > 0);
+}
+
 async function findRunFiles(inputDir: string): Promise<RunInfo[]> {
   const models = await readdir(inputDir, { withFileTypes: true });
   const runs: RunInfo[] = [];
@@ -154,6 +158,9 @@ async function main(): Promise<void> {
   // Keep only the latest run per model
   const latestByModel = new Map<string, { result: ModelResult; samples: SampleResult[] }>();
   for (const { result, samples } of results) {
+    if (!hasFullCategoryCoverage(result)) {
+      continue;
+    }
     const existing = latestByModel.get(result.modelId);
     if (!existing || new Date(result.timestamp).getTime() > new Date(existing.result.timestamp).getTime()) {
       latestByModel.set(result.modelId, { result, samples });

@@ -42,6 +42,7 @@ interface SuiteConfig {
   };
   openrouter?: {
     apiKeyEnv?: string;
+    timeoutMs?: number;
   };
   models: SuiteModel[];
 }
@@ -158,7 +159,8 @@ function buildAdapter(config: SuiteConfig, modelId: string, dryRun: boolean): { 
       adapter: new OpenRouterAdapter({
         apiKey,
         model: modelId,
-        temperature: config.temperature ?? 0.7
+        temperature: config.temperature ?? 0.7,
+        timeoutMs: config.openrouter?.timeoutMs ?? Number.parseInt(process.env.OPENROUTER_TIMEOUT_MS ?? "120000", 10)
       }),
       name: "openrouter"
     };
@@ -218,6 +220,9 @@ async function refreshStaticData(inputDir: string, outputDir: string): Promise<v
 
   const latestByModel = new Map<string, ModelResult>();
   for (const result of results) {
+    const hasAllCategories = CATEGORY_ORDER.every((category) => (result.categories[category]?.trialCount ?? 0) > 0);
+    if (!hasAllCategories) continue;
+
     const current = latestByModel.get(result.modelId);
     if (!current || new Date(result.timestamp).getTime() > new Date(current.timestamp).getTime()) {
       latestByModel.set(result.modelId, result);

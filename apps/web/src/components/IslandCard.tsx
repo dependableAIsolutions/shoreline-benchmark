@@ -15,6 +15,9 @@ interface IslandCardProps {
 
 export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = false }: IslandCardProps) {
   const stats = model.aggregate;
+  const totalTrials = model.metadata.totalTrials;
+  const invalidRate = totalTrials > 0 ? (model.metadata.invalidTrials / totalTrials) * 100 : 0;
+  const isLowSampleRun = totalTrials <= Object.keys(model.categories).length;
   const underconfidence = stats.underconfidence ?? Math.max(0, stats.avgSolid - (stats.avgClaimed ?? stats.avgSand));
   const totalGap = stats.totalGap ?? stats.overconfidence + underconfidence + stats.blindSpots;
   const capability = stats.avgCapability ?? 0;
@@ -24,6 +27,15 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
   return (
     <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
       <h2 className="mb-3 font-mono text-base font-bold text-[#E8E0D4]">{model.modelDisplayName}</h2>
+      <div className="mb-3 flex flex-wrap gap-2 font-mono text-[10px] text-[#6f6457]">
+        <span className="rounded border border-white/10 px-2 py-0.5">{totalTrials} trials</span>
+        {isLowSampleRun && <span className="rounded border border-[#F59E0B]/40 px-2 py-0.5 text-[#F59E0B]">quick run</span>}
+        {model.metadata.invalidTrials > 0 && (
+          <span className="rounded border border-[#F87171]/40 px-2 py-0.5 text-[#F87171]">
+            {invalidRate.toFixed(1)}% invalid confidence
+          </span>
+        )}
+      </div>
 
       <Island
         model={model}

@@ -22,8 +22,24 @@ export interface TaskGenerator {
 }
 
 export function extractAnswerLine(response: string): string | null {
-  const answerMatch = response.match(/ANSWER\s*:\s*([^\n]+)/i);
-  if (answerMatch?.[1]) return answerMatch[1].trim();
+  const matches = [...response.matchAll(/ANSWER\s*:\s*([^\n]*)/gi)];
+  if (matches.length === 0) return null;
+
+  for (let i = matches.length - 1; i >= 0; i -= 1) {
+    const match = matches[i];
+    const candidate = (match[1] ?? "").trim().replace(/^[*_`~\s-]+|[*_`~\s-]+$/g, "");
+    if (candidate.length > 0 && /[a-z0-9]/i.test(candidate)) return candidate;
+
+    // Handle cases like "Final Answer:" where the value appears on the next line.
+    const after = response.slice((match.index ?? 0) + match[0].length);
+    const nextLine = after
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .find((line) => line.length > 0);
+    const normalizedNext = (nextLine ?? "").replace(/^[*_`~\s-]+|[*_`~\s-]+$/g, "");
+    if (normalizedNext.length > 0 && /[a-z0-9]/i.test(normalizedNext)) return normalizedNext;
+  }
+
   return null;
 }
 

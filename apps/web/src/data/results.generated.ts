@@ -1149,18 +1149,18 @@ export const generatedResults: ModelResult[] = [
   {
     "modelId": "moonshotai/kimi-k2.5",
     "modelDisplayName": "moonshotai/kimi-k2.5",
-    "timestamp": "2026-02-08T03:28:15.016Z",
+    "timestamp": "2026-02-08T04:42:44.963Z",
     "categories": {
       "mult": {
         "category": "mult",
-        "claimed": 95,
-        "sand": 95,
+        "claimed": 85,
+        "sand": 85,
         "solid": 0,
         "concrete": 0,
         "discernment": 0,
         "falseConfidence": 0,
         "trueUncertainty": 0,
-        "calibrationError": 95,
+        "calibrationError": 85,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
@@ -1189,24 +1189,6 @@ export const generatedResults: ModelResult[] = [
       },
       "bool": {
         "category": "bool",
-        "claimed": 100,
-        "sand": 100,
-        "solid": 0,
-        "concrete": 0,
-        "discernment": 0,
-        "falseConfidence": 0,
-        "trueUncertainty": 0,
-        "calibrationError": 100,
-        "capability": 50,
-        "trialCount": 1,
-        "difficultyRange": [
-          26,
-          26
-        ],
-        "transitionZone": 26
-      },
-      "matrix": {
-        "category": "matrix",
         "claimed": 95,
         "sand": 95,
         "solid": 0,
@@ -1218,13 +1200,13 @@ export const generatedResults: ModelResult[] = [
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
-          7,
-          7
+          26,
+          26
         ],
-        "transitionZone": 7
+        "transitionZone": 26
       },
-      "combo": {
-        "category": "combo",
+      "matrix": {
+        "category": "matrix",
         "claimed": 100,
         "sand": 100,
         "solid": 0,
@@ -1233,6 +1215,24 @@ export const generatedResults: ModelResult[] = [
         "falseConfidence": 0,
         "trueUncertainty": 0,
         "calibrationError": 100,
+        "capability": 50,
+        "trialCount": 1,
+        "difficultyRange": [
+          7,
+          7
+        ],
+        "transitionZone": 7
+      },
+      "combo": {
+        "category": "combo",
+        "claimed": 0,
+        "sand": 0,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
         "capability": 52.63157894736842,
         "trialCount": 1,
         "difficultyRange": [
@@ -1263,12 +1263,12 @@ export const generatedResults: ModelResult[] = [
         "category": "constrained",
         "claimed": 85,
         "sand": 85,
-        "solid": 60,
+        "solid": 0,
         "concrete": 0,
         "discernment": 0,
         "falseConfidence": 0,
         "trueUncertainty": 0,
-        "calibrationError": 25,
+        "calibrationError": 85,
         "capability": 52.63157894736842,
         "trialCount": 1,
         "difficultyRange": [
@@ -1279,14 +1279,14 @@ export const generatedResults: ModelResult[] = [
       },
       "sudoku": {
         "category": "sudoku",
-        "claimed": 100,
-        "sand": 100,
+        "claimed": 0,
+        "sand": 0,
         "solid": 0,
         "concrete": 0,
-        "discernment": 100,
-        "falseConfidence": 0,
-        "trueUncertainty": 100,
-        "calibrationError": 100,
+        "discernment": 0,
+        "falseConfidence": 100,
+        "trueUncertainty": 0,
+        "calibrationError": 0,
         "capability": 55.55555555555556,
         "trialCount": 1,
         "difficultyRange": [
@@ -1319,9 +1319,9 @@ export const generatedResults: ModelResult[] = [
         "sand": 0,
         "solid": 0,
         "concrete": 0,
-        "discernment": 100,
+        "discernment": 0,
         "falseConfidence": 0,
-        "trueUncertainty": 100,
+        "trueUncertainty": 0,
         "calibrationError": 0,
         "capability": 52.63157894736842,
         "trialCount": 1,
@@ -1333,14 +1333,14 @@ export const generatedResults: ModelResult[] = [
       },
       "counting": {
         "category": "counting",
-        "claimed": 0,
-        "sand": 0,
+        "claimed": 95,
+        "sand": 95,
         "solid": 0,
         "concrete": 0,
         "discernment": 0,
         "falseConfidence": 0,
         "trueUncertainty": 0,
-        "calibrationError": 0,
+        "calibrationError": 95,
         "capability": 50,
         "trialCount": 1,
         "difficultyRange": [
@@ -1351,28 +1351,28 @@ export const generatedResults: ModelResult[] = [
       }
     },
     "aggregate": {
-      "avgClaimed": 79.0909090909091,
-      "avgSand": 79.0909090909091,
-      "avgSolid": 5.454545454545454,
+      "avgClaimed": 68.63636363636364,
+      "avgSand": 68.63636363636364,
+      "avgSolid": 0,
       "avgConcrete": 0,
-      "avgDiscernment": 36.36363636363637,
-      "avgFalseConfidence": 0,
-      "avgTrueUncertainty": 36.36363636363637,
-      "avgCalibrationError": 73.63636363636364,
-      "calibrationIndex": 26.36363636363636,
+      "avgDiscernment": 18.181818181818183,
+      "avgFalseConfidence": 9.090909090909092,
+      "avgTrueUncertainty": 18.181818181818183,
+      "avgCalibrationError": 68.63636363636364,
+      "calibrationIndex": 31.36363636363636,
       "avgCapability": 51.22275385433281,
-      "overconfidence": 73.63636363636364,
+      "overconfidence": 68.63636363636364,
       "underconfidence": 0,
-      "blindSpots": 5.454545454545454,
-      "falseConfidence": 0,
-      "totalGap": 79.0909090909091
+      "blindSpots": 0,
+      "falseConfidence": 9.090909090909092,
+      "totalGap": 68.63636363636364
     },
     "metadata": {
       "adapter": "openrouter",
       "temperature": 0.7,
-      "totalTokensUsed": 58539,
+      "totalTokensUsed": 60252,
       "totalTrials": 11,
-      "invalidTrials": 8
+      "invalidTrials": 9
     }
   }
 ];

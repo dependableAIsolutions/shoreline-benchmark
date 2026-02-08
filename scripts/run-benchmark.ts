@@ -85,7 +85,8 @@ async function main(): Promise<void> {
     adapter = new OpenRouterAdapter({
       apiKey,
       model: finalModel,
-      temperature
+      temperature,
+      timeoutMs: Number.parseInt(parseArg("timeout-ms") ?? process.env.OPENROUTER_TIMEOUT_MS ?? "120000", 10)
     });
     finalAdapterName = "openrouter";
   } else if (adapterName === "lmstudio") {

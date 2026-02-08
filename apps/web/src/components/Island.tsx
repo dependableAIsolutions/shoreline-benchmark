@@ -2,7 +2,7 @@
 
 import { categoryLabels } from "../data/results";
 import { normalizeLayersForDisplay } from "../lib/scoring";
-import { catmullRom, getSmoothedPoints, monotoneRadialPath, polarToXY } from "../lib/splines";
+import { monotoneRadialPath, polarToXY } from "../lib/splines";
 import { CATEGORY_ORDER, type CategoryKey, type ModelResult } from "../lib/types";
 
 interface IslandProps {
@@ -11,6 +11,14 @@ interface IslandProps {
   showLabels?: boolean;
   hoveredCategory: CategoryKey | null;
   onHoverCategory?: (category: CategoryKey | null) => void;
+}
+
+function wedgePath(cx: number, cy: number, radius: number, startAngle: number, endAngle: number): string {
+  const start = polarToXY(cx, cy, startAngle, radius);
+  const end = polarToXY(cx, cy, endAngle, radius);
+  const delta = ((endAngle - startAngle + 360) % 360) || 360;
+  const largeArc = delta > 180 ? 1 : 0;
+  return `M ${cx},${cy} L ${start.x},${start.y} A ${radius},${radius} 0 ${largeArc} 1 ${end.x},${end.y} Z`;
 }
 
 export function Island({
@@ -45,7 +53,12 @@ export function Island({
   const uid = model.modelId.replace(/[^a-zA-Z0-9_-]/g, "");
 
   return (
-    <svg viewBox={`0 0 ${size} ${size}`} className="w-full" style={{ maxWidth: size }}>
+    <svg
+      viewBox={`0 0 ${size} ${size}`}
+      className="w-full"
+      style={{ maxWidth: size }}
+      onMouseLeave={() => onHoverCategory?.(null)}
+    >
       <defs>
         <radialGradient id={`ocean-${uid}`} cx="50%" cy="50%" r="55%">
           <stop offset="0%" stopColor="#0E1B3D" />
@@ -114,6 +127,21 @@ export function Island({
         );
       })}
 
+      {CATEGORY_ORDER.map((category, index) => {
+        const angle = index * step;
+        const start = angle - step / 2;
+        const end = angle + step / 2;
+        return (
+          <path
+            key={`hit-${category}`}
+            d={wedgePath(cx, cy, maxR + 20, start, end)}
+            fill="transparent"
+            onMouseEnter={() => onHoverCategory?.(category)}
+            onMouseMove={() => onHoverCategory?.(category)}
+          />
+        );
+      })}
+
       {showLabels &&
         CATEGORY_ORDER.map((category, index) => {
           const angle = index * step;
@@ -152,7 +180,7 @@ export function Island({
               )}
 
               {isHovered && (
-                <>
+                <g pointerEvents="none">
                   <circle cx={sandDot.x} cy={sandDot.y} r={3} fill="rgba(245,158,11,0.9)" stroke="#F59E0B" strokeWidth={1} />
                   <circle cx={solidDot.x} cy={solidDot.y} r={3} fill="rgba(60,150,70,0.8)" stroke="#3C9646" strokeWidth={1} />
                   <circle cx={concreteDot.x} cy={concreteDot.y} r={3.5} fill="rgba(100,120,140,0.8)" stroke="#64788C" strokeWidth={1} />
@@ -192,7 +220,7 @@ export function Island({
                       Concrete: {rawConcreteVals[index].toFixed(1)}
                     </text>
                   </g>
-                </>
+                </g>
               )}
             </g>
           );

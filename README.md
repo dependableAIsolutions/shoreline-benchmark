@@ -47,6 +47,7 @@ cp .env.example .env.local
 
 Common keys:
 - `OPENROUTER_API_KEY`
+- `OPENROUTER_TIMEOUT_MS` (default: `120000`)
 - `LOCAL_MODEL_API_URL` (default: `http://localhost:5555/api/v1/chat`)
 - `LOCAL_MODEL_TIMEOUT_MS`
 - `LOCAL_MODEL_SYSTEM_PROMPT`
