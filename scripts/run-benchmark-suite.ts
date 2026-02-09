@@ -49,6 +49,17 @@ interface SuiteConfig {
     timeoutMs?: number;
     maxRetries?: number;
     retryBaseDelayMs?: number;
+    fallbackPricing?: {
+      inputCostPerMillion?: number;
+      outputCostPerMillion?: number;
+    };
+    modelPricing?: Record<
+      string,
+      {
+        inputCostPerMillion?: number;
+        outputCostPerMillion?: number;
+      }
+    >;
   };
   models: SuiteModel[];
 }
@@ -95,6 +106,25 @@ function stampForPath(iso = nowIso()): string {
 
 function sanitizeModel(model: string): string {
   return model.replace(/[^a-zA-Z0-9._-]+/g, "-");
+}
+
+function parseOptionalNumber(value: unknown): number | undefined {
+  if (typeof value === "number") {
+    if (!Number.isFinite(value) || value < 0) return undefined;
+    return value;
+  }
+  if (typeof value === "string" && value.trim().length > 0) {
+    const parsed = Number.parseFloat(value);
+    if (!Number.isFinite(parsed) || parsed < 0) return undefined;
+    return parsed;
+  }
+  return undefined;
+}
+
+function formatMs(ms: number | undefined): string {
+  if (typeof ms !== "number" || !Number.isFinite(ms)) return "n/a";
+  if (ms < 1000) return `${ms.toFixed(0)}ms`;
+  return `${(ms / 1000).toFixed(2)}s`;
 }
 
 function defaultStatePath(configPath: string): string {
@@ -160,6 +190,19 @@ function buildAdapter(config: SuiteConfig, modelId: string, dryRun: boolean): { 
     const envName = config.openrouter?.apiKeyEnv ?? "OPENROUTER_API_KEY";
     const apiKey = process.env[envName];
     if (!apiKey) throw new Error(`Missing ${envName} for openrouter adapter.`);
+    const envInputCost = parseOptionalNumber(process.env.OPENROUTER_INPUT_COST_PER_MILLION);
+    const envOutputCost = parseOptionalNumber(process.env.OPENROUTER_OUTPUT_COST_PER_MILLION);
+    const fallbackPricing = config.openrouter?.fallbackPricing;
+    const modelPricing = config.openrouter?.modelPricing?.[modelId];
+    const inputCostPerMillion =
+      parseOptionalNumber(modelPricing?.inputCostPerMillion) ??
+      parseOptionalNumber(fallbackPricing?.inputCostPerMillion) ??
+      envInputCost;
+    const outputCostPerMillion =
+      parseOptionalNumber(modelPricing?.outputCostPerMillion) ??
+      parseOptionalNumber(fallbackPricing?.outputCostPerMillion) ??
+      envOutputCost;
+    const hasManualPricing = typeof inputCostPerMillion === "number" || typeof outputCostPerMillion === "number";
 
     return {
       adapter: new OpenRouterAdapter({
@@ -170,7 +213,13 @@ function buildAdapter(config: SuiteConfig, modelId: string, dryRun: boolean): { 
         maxRetries: config.openrouter?.maxRetries ?? Number.parseInt(process.env.OPENROUTER_MAX_RETRIES ?? "4", 10),
         retryBaseDelayMs:
           config.openrouter?.retryBaseDelayMs ??
-          Number.parseInt(process.env.OPENROUTER_RETRY_BASE_DELAY_MS ?? "1500", 10)
+          Number.parseInt(process.env.OPENROUTER_RETRY_BASE_DELAY_MS ?? "1500", 10),
+        pricing: hasManualPricing
+          ? {
+              inputCostPerMillion,
+              outputCostPerMillion
+            }
+          : undefined
       }),
       name: "openrouter"
     };
@@ -365,7 +414,7 @@ async function main(): Promise<void> {
 
     try {
       const { adapter, name: adapterName } = buildAdapter(config, model.id, dryRun);
-      await runBenchmark({
+      const runResult = await runBenchmark({
         adapter,
         categories,
         trialsPerDifficulty: config.trialsPerDifficulty,
@@ -380,6 +429,22 @@ async function main(): Promise<void> {
         resume: canResume,
         callTimeoutMs
       });
+      const metadata = runResult.metadata;
+      console.log(
+        `[suite] Metrics ${model.id}: tokens=${metadata.totalTokensUsed} prompt=${metadata.totalPromptTokensUsed ?? 0} completion=${metadata.totalCompletionTokensUsed ?? 0}`
+      );
+      console.log(
+        `[suite] Timing ${model.id}: run=${formatMs(metadata.runDurationMs)} totalLatency=${formatMs(metadata.totalLatencyMs)} avgCall=${formatMs(metadata.averageLatencyMs)} calls=${metadata.totalModelCalls ?? 0}`
+      );
+      if (typeof metadata.totalCost === "number") {
+        console.log(
+          `[suite] Cost ${model.id}: total=${metadata.totalCost.toFixed(6)} provider=${(metadata.providerReportedCost ?? 0).toFixed(6)} estimated=${(metadata.estimatedCost ?? 0).toFixed(6)} measuredCalls=${metadata.costMeasuredCalls ?? 0} missingCalls=${metadata.missingCostCalls ?? 0}`
+        );
+      } else {
+        console.log(
+          `[suite] Cost ${model.id}: unavailable (missing calls=${metadata.missingCostCalls ?? metadata.totalModelCalls ?? 0})`
+        );
+      }
 
       state.models[model.id] = {
         ...state.models[model.id],

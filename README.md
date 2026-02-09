@@ -51,6 +51,8 @@ cp .env.example .env.local
 Common keys:
 - `OPENROUTER_API_KEY`
 - `OPENROUTER_TIMEOUT_MS` (default: `120000`)
+- `OPENROUTER_INPUT_COST_PER_MILLION` (optional fallback when API cost is absent)
+- `OPENROUTER_OUTPUT_COST_PER_MILLION` (optional fallback when API cost is absent)
 - `LOCAL_MODEL_API_URL` (default: `http://localhost:5555/api/v1/chat`)
 - `LOCAL_MODEL_TIMEOUT_MS`
 - `LOCAL_MODEL_SYSTEM_PROMPT`
@@ -103,6 +105,25 @@ Useful flags:
 - `--ramp-mode fast`
 - `--quick-points 3`
 
+OpenRouter cost fallback in suite config:
+
+```json
+{
+  "openrouter": {
+    "fallbackPricing": {
+      "inputCostPerMillion": 0.25,
+      "outputCostPerMillion": 1.0
+    },
+    "modelPricing": {
+      "openai/gpt-oss-120b": {
+        "inputCostPerMillion": 0.15,
+        "outputCostPerMillion": 0.6
+      }
+    }
+  }
+}
+```
+
 ## Suite config files
 
 - `benchmark/suites/localapi.default.json`
@@ -121,6 +142,12 @@ Speed/cost tuning:
 - `--category-concurrency <n>`: run up to `n` categories in parallel (default: quick mode = all selected categories, otherwise `1`)
 - `--ramp-mode <balanced|fast>`: transition search profile for non-quick mode (`balanced` default)
 - `--quick-points <n>`: in quick mode, sample `n` difficulty anchors per category (default `3`)
+- `--input-cost-per-million <value>` and `--output-cost-per-million <value>`: manual OpenRouter fallback pricing if `usage.cost` is unavailable (same unit as OpenRouter `usage.cost`, typically credits)
+
+`scores.json` now includes additional benchmark telemetry under `metadata`:
+- token split (`totalPromptTokensUsed`, `totalCompletionTokensUsed`)
+- cost totals (`totalCost`, `providerReportedCost`, `estimatedCost`, measured/missing cost call counts)
+- timing (`runDurationMs`, `totalLatencyMs`, `averageLatencyMs`, `totalModelCalls`)
 
 Resume a run:
 

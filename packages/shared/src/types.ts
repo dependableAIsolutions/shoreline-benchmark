@@ -27,6 +27,12 @@ export interface PhaseResult {
   confidence: number | null;
   tokensUsed: number;
   latencyMs: number;
+  promptTokens?: number;
+  completionTokens?: number;
+  cost?: number;
+  costSource?: "provider_usage" | "provider_header" | "estimated" | "unavailable";
+  tokensPerSecond?: number;
+  timeToFirstTokenMs?: number;
 }
 
 export interface Phase2Result {
@@ -38,6 +44,12 @@ export interface Phase2Result {
   partialScore?: number;
   tokensUsed: number;
   latencyMs: number;
+  promptTokens?: number;
+  completionTokens?: number;
+  cost?: number;
+  costSource?: "provider_usage" | "provider_header" | "estimated" | "unavailable";
+  tokensPerSecond?: number;
+  timeToFirstTokenMs?: number;
 }
 
 export interface TrialResult {
@@ -57,7 +69,7 @@ export interface CategoryScore {
   claimedThick?: number;           // Max normalized difficulty where confidence >= 80% (0-100)
   sand: number;                    // Claimed depth frontier: confidence × normalized difficulty (0-100)
   solid: number;                   // Verified depth frontier: performance × normalized difficulty (0-100)
-  concrete: number;                // Metacognitive depth frontier: correct self-eval × normalized difficulty (0-100)
+  concrete: number;                // Failure-aware depth frontier: wrong+low-confidence at normalized difficulty (0-100, <= solid)
   discernment?: number;            // Correctly identifies success/failure in both directions (0-100)
   failureAwareness?: number;       // Wrong answers correctly flagged with low confidence (0-100)
   falseConfidence?: number;        // Wrong but confident: model doesn't know what it doesn't know (0-100, lower is better)
@@ -95,7 +107,17 @@ export interface ModelResult {
     adapter: "openrouter" | "lmstudio" | "localapi";
     temperature: number;
     totalTokensUsed: number;
+    totalPromptTokensUsed?: number;
+    totalCompletionTokensUsed?: number;
     totalCost?: number;
+    providerReportedCost?: number;
+    estimatedCost?: number;
+    costMeasuredCalls?: number;
+    missingCostCalls?: number;
+    totalModelCalls?: number;
+    totalLatencyMs?: number;
+    averageLatencyMs?: number;
+    runDurationMs?: number;
     totalTrials: number;
     invalidTrials: number;
   };

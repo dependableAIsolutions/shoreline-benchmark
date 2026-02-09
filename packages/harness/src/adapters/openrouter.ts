@@ -1,4 +1,4 @@
-import type { AdapterConfig, CompletionResult, ModelAdapter } from "./types";
+import type { AdapterConfig, CompletionResult, CostSource, ModelAdapter } from "./types";
 
 interface OpenRouterConfig extends AdapterConfig {
   apiKey: string;
@@ -6,6 +6,10 @@ interface OpenRouterConfig extends AdapterConfig {
   maxRetries?: number;
   retryBaseDelayMs?: number;
   maxRetryDelayMs?: number;
+  pricing?: {
+    inputCostPerMillion?: number;
+    outputCostPerMillion?: number;
+  };
 }
 
 interface OpenRouterContentChunk {
@@ -22,7 +26,12 @@ interface OpenRouterResponse {
   choices?: Array<{
     message?: OpenRouterMessage;
   }>;
-  usage?: { total_tokens?: number };
+  usage?: {
+    prompt_tokens?: number;
+    completion_tokens?: number;
+    total_tokens?: number;
+    cost?: number | string;
+  };
 }
 
 function flattenMessageContent(content: string | OpenRouterContentChunk[] | undefined): string {
@@ -47,6 +56,8 @@ export class OpenRouterAdapter implements ModelAdapter {
   private readonly maxRetries: number;
   private readonly retryBaseDelayMs: number;
   private readonly maxRetryDelayMs: number;
+  private readonly inputCostPerMillion?: number;
+  private readonly outputCostPerMillion?: number;
 
   constructor(config: OpenRouterConfig) {
     this.apiKey = config.apiKey;
@@ -57,6 +68,8 @@ export class OpenRouterAdapter implements ModelAdapter {
     this.maxRetries = Math.max(0, config.maxRetries ?? 4);
     this.retryBaseDelayMs = Math.max(100, config.retryBaseDelayMs ?? 1500);
     this.maxRetryDelayMs = Math.max(this.retryBaseDelayMs, config.maxRetryDelayMs ?? 30000);
+    this.inputCostPerMillion = this.normalizeNonNegativeNumber(config.pricing?.inputCostPerMillion);
+    this.outputCostPerMillion = this.normalizeNonNegativeNumber(config.pricing?.outputCostPerMillion);
   }
 
   getModelId(): string {
@@ -118,10 +131,36 @@ export class OpenRouterAdapter implements ModelAdapter {
         const json = (await response.json()) as OpenRouterResponse;
         const content = flattenMessageContent(json.choices?.[0]?.message?.content);
 
+        const promptTokens = this.normalizeNonNegativeNumber(json.usage?.prompt_tokens) ?? 0;
+        const completionTokens = this.normalizeNonNegativeNumber(json.usage?.completion_tokens) ?? 0;
+        const totalTokens =
+          this.normalizeNonNegativeNumber(json.usage?.total_tokens) ?? promptTokens + completionTokens;
+
+        const usageCost = this.normalizeNonNegativeNumber(json.usage?.cost);
+        const headerCost = this.normalizeNonNegativeNumber(response.headers.get("x-openrouter-cost"));
+        const estimatedCost = this.estimateCost(promptTokens, completionTokens, totalTokens);
+
+        let cost: number | undefined;
+        let costSource: CostSource = "unavailable";
+        if (typeof usageCost === "number") {
+          cost = usageCost;
+          costSource = "provider_usage";
+        } else if (typeof headerCost === "number") {
+          cost = headerCost;
+          costSource = "provider_header";
+        } else if (typeof estimatedCost === "number") {
+          cost = estimatedCost;
+          costSource = "estimated";
+        }
+
         return {
           content,
-          tokensUsed: json.usage?.total_tokens ?? 0,
-          latencyMs: Date.now() - started
+          tokensUsed: totalTokens,
+          latencyMs: Date.now() - started,
+          promptTokens,
+          completionTokens,
+          cost,
+          costSource
         };
       } catch (error) {
         const err =
@@ -162,5 +201,36 @@ export class OpenRouterAdapter implements ModelAdapter {
 
   private async sleep(ms: number): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  private estimateCost(promptTokens: number, completionTokens: number, totalTokens: number): number | undefined {
+    const hasPromptRate = typeof this.inputCostPerMillion === "number";
+    const hasCompletionRate = typeof this.outputCostPerMillion === "number";
+
+    if (!hasPromptRate && !hasCompletionRate) return undefined;
+
+    if (hasPromptRate && hasCompletionRate) {
+      return (promptTokens / 1_000_000) * (this.inputCostPerMillion ?? 0) +
+        (completionTokens / 1_000_000) * (this.outputCostPerMillion ?? 0);
+    }
+
+    if (hasPromptRate) {
+      return (totalTokens / 1_000_000) * (this.inputCostPerMillion ?? 0);
+    }
+
+    return (totalTokens / 1_000_000) * (this.outputCostPerMillion ?? 0);
+  }
+
+  private normalizeNonNegativeNumber(value: unknown): number | undefined {
+    if (typeof value === "number") {
+      if (!Number.isFinite(value) || value < 0) return undefined;
+      return value;
+    }
+    if (typeof value === "string") {
+      const parsed = Number.parseFloat(value);
+      if (!Number.isFinite(parsed) || parsed < 0) return undefined;
+      return parsed;
+    }
+    return undefined;
   }
 }

@@ -30,7 +30,8 @@ export class MockAdapter implements ModelAdapter {
     return {
       content,
       tokensUsed: Math.max(20, Math.floor(prompt.length / 8)),
-      latencyMs: 1
+      latencyMs: 1,
+      costSource: "unavailable"
     };
   }
 }

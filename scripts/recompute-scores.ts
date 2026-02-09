@@ -24,6 +24,27 @@ interface CheckpointFile {
   categories?: Partial<Record<CategoryKey, CheckpointCategory>>;
 }
 
+type PhaseMetrics = {
+  tokensUsed: number;
+  latencyMs: number;
+  promptTokens?: number;
+  completionTokens?: number;
+  cost?: number;
+  costSource?: "provider_usage" | "provider_header" | "estimated" | "unavailable";
+};
+
+interface UsageTotals {
+  totalTokensUsed: number;
+  totalPromptTokensUsed: number;
+  totalCompletionTokensUsed: number;
+  totalLatencyMs: number;
+  totalModelCalls: number;
+  totalCost: number;
+  providerReportedCost: number;
+  estimatedCost: number;
+  costMeasuredCalls: number;
+}
+
 function parseArg(name: string): string | undefined {
   const prefixed = `--${name}`;
   const found = process.argv.find((arg) => arg.startsWith(`${prefixed}=`));
@@ -108,6 +129,50 @@ function parseRawTrials(content: string): TrialResult[] {
     });
 }
 
+function toNonNegativeNumber(value: unknown): number | undefined {
+  if (typeof value !== "number") return undefined;
+  if (!Number.isFinite(value) || value < 0) return undefined;
+  return value;
+}
+
+function collectUsageTotals(trials: TrialResult[]): UsageTotals {
+  const totals: UsageTotals = {
+    totalTokensUsed: 0,
+    totalPromptTokensUsed: 0,
+    totalCompletionTokensUsed: 0,
+    totalLatencyMs: 0,
+    totalModelCalls: 0,
+    totalCost: 0,
+    providerReportedCost: 0,
+    estimatedCost: 0,
+    costMeasuredCalls: 0
+  };
+
+  for (const trial of trials) {
+    const phases: PhaseMetrics[] = [trial.phase1, trial.phase2, trial.phase3];
+    for (const phase of phases) {
+      totals.totalTokensUsed += toNonNegativeNumber(phase.tokensUsed) ?? 0;
+      totals.totalPromptTokensUsed += toNonNegativeNumber(phase.promptTokens) ?? 0;
+      totals.totalCompletionTokensUsed += toNonNegativeNumber(phase.completionTokens) ?? 0;
+      totals.totalLatencyMs += toNonNegativeNumber(phase.latencyMs) ?? 0;
+      totals.totalModelCalls += 1;
+
+      const cost = toNonNegativeNumber(phase.cost);
+      if (typeof cost !== "number") continue;
+
+      totals.totalCost += cost;
+      totals.costMeasuredCalls += 1;
+      if (phase.costSource === "estimated") {
+        totals.estimatedCost += cost;
+      } else {
+        totals.providerReportedCost += cost;
+      }
+    }
+  }
+
+  return totals;
+}
+
 async function recomputeRun(modelDirPath: string, runDirPath: string, modelDirName: string): Promise<boolean> {
   const rawPath = path.join(runDirPath, "raw-responses.jsonl");
   const scorePath = path.join(runDirPath, "scores.json");
@@ -138,12 +203,12 @@ async function recomputeRun(modelDirPath: string, runDirPath: string, modelDirNa
 
   const aggregate = computeAggregateScores(categories.map((category) => categoryScores[category]));
 
-  const totalTokensUsed = trials.reduce(
-    (sum, trial) => sum + trial.phase1.tokensUsed + trial.phase2.tokensUsed + trial.phase3.tokensUsed,
-    0
-  );
+  const usageTotals = collectUsageTotals(trials);
   const invalidTrials = trials.filter((trial) => trial.phase1.confidence === null || trial.phase3.confidence === null)
     .length;
+  const missingCostCalls = Math.max(0, usageTotals.totalModelCalls - usageTotals.costMeasuredCalls);
+  const averageLatencyMs =
+    usageTotals.totalModelCalls > 0 ? usageTotals.totalLatencyMs / usageTotals.totalModelCalls : 0;
 
   const timestamp = previousScore?.timestamp ?? trials[0]?.timestamp ?? new Date().toISOString();
   const modelId = checkpoint?.modelId ?? previousScore?.modelId ?? modelDirName;
@@ -158,8 +223,19 @@ async function recomputeRun(modelDirPath: string, runDirPath: string, modelDirNa
     metadata: {
       adapter: previousScore?.metadata?.adapter ?? "localapi",
       temperature: previousScore?.metadata?.temperature ?? 0.7,
-      totalTokensUsed,
-      totalCost: previousScore?.metadata?.totalCost,
+      totalTokensUsed: usageTotals.totalTokensUsed,
+      totalPromptTokensUsed: usageTotals.totalPromptTokensUsed,
+      totalCompletionTokensUsed: usageTotals.totalCompletionTokensUsed,
+      totalCost: usageTotals.costMeasuredCalls > 0 ? usageTotals.totalCost : previousScore?.metadata?.totalCost,
+      providerReportedCost:
+        usageTotals.costMeasuredCalls > 0 ? usageTotals.providerReportedCost : previousScore?.metadata?.providerReportedCost,
+      estimatedCost: usageTotals.costMeasuredCalls > 0 ? usageTotals.estimatedCost : previousScore?.metadata?.estimatedCost,
+      costMeasuredCalls: usageTotals.costMeasuredCalls,
+      missingCostCalls,
+      totalModelCalls: usageTotals.totalModelCalls,
+      totalLatencyMs: usageTotals.totalLatencyMs,
+      averageLatencyMs,
+      runDurationMs: previousScore?.metadata?.runDurationMs,
       totalTrials: trials.length,
       invalidTrials
     }

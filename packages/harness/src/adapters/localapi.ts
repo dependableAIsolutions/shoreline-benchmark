@@ -82,7 +82,15 @@ export class LocalApiAdapter implements ModelAdapter {
     return {
       content,
       tokensUsed: inputTokens + outputTokens,
-      latencyMs: Date.now() - started
+      latencyMs: Date.now() - started,
+      promptTokens: inputTokens,
+      completionTokens: outputTokens,
+      costSource: "unavailable",
+      tokensPerSecond: json.stats?.tokens_per_second,
+      timeToFirstTokenMs:
+        typeof json.stats?.time_to_first_token_seconds === "number"
+          ? json.stats.time_to_first_token_seconds * 1000
+          : undefined
     };
   }
 }

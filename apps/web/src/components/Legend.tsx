@@ -8,7 +8,7 @@ export function Legend() {
           <div className="h-4 w-7 rounded border-2 border-[#64788C] bg-[rgba(85,100,115,0.6)]" />
           <div>
             <span className="font-mono text-[11px] font-semibold text-[#8A9CAA]">Concrete</span>
-            <span className="ml-2 text-[11px] text-[#6f6457]">Phase 3 metacognitive depth.</span>
+            <span className="ml-2 text-[11px] text-[#6f6457]">Phase 3 failure-aware depth.</span>
           </div>
         </div>
       </Tooltip>

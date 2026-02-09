@@ -26,17 +26,6 @@ export function computeCategoryScore(
     })
   );
 
-  // Metacognitive correctness: model can correctly identify both successes and failures.
-  const metacognitiveCorrect01 = avg(
-    trials.map((trial) => {
-      const c = trial.phase3.confidence;
-      if (c === null) return 0;
-      if (trial.phase2.isCorrect && c >= 60) return 1;
-      if (!trial.phase2.isCorrect && c < 40) return 1;
-      return 0;
-    })
-  );
-
   // Failure-awareness rate (wrong answers where the model correctly self-doubts).
   const failureAware01 = avg(
     trials.map((trial) => {
@@ -116,15 +105,14 @@ export function computeCategoryScore(
     })
   );
 
-  const concreteDepth01 = Math.max(
+  const concreteFailureDepth01 = Math.max(
     0,
     ...trials.map((trial) => {
       const c = trial.phase3.confidence;
       const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
       if (c === null) return 0;
-      const isMetacognitivelyCorrect =
-        (trial.phase2.isCorrect && c >= 60) || (!trial.phase2.isCorrect && c < 40);
-      return (isMetacognitivelyCorrect ? 1 : 0) * normalizedDifficulty;
+      const correctlyAdmittedFailure = !trial.phase2.isCorrect && c < 40;
+      return (correctlyAdmittedFailure ? 1 : 0) * normalizedDifficulty;
     })
   );
 
@@ -151,7 +139,8 @@ export function computeCategoryScore(
   // Sand=100 means: model expressed 100% confidence at the theoretical category ceiling.
   const sand = claimedDepth01 * 100;
   const solid = solidDepth01 * 100;
-  const concrete = concreteDepth01 * 100;
+  // Concrete should be a subset of verified depth, never larger than solid.
+  const concrete = Math.min(concreteFailureDepth01, solidDepth01) * 100;
 
   const predicted01 = claimed / 100;
   const calibrationError = Math.abs(predicted01 - solidRaw01) * 100;

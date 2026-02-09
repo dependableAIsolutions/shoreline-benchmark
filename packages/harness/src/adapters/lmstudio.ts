@@ -6,7 +6,7 @@ interface LMStudioConfig extends AdapterConfig {
 
 interface LMStudioResponse {
   choices?: Array<{ message?: { content?: string } }>;
-  usage?: { total_tokens?: number };
+  usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
 }
 
 export class LMStudioAdapter implements ModelAdapter {
@@ -50,10 +50,16 @@ export class LMStudioAdapter implements ModelAdapter {
     }
 
     const json = (await response.json()) as LMStudioResponse;
+    const promptTokens = json.usage?.prompt_tokens;
+    const completionTokens = json.usage?.completion_tokens;
+    const totalTokens = json.usage?.total_tokens ?? (promptTokens ?? 0) + (completionTokens ?? 0);
     return {
       content: json.choices?.[0]?.message?.content ?? "",
-      tokensUsed: json.usage?.total_tokens ?? 0,
-      latencyMs: Date.now() - started
+      tokensUsed: totalTokens,
+      latencyMs: Date.now() - started,
+      promptTokens,
+      completionTokens,
+      costSource: "unavailable"
     };
   }
 }

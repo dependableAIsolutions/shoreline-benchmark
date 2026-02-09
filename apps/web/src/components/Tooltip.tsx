@@ -91,11 +91,10 @@ export function Tooltip({ content, children, position = "top", maxWidth = 280, c
 export const metricTooltips = {
   concrete: (
     <div>
-      <div className="mb-1 font-semibold text-[#8A9CAA]">Concrete (Metacognitive Depth)</div>
+      <div className="mb-1 font-semibold text-[#8A9CAA]">Concrete (Failure-Aware Depth)</div>
       <p>
-        Depth of correct self-evaluation after answering, weighted by difficulty. A trial contributes
-        when the model correctly identifies either success (high confidence when right) or failure
-        (low confidence when wrong).
+        Depth where the model admits failure after answering: wrong result + low Phase 3 confidence,
+        weighted by normalized difficulty. Concrete is clamped to never exceed solid depth.
       </p>
     </div>
   ),

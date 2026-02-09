@@ -53,10 +53,27 @@ describe("computeCategoryScore - shared depth axis", () => {
     expect(score.sand).toBeGreaterThan(0);
   });
 
-  it("concrete is metacognitive depth (knows right or wrong) and difficulty-weighted", () => {
-    const low = computeCategoryScore("mult", [makeTrial(multMin, 50, true, 90)], multMax);
-    const high = computeCategoryScore("mult", [makeTrial(multMax, 50, true, 90)], multMax);
-    expect(low.concrete).toBeLessThan(high.concrete);
+  it("concrete uses only admitted-failure depth", () => {
+    const none = computeCategoryScore("mult", [makeTrial(multMax, 50, true, 90)], multMax);
+    const some = computeCategoryScore(
+      "mult",
+      [makeTrial(multMin, 50, true, 90), makeTrial(multMax, 50, false, 20)],
+      multMax
+    );
+    expect(none.concrete).toBe(0);
+    expect(some.concrete).toBeGreaterThan(0);
+  });
+
+  it("concrete never exceeds solid", () => {
+    const score = computeCategoryScore(
+      "mult",
+      [
+        makeTrial(multMin, 80, true, 80),
+        makeTrial(multMax, 80, false, 20)
+      ],
+      multMax
+    );
+    expect(score.concrete).toBeLessThanOrEqual(score.solid);
   });
 });
 

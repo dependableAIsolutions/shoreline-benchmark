@@ -44,6 +44,12 @@ interface SafeCompletion {
   content: string;
   tokensUsed: number;
   latencyMs: number;
+  promptTokens?: number;
+  completionTokens?: number;
+  cost?: number;
+  costSource?: "provider_usage" | "provider_header" | "estimated" | "unavailable";
+  tokensPerSecond?: number;
+  timeToFirstTokenMs?: number;
   failed: boolean;
 }
 
@@ -62,6 +68,27 @@ interface RunCheckpoint {
   quickMode: boolean;
   trialsPerDifficulty: number;
   categories: Partial<Record<CategoryKey, CategoryCheckpoint>>;
+}
+
+type PhaseMetrics = {
+  tokensUsed: number;
+  latencyMs: number;
+  promptTokens?: number;
+  completionTokens?: number;
+  cost?: number;
+  costSource?: "provider_usage" | "provider_header" | "estimated" | "unavailable";
+};
+
+interface UsageTotals {
+  totalTokensUsed: number;
+  totalPromptTokensUsed: number;
+  totalCompletionTokensUsed: number;
+  totalLatencyMs: number;
+  totalModelCalls: number;
+  totalCost: number;
+  providerReportedCost: number;
+  estimatedCost: number;
+  costMeasuredCalls: number;
 }
 
 function getCategoryOrThrow(key: CategoryKey) {
@@ -107,6 +134,55 @@ function countByDifficulty(trials: TrialResult[]): Map<number, number> {
     counts.set(trial.difficulty, (counts.get(trial.difficulty) ?? 0) + 1);
   }
   return counts;
+}
+
+function toNonNegativeNumber(value: unknown): number | undefined {
+  if (typeof value !== "number") return undefined;
+  if (!Number.isFinite(value) || value < 0) return undefined;
+  return value;
+}
+
+function createUsageTotals(): UsageTotals {
+  return {
+    totalTokensUsed: 0,
+    totalPromptTokensUsed: 0,
+    totalCompletionTokensUsed: 0,
+    totalLatencyMs: 0,
+    totalModelCalls: 0,
+    totalCost: 0,
+    providerReportedCost: 0,
+    estimatedCost: 0,
+    costMeasuredCalls: 0
+  };
+}
+
+function collectTrialPhases(trial: TrialResult): PhaseMetrics[] {
+  return [trial.phase1, trial.phase2, trial.phase3];
+}
+
+function addPhaseToUsageTotals(totals: UsageTotals, phase: PhaseMetrics): void {
+  totals.totalTokensUsed += toNonNegativeNumber(phase.tokensUsed) ?? 0;
+  totals.totalPromptTokensUsed += toNonNegativeNumber(phase.promptTokens) ?? 0;
+  totals.totalCompletionTokensUsed += toNonNegativeNumber(phase.completionTokens) ?? 0;
+  totals.totalLatencyMs += toNonNegativeNumber(phase.latencyMs) ?? 0;
+  totals.totalModelCalls += 1;
+
+  const cost = toNonNegativeNumber(phase.cost);
+  if (typeof cost !== "number") return;
+
+  totals.totalCost += cost;
+  totals.costMeasuredCalls += 1;
+  if (phase.costSource === "estimated") {
+    totals.estimatedCost += cost;
+    return;
+  }
+  totals.providerReportedCost += cost;
+}
+
+function addTrialToUsageTotals(totals: UsageTotals, trial: TrialResult): void {
+  for (const phase of collectTrialPhases(trial)) {
+    addPhaseToUsageTotals(totals, phase);
+  }
 }
 
 async function loadExistingTrials(rawPath: string): Promise<TrialResult[]> {
@@ -186,7 +262,13 @@ async function runThreePhaseTrial(
       response: phase1.content,
       confidence: phase1Confidence,
       tokensUsed: phase1.tokensUsed,
-      latencyMs: phase1.latencyMs
+      latencyMs: phase1.latencyMs,
+      promptTokens: phase1.promptTokens,
+      completionTokens: phase1.completionTokens,
+      cost: phase1.cost,
+      costSource: phase1.costSource,
+      tokensPerSecond: phase1.tokensPerSecond,
+      timeToFirstTokenMs: phase1.timeToFirstTokenMs
     },
     phase2: {
       prompt: phase2Prompt,
@@ -196,14 +278,26 @@ async function runThreePhaseTrial(
       isCorrect: evalResult.isCorrect,
       partialScore: evalResult.partialScore,
       tokensUsed: phase2.tokensUsed,
-      latencyMs: phase2.latencyMs
+      latencyMs: phase2.latencyMs,
+      promptTokens: phase2.promptTokens,
+      completionTokens: phase2.completionTokens,
+      cost: phase2.cost,
+      costSource: phase2.costSource,
+      tokensPerSecond: phase2.tokensPerSecond,
+      timeToFirstTokenMs: phase2.timeToFirstTokenMs
     },
     phase3: {
       prompt: phase3Prompt,
       response: phase3.content,
       confidence: phase3Confidence,
       tokensUsed: phase3.tokensUsed,
-      latencyMs: phase3.latencyMs
+      latencyMs: phase3.latencyMs,
+      promptTokens: phase3.promptTokens,
+      completionTokens: phase3.completionTokens,
+      cost: phase3.cost,
+      costSource: phase3.costSource,
+      tokensPerSecond: phase3.tokensPerSecond,
+      timeToFirstTokenMs: phase3.timeToFirstTokenMs
     },
     timestamp: new Date().toISOString()
   };
@@ -251,6 +345,12 @@ async function safeComplete(
       content: result.content,
       tokensUsed: result.tokensUsed,
       latencyMs: result.latencyMs,
+      promptTokens: result.promptTokens,
+      completionTokens: result.completionTokens,
+      cost: result.cost,
+      costSource: result.costSource,
+      tokensPerSecond: result.tokensPerSecond,
+      timeToFirstTokenMs: result.timeToFirstTokenMs,
       failed: false
     };
   } catch (error) {
@@ -260,6 +360,7 @@ async function safeComplete(
       content: "",
       tokensUsed: 0,
       latencyMs: callTimeoutMs,
+      costSource: "unavailable",
       failed: true
     };
   }
@@ -294,7 +395,8 @@ async function runWithConcurrency<T>(
 }
 
 export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<ModelResult> {
-  const startedAt = new Date().toISOString();
+  const startedAtMs = Date.now();
+  const startedAt = new Date(startedAtMs).toISOString();
   const quickMode = config.quickMode ?? false;
   const quickPoints = Math.max(1, Math.floor(config.quickPoints ?? (quickMode ? 3 : 1)));
   const callTimeoutMs =
@@ -341,10 +443,10 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
     Math.floor(config.categoryConcurrency ?? (quickMode ? categories.length : 1))
   );
 
-  let totalTokensUsed = allTrials.reduce(
-    (sum, trial) => sum + trial.phase1.tokensUsed + trial.phase2.tokensUsed + trial.phase3.tokensUsed,
-    0
-  );
+  const usageTotals = createUsageTotals();
+  for (const existingTrial of allTrials) {
+    addTrialToUsageTotals(usageTotals, existingTrial);
+  }
   let invalidTrials = allTrials.filter((trial) => trial.phase1.confidence === null || trial.phase3.confidence === null).length;
   let checkpointWriteQueue = Promise.resolve();
   const queueCheckpointSave = async (): Promise<void> => {
@@ -449,7 +551,7 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
 
           allTrials.push(result.trial);
           categoryTrials.push(result.trial);
-          totalTokensUsed += result.tokensUsed;
+          addTrialToUsageTotals(usageTotals, result.trial);
           if (result.invalidConfidence) invalidTrials += 1;
 
           await appendTrial(result.trial);
@@ -500,6 +602,10 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
 
   const activeScores = categories.map((key) => scoresByCategory[key]);
   const aggregate = computeAggregateScores(activeScores);
+  const runDurationMs = Math.max(0, Date.now() - startedAtMs);
+  const averageLatencyMs =
+    usageTotals.totalModelCalls > 0 ? usageTotals.totalLatencyMs / usageTotals.totalModelCalls : 0;
+  const missingCostCalls = Math.max(0, usageTotals.totalModelCalls - usageTotals.costMeasuredCalls);
 
   const result: ModelResult = {
     modelId: config.adapter.getModelId(),
@@ -510,7 +616,18 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
     metadata: {
       adapter: config.adapterName,
       temperature: config.temperature,
-      totalTokensUsed,
+      totalTokensUsed: usageTotals.totalTokensUsed,
+      totalPromptTokensUsed: usageTotals.totalPromptTokensUsed,
+      totalCompletionTokensUsed: usageTotals.totalCompletionTokensUsed,
+      totalCost: usageTotals.costMeasuredCalls > 0 ? usageTotals.totalCost : undefined,
+      providerReportedCost: usageTotals.providerReportedCost,
+      estimatedCost: usageTotals.estimatedCost,
+      costMeasuredCalls: usageTotals.costMeasuredCalls,
+      missingCostCalls,
+      totalModelCalls: usageTotals.totalModelCalls,
+      totalLatencyMs: usageTotals.totalLatencyMs,
+      averageLatencyMs,
+      runDurationMs,
       totalTrials: allTrials.length,
       invalidTrials
     }

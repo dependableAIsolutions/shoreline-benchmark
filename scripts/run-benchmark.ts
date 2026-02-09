@@ -32,6 +32,19 @@ function sanitizeModel(model: string): string {
   return model.replace(/[^a-zA-Z0-9._-]+/g, "-");
 }
 
+function parseOptionalNumber(value: string | undefined): number | undefined {
+  if (typeof value !== "string" || value.trim().length === 0) return undefined;
+  const parsed = Number.parseFloat(value);
+  if (!Number.isFinite(parsed) || parsed < 0) return undefined;
+  return parsed;
+}
+
+function formatMs(ms: number | undefined): string {
+  if (typeof ms !== "number" || !Number.isFinite(ms)) return "n/a";
+  if (ms < 1000) return `${ms.toFixed(0)}ms`;
+  return `${(ms / 1000).toFixed(2)}s`;
+}
+
 async function main(): Promise<void> {
   const adapterName = parseArg("adapter") as "openrouter" | "lmstudio" | "localapi" | undefined;
   const model = parseArg("model");
@@ -46,6 +59,8 @@ async function main(): Promise<void> {
   const callTimeoutMsArg = parseArg("call-timeout-ms");
   const maxRetriesArg = parseArg("max-retries");
   const retryBaseDelayMsArg = parseArg("retry-base-delay-ms");
+  const inputCostPerMillionArg = parseArg("input-cost-per-million");
+  const outputCostPerMillionArg = parseArg("output-cost-per-million");
   const quickPointsArg = parseArg("quick-points");
   const categoryConcurrencyArg = parseArg("category-concurrency");
   const rampModeArg = parseArg("ramp-mode") ?? parseArg("ramp");
@@ -96,6 +111,14 @@ async function main(): Promise<void> {
       console.error("OPENROUTER_API_KEY is required for --adapter openrouter");
       process.exit(1);
     }
+    const inputCostPerMillion = parseOptionalNumber(
+      inputCostPerMillionArg ?? process.env.OPENROUTER_INPUT_COST_PER_MILLION
+    );
+    const outputCostPerMillion = parseOptionalNumber(
+      outputCostPerMillionArg ?? process.env.OPENROUTER_OUTPUT_COST_PER_MILLION
+    );
+    const hasManualPricing = typeof inputCostPerMillion === "number" || typeof outputCostPerMillion === "number";
+
     adapter = new OpenRouterAdapter({
       apiKey,
       model: finalModel,
@@ -105,7 +128,13 @@ async function main(): Promise<void> {
       retryBaseDelayMs: Number.parseInt(
         retryBaseDelayMsArg ?? process.env.OPENROUTER_RETRY_BASE_DELAY_MS ?? "1500",
         10
-      )
+      ),
+      pricing: hasManualPricing
+        ? {
+            inputCostPerMillion,
+            outputCostPerMillion
+          }
+        : undefined
     });
     finalAdapterName = "openrouter";
   } else if (adapterName === "lmstudio") {
@@ -154,7 +183,16 @@ async function main(): Promise<void> {
       retryBaseDelayMsArg ?? process.env.OPENROUTER_RETRY_BASE_DELAY_MS ?? "1500",
       10
     );
+    const inputPrice = parseOptionalNumber(inputCostPerMillionArg ?? process.env.OPENROUTER_INPUT_COST_PER_MILLION);
+    const outputPrice = parseOptionalNumber(outputCostPerMillionArg ?? process.env.OPENROUTER_OUTPUT_COST_PER_MILLION);
     console.log(`OpenRouter retries: ${retries} (base delay ${baseDelay}ms)`);
+    if (typeof inputPrice === "number" || typeof outputPrice === "number") {
+      console.log(
+        `OpenRouter manual fallback pricing (cost/1M tokens): input=${inputPrice ?? "n/a"} output=${outputPrice ?? "n/a"}`
+      );
+    } else {
+      console.log("OpenRouter cost source: provider-reported only (no manual fallback pricing configured)");
+    }
   }
   console.log(`Resume mode: ${resume ? "on" : "off"}`);
   console.log(`Output: ${outputDir}`);
@@ -179,6 +217,20 @@ async function main(): Promise<void> {
   console.log(
     `Aggregate concrete=${result.aggregate.avgConcrete.toFixed(2)} solid=${result.aggregate.avgSolid.toFixed(2)} sand=${result.aggregate.avgSand.toFixed(2)} totalGap=${result.aggregate.totalGap.toFixed(2)}`
   );
+  const metadata = result.metadata;
+  console.log(
+    `Usage tokens total=${metadata.totalTokensUsed} prompt=${metadata.totalPromptTokensUsed ?? 0} completion=${metadata.totalCompletionTokensUsed ?? 0}`
+  );
+  console.log(
+    `Timing run=${formatMs(metadata.runDurationMs)} totalLatency=${formatMs(metadata.totalLatencyMs)} avgCall=${formatMs(metadata.averageLatencyMs)} calls=${metadata.totalModelCalls ?? 0}`
+  );
+  if (typeof metadata.totalCost === "number") {
+    console.log(
+      `Cost total=${metadata.totalCost.toFixed(6)} provider=${(metadata.providerReportedCost ?? 0).toFixed(6)} estimated=${(metadata.estimatedCost ?? 0).toFixed(6)} measuredCalls=${metadata.costMeasuredCalls ?? 0} missingCalls=${metadata.missingCostCalls ?? 0}`
+    );
+  } else {
+    console.log(`Cost unavailable (missing calls=${metadata.missingCostCalls ?? metadata.totalModelCalls ?? 0})`);
+  }
 }
 
 main().catch((error) => {
