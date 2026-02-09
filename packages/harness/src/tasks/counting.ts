@@ -19,10 +19,11 @@ const WORD_BANK = [
 export const countingTask: TaskGenerator = {
   key: "counting",
   describeDifficulty(difficulty: number): string {
-    return `count target token occurrences in a passage of about ${difficulty * 8} words`;
+    return `count target word occurrences in a passage of about ${difficulty} words`;
   },
   generate(difficulty: number): GeneratedTask {
-    const wordCount = Math.max(24, difficulty * 8);
+    // Counting difficulty is defined directly as passage length in words.
+    const wordCount = Math.max(10, Math.round(difficulty));
     const words = Array.from({ length: wordCount }, () => WORD_BANK[randomInt(0, WORD_BANK.length)]);
     const target = WORD_BANK[randomInt(0, WORD_BANK.length)];
     const passage = words.join(" ");

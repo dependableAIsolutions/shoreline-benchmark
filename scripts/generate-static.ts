@@ -43,6 +43,7 @@ function classifyPattern(trial: RawTrial): { pattern: SampleResult["pattern"]; p
 async function extractSampleResponses(rawResponsesPath: string): Promise<SampleResult[]> {
   const samples: SampleResult[] = [];
   const seenCategories = new Set<string>();
+  const seenCategoryPatterns = new Set<string>();
   const patternCounts = { true_positive: 0, true_negative: 0, false_confidence: 0, blind_spot: 0 };
   const maxPerPattern = 3;
 
@@ -57,10 +58,38 @@ async function extractSampleResponses(rawResponsesPath: string): Promise<SampleR
       const trial = JSON.parse(line) as RawTrial;
       const { pattern, patternLabel } = classifyPattern(trial);
 
+      if (!seenCategories.has(trial.category)) {
+        seenCategories.add(trial.category);
+        samples.push({
+          category: trial.category,
+          difficulty: trial.difficulty,
+          phase1: {
+            prompt: trial.phase1.prompt,
+            response: trial.phase1.response,
+            confidence: trial.phase1.confidence
+          },
+          phase2: {
+            prompt: trial.phase2.prompt,
+            response: trial.phase2.response,
+            extractedAnswer: trial.phase2.extractedAnswer,
+            correctAnswer: trial.phase2.correctAnswer,
+            isCorrect: trial.phase2.isCorrect,
+            partialScore: trial.phase2.partialScore
+          },
+          phase3: {
+            prompt: trial.phase3.prompt,
+            response: trial.phase3.response,
+            confidence: trial.phase3.confidence
+          },
+          pattern,
+          patternLabel
+        });
+      }
+
       // Collect diverse samples: one per category, plus interesting patterns
       const categoryKey = `${trial.category}-${pattern}`;
-      if (!seenCategories.has(categoryKey) && patternCounts[pattern] < maxPerPattern) {
-        seenCategories.add(categoryKey);
+      if (!seenCategoryPatterns.has(categoryKey) && patternCounts[pattern] < maxPerPattern) {
+        seenCategoryPatterns.add(categoryKey);
         patternCounts[pattern]++;
         // Strip extra fields from phase data
         samples.push({

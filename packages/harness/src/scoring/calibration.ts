@@ -104,6 +104,23 @@ export function computeCategoryScore(
       return performance01 * normalizedDifficulty;
     })
   );
+  const solidFrontierDifficulty =
+    solidDepth01 > 0
+      ? trials.reduce(
+          (best, trial) => {
+            const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
+            const performance01 =
+              typeof trial.phase2.partialScore === "number"
+                ? clamp(trial.phase2.partialScore, 0, 1)
+                : trial.phase2.isCorrect
+                  ? 1
+                  : 0;
+            const depth = performance01 * normalizedDifficulty;
+            return depth > best.depth ? { depth, difficulty: trial.difficulty } : best;
+          },
+          { depth: 0, difficulty: trials[0]?.difficulty ?? 0 }
+        ).difficulty
+      : undefined;
 
   const concreteFailureDepth01 = Math.max(
     0,
@@ -115,6 +132,20 @@ export function computeCategoryScore(
       return (correctlyAdmittedFailure ? 1 : 0) * normalizedDifficulty;
     })
   );
+  const concreteFrontierDifficulty =
+    concreteFailureDepth01 > 0
+      ? trials.reduce(
+          (best, trial) => {
+            const c = trial.phase3.confidence;
+            const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
+            if (c === null) return best;
+            const admitted = !trial.phase2.isCorrect && c < 40 ? 1 : 0;
+            const depth = admitted * normalizedDifficulty;
+            return depth > best.depth ? { depth, difficulty: trial.difficulty } : best;
+          },
+          { depth: 0, difficulty: trials[0]?.difficulty ?? 0 }
+        ).difficulty
+      : undefined;
 
   const claimedLoose01 = phase1Depth.reduce(
     (currentMax, point) => (point.confidence01 >= 0.5 ? Math.max(currentMax, point.normalizedDifficulty) : currentMax),
@@ -134,6 +165,17 @@ export function computeCategoryScore(
     0,
     ...phase1Depth.map((point) => point.confidence01 * point.normalizedDifficulty)
   );
+  const sandFrontierDifficulty =
+    claimedDepth01 > 0
+      ? trials.reduce(
+          (best, trial) => {
+            const confidence01 = clamp((trial.phase1.confidence ?? 0) / 100, 0, 1);
+            const depth = confidence01 * normalizeDifficulty(trial.difficulty);
+            return depth > best.depth ? { depth, difficulty: trial.difficulty } : best;
+          },
+          { depth: 0, difficulty: trials[0]?.difficulty ?? 0 }
+        ).difficulty
+      : undefined;
 
   // Sand represents Phase 1 claimed territory intensity (0-100).
   // Sand=100 means: model expressed 100% confidence at the theoretical category ceiling.
@@ -151,6 +193,16 @@ export function computeCategoryScore(
       : 0;
 
   const difficulties = trials.map((trial) => trial.difficulty);
+  const trialsByDifficulty = difficulties.reduce<Record<string, number>>((acc, difficulty) => {
+    const key = String(difficulty);
+    acc[key] = (acc[key] ?? 0) + 1;
+    return acc;
+  }, {});
+  const sampleDifficulties = Object.keys(trialsByDifficulty)
+    .map((value) => Number.parseInt(value, 10))
+    .filter((value) => Number.isFinite(value))
+    .sort((a, b) => a - b);
+  const avgTrialsPerDifficulty = sampleDifficulties.length > 0 ? trials.length / sampleDifficulties.length : 0;
   const minDifficulty = Math.min(...difficulties);
   const maxDifficulty = Math.max(...difficulties);
 
@@ -169,6 +221,12 @@ export function computeCategoryScore(
     failureAwareness: failureAware01 * 100,
     calibrationError,
     capability: Math.max(0, Math.min(100, capability)),
+    sandFrontierDifficulty,
+    solidFrontierDifficulty,
+    concreteFrontierDifficulty,
+    sampleDifficulties,
+    trialsByDifficulty,
+    avgTrialsPerDifficulty,
     trialCount: trials.length,
     difficultyRange: [minDifficulty, maxDifficulty],
     transitionZone

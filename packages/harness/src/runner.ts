@@ -500,11 +500,13 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
               minDifficulty: category.minDifficulty,
               maxDifficulty: category.maxDifficulty,
               probeTrials: config.probeTrials ?? 3,
-              rampMode: config.rampMode ?? "balanced"
+              rampMode: config.rampMode ?? "balanced",
+              mandatoryDifficulties: category.anchorDifficulties
             },
             async (difficulty, probeTrials) => {
-              logInfo(`Category ${category.label}: probe difficulty=${difficulty} (trials=${probeTrials})`);
-              return runPhase2Probe(config.adapter, generator, difficulty, probeTrials, quickMode, callTimeoutMs);
+              const effectiveProbeTrials = categoryKey === "counting" ? Math.max(3, probeTrials) : Math.max(2, probeTrials);
+              logInfo(`Category ${category.label}: probe difficulty=${difficulty} (trials=${effectiveProbeTrials})`);
+              return runPhase2Probe(config.adapter, generator, difficulty, effectiveProbeTrials, quickMode, callTimeoutMs);
             }
           );
 
@@ -628,6 +630,10 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
       totalLatencyMs: usageTotals.totalLatencyMs,
       averageLatencyMs,
       runDurationMs,
+      trialsPerDifficulty: config.trialsPerDifficulty,
+      probeTrials: config.probeTrials ?? 3,
+      quickMode,
+      rampMode: config.rampMode ?? "balanced",
       totalTrials: allTrials.length,
       invalidTrials
     }

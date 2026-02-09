@@ -19,6 +19,16 @@ Derived aggregate metrics:
 - `calibrationIndex`: `100 - avgCalibrationError`
 - `capabilityIndex`: normalized transition-zone percentile by category difficulty range
 
+How category scoring is sampled:
+- Transition probing first finds an approximate pass/fail boundary per category.
+- Sampled difficulties include both adaptive boundary points and category anchors (easy -> ceiling).
+- Each sampled difficulty is evaluated `trialsPerDifficulty` times (not once).
+- `scores.json` now includes `sampleDifficulties`, `trialsByDifficulty`, and `avgTrialsPerDifficulty` per category.
+
+Counting difficulty note:
+- `counting` difficulty values are passage lengths in words (not numbers to sum).
+- Example: difficulty `40` means a ~40-word passage where the model must count exact target-word occurrences.
+
 ## Repository layout
 
 - `apps/web`: Next.js UI (single, compare, leaderboard)
@@ -94,6 +104,8 @@ OpenRouter quick suite:
 ```bash
 CONFIG=benchmark/suites/openrouter.smoke.json ./run-benchmarks.sh
 ```
+
+Note: `openrouter.smoke.json` is intentionally shallow (`quickMode=true`, `trialsPerDifficulty=1`, `probeTrials=1`) and should not be used for final capability calibration.
 
 Useful flags:
 - `--dry-run`

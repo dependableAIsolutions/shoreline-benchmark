@@ -5,6 +5,7 @@ export interface TransitionSearchConfig {
   maxDifficulty: number;
   probeTrials: number;
   rampMode?: "balanced" | "fast";
+  mandatoryDifficulties?: number[];
 }
 
 export interface TransitionSearchResult {
@@ -45,6 +46,19 @@ export async function findTransitionZone(
   const rampMode = config.rampMode ?? "balanced";
   const history: Array<{ difficulty: number; accuracy: number }> = [];
   const range = config.maxDifficulty - config.minDifficulty;
+  const cachedProbes = new Map<string, number>();
+
+  const probe = async (difficulty: number, probeTrials: number): Promise<number> => {
+    const normalizedDifficulty = Math.round(clamp(difficulty, config.minDifficulty, config.maxDifficulty));
+    const key = `${normalizedDifficulty}:${probeTrials}`;
+    const cached = cachedProbes.get(key);
+    if (typeof cached === "number") return cached;
+
+    const accuracy = await measureAccuracy(normalizedDifficulty, probeTrials);
+    cachedProbes.set(key, accuracy);
+    history.push({ difficulty: normalizedDifficulty, accuracy });
+    return accuracy;
+  };
 
   // Phase 1: Exponential probing to quickly find failure zone
   // Start with small steps, double each time: 1, 2, 4, 8, 16...
@@ -54,10 +68,31 @@ export async function findTransitionZone(
   let firstFailingDifficulty = config.maxDifficulty;
   let foundFailure = false;
 
+  const mandatoryDifficulties = [...new Set(
+    (config.mandatoryDifficulties ?? [])
+      .map((value) => Math.round(clamp(value, config.minDifficulty, config.maxDifficulty)))
+      .filter((value) => value >= config.minDifficulty && value <= config.maxDifficulty)
+  )].sort((a, b) => a - b);
+
+  if (mandatoryDifficulties.length > 0) {
+    for (const anchorDifficulty of mandatoryDifficulties) {
+      const accuracy = await probe(anchorDifficulty, config.probeTrials);
+      difficulty = anchorDifficulty;
+
+      if (accuracy > 0.7) {
+        lastPassingDifficulty = anchorDifficulty;
+        continue;
+      }
+
+      firstFailingDifficulty = anchorDifficulty;
+      foundFailure = true;
+      break;
+    }
+  }
+
   // Exponential probing
   while (difficulty <= config.maxDifficulty && !foundFailure) {
-    const accuracy = await measureAccuracy(difficulty, config.probeTrials);
-    history.push({ difficulty, accuracy });
+    const accuracy = await probe(difficulty, config.probeTrials);
 
     if (accuracy > 0.7) {
       lastPassingDifficulty = difficulty;
@@ -84,8 +119,7 @@ export async function findTransitionZone(
   if (foundFailure && firstFailingDifficulty - lastPassingDifficulty > 2) {
     if (rampMode === "fast") {
       const mid = Math.round((lastPassingDifficulty + firstFailingDifficulty) / 2);
-      const accuracy = await measureAccuracy(mid, config.probeTrials);
-      history.push({ difficulty: mid, accuracy });
+      const accuracy = await probe(mid, config.probeTrials);
       if (accuracy > 0.7) {
         lastPassingDifficulty = mid;
       } else {
@@ -111,8 +145,7 @@ export async function findTransitionZone(
           continue;
         }
 
-        const accuracy = await measureAccuracy(mid, config.probeTrials);
-        history.push({ difficulty: mid, accuracy });
+        const accuracy = await probe(mid, config.probeTrials);
 
         if (accuracy > 0.7) {
           low = mid;
@@ -150,6 +183,7 @@ export async function findTransitionZone(
 
   const sampleDifficulties = [...new Set(
     rawSamples
+      .concat(config.mandatoryDifficulties ?? [])
       .map((v) => Math.round(clamp(v, config.minDifficulty, config.maxDifficulty)))
       .filter((v) => v >= config.minDifficulty)
   )].sort((a, b) => a - b);

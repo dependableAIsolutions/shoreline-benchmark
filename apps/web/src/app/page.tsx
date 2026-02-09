@@ -15,11 +15,55 @@ function byConcreteDesc() {
   return [...modelResults].sort((a, b) => b.aggregate.avgConcrete - a.aggregate.avgConcrete);
 }
 
+function hasNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function formatInteger(value: number | undefined): string {
+  return hasNumber(value) ? Math.round(value).toLocaleString() : "—";
+}
+
+function formatDuration(ms: number | undefined): string {
+  if (!hasNumber(ms)) return "—";
+  if (ms < 1_000) return `${Math.round(ms)}ms`;
+  if (ms < 60_000) return `${(ms / 1_000).toFixed(1)}s`;
+  if (ms < 3_600_000) return `${(ms / 60_000).toFixed(1)}m`;
+  return `${(ms / 3_600_000).toFixed(1)}h`;
+}
+
+function formatCostDisplay(result: (typeof modelResults)[number]): string {
+  const metadata = result.metadata;
+  if (hasNumber(metadata.totalCost)) return metadata.totalCost.toFixed(4);
+
+  const provider = hasNumber(metadata.providerReportedCost) ? metadata.providerReportedCost : 0;
+  const estimated = hasNumber(metadata.estimatedCost) ? metadata.estimatedCost : 0;
+  const combined = provider + estimated;
+  if (combined > 0) return combined.toFixed(4);
+
+  const missingCalls = hasNumber(metadata.missingCostCalls) ? metadata.missingCostCalls : 0;
+  if (missingCalls > 0) return `n/a (${missingCalls} missing)`;
+  return "—";
+}
+
+function formatTokenBreakdown(result: (typeof modelResults)[number]): string {
+  const metadata = result.metadata;
+  const total = hasNumber(metadata.totalTokensUsed) ? metadata.totalTokensUsed : undefined;
+  const prompt = hasNumber(metadata.totalPromptTokensUsed) ? metadata.totalPromptTokensUsed : undefined;
+  const completion = hasNumber(metadata.totalCompletionTokensUsed) ? metadata.totalCompletionTokensUsed : undefined;
+
+  if (!hasNumber(total)) return "—";
+  if (hasNumber(prompt) && hasNumber(completion) && (prompt > 0 || completion > 0)) {
+    return `${formatInteger(total)} (${formatInteger(prompt)}/${formatInteger(completion)})`;
+  }
+  return formatInteger(total);
+}
+
 export default function HomePage() {
   const [mode, setMode] = useState<Mode>("compare");
   const [hovered, setHovered] = useState<CategoryKey | null>(null);
   const [modelAId, setModelAId] = useState(modelResults[0]?.modelId ?? "");
   const [modelBId, setModelBId] = useState(modelResults[1]?.modelId ?? modelResults[0]?.modelId ?? "");
+  const [showTelemetry, setShowTelemetry] = useState(false);
 
   const modelA = useMemo(
     () => modelResults.find((result) => result.modelId === modelAId) ?? modelResults[0],
@@ -130,7 +174,26 @@ export default function HomePage() {
 
       {mode === "leaderboard" ? (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-          <h2 className="mb-3 font-mono text-sm tracking-[0.16em] text-[#8c7d6b]">LEADERBOARD (by Concrete)</h2>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="font-mono text-sm tracking-[0.16em] text-[#8c7d6b]">LEADERBOARD (by Concrete)</h2>
+            <button
+              type="button"
+              onClick={() => setShowTelemetry((value) => !value)}
+              className={`rounded-md border px-3 py-1.5 font-mono text-[11px] font-semibold ${
+                showTelemetry
+                  ? "border-[#3D7A6E] bg-[#3D7A6E]/20 text-[#7ab8ad]"
+                  : "border-white/10 text-[#5d5144] hover:bg-white/5"
+              }`}
+            >
+              {showTelemetry ? "Hide" : "Show"} telemetry
+            </button>
+          </div>
+          {showTelemetry ? (
+            <p className="mb-3 text-xs text-[#6d6050]">
+              Runtime telemetry is pulled from each run&apos;s metadata. Cost values use provider-reported totals when available,
+              otherwise estimated totals or a missing-cost indicator.
+            </p>
+          ) : null}
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse text-sm">
               <thead>
@@ -141,6 +204,16 @@ export default function HomePage() {
                   <th className="px-2 py-2">Solid</th>
                   <th className="px-2 py-2">Sand</th>
                   <th className="px-2 py-2">Total Gap</th>
+                  {showTelemetry ? (
+                    <>
+                      <th className="px-2 py-2">Tokens (P/C)</th>
+                      <th className="px-2 py-2">Cost</th>
+                      <th className="px-2 py-2">Runtime</th>
+                      <th className="px-2 py-2">Avg Latency</th>
+                      <th className="px-2 py-2">Calls</th>
+                      <th className="px-2 py-2">Trials</th>
+                    </>
+                  ) : null}
                 </tr>
               </thead>
               <tbody>
@@ -152,6 +225,16 @@ export default function HomePage() {
                     <td className="px-2 py-2">{result.aggregate.avgSolid.toFixed(1)}</td>
                     <td className="px-2 py-2">{result.aggregate.avgSand.toFixed(1)}</td>
                     <td className="px-2 py-2">{result.aggregate.totalGap.toFixed(1)}</td>
+                    {showTelemetry ? (
+                      <>
+                        <td className="px-2 py-2 font-mono text-[11px]">{formatTokenBreakdown(result)}</td>
+                        <td className="px-2 py-2 font-mono text-[11px]">{formatCostDisplay(result)}</td>
+                        <td className="px-2 py-2 font-mono text-[11px]">{formatDuration(result.metadata.runDurationMs)}</td>
+                        <td className="px-2 py-2 font-mono text-[11px]">{formatDuration(result.metadata.averageLatencyMs)}</td>
+                        <td className="px-2 py-2 font-mono text-[11px]">{formatInteger(result.metadata.totalModelCalls)}</td>
+                        <td className="px-2 py-2 font-mono text-[11px]">{formatInteger(result.metadata.totalTrials)}</td>
+                      </>
+                    ) : null}
                   </tr>
                 ))}
               </tbody>

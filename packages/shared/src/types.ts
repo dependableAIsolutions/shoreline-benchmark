@@ -18,6 +18,7 @@ export interface CategoryDefinition {
   difficultyParam: string;
   minDifficulty: number;
   maxDifficulty: number;
+  anchorDifficulties?: number[];
   description: string;
 }
 
@@ -76,6 +77,12 @@ export interface CategoryScore {
   trueUncertainty?: number;        // Wrong and knows it: good metacognition about failures (0-100, higher is better)
   calibrationError?: number;       // |predicted confidence - realized accuracy| (0-100, lower is better)
   capability?: number;             // Normalized transition-zone capability percentile (0-100)
+  sandFrontierDifficulty?: number; // Difficulty where claimed depth frontier is reached
+  solidFrontierDifficulty?: number; // Difficulty where verified depth frontier is reached
+  concreteFrontierDifficulty?: number; // Difficulty where failure-aware depth frontier is reached
+  sampleDifficulties?: number[];
+  trialsByDifficulty?: Record<string, number>;
+  avgTrialsPerDifficulty?: number;
   trialCount: number;
   difficultyRange: [number, number];
   transitionZone: number;
@@ -118,6 +125,10 @@ export interface ModelResult {
     totalLatencyMs?: number;
     averageLatencyMs?: number;
     runDurationMs?: number;
+    trialsPerDifficulty?: number;
+    probeTrials?: number;
+    quickMode?: boolean;
+    rampMode?: "balanced" | "fast";
     totalTrials: number;
     invalidTrials: number;
   };

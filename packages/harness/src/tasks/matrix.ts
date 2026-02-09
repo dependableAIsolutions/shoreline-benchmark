@@ -45,7 +45,7 @@ export const matrixTask: TaskGenerator = {
     return `compute exact determinant of a ${difficulty}x${difficulty} integer matrix`;
   },
   generate(difficulty: number): GeneratedTask {
-    const n = Math.max(2, Math.min(6, difficulty));
+    const n = Math.max(2, Math.min(12, Math.round(difficulty)));
     const matrix = Array.from({ length: n }, () =>
       Array.from({ length: n }, () => randomInt(-9, 10))
     );

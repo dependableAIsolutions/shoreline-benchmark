@@ -19,6 +19,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     difficultyParam: "digitCount",
     minDifficulty: 2,
     maxDifficulty: 50, // Extended: 50-digit multiplication is challenging
+    anchorDifficulties: [2, 4, 8, 16, 32, 50],
     description: "multiply two random integers with the same digit count"
   },
   {
@@ -28,6 +29,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     difficultyParam: "bitSize",
     minDifficulty: 4,
     maxDifficulty: 64, // Extended: larger bit sizes
+    anchorDifficulties: [4, 8, 16, 32, 48, 64],
     description: "compute modular exponentiation using exact arithmetic"
   },
   {
@@ -37,6 +39,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     difficultyParam: "gateCount",
     minDifficulty: 2,
     maxDifficulty: 50, // Extended: complex circuits
+    anchorDifficulties: [2, 5, 10, 20, 35, 50],
     description: "evaluate a boolean expression over NAND, NOR, and XOR"
   },
   {
@@ -46,6 +49,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     difficultyParam: "matrixSize",
     minDifficulty: 2,
     maxDifficulty: 12, // Extended: 12x12 matrices are very hard
+    anchorDifficulties: [2, 3, 5, 7, 9, 12],
     description: "compute the determinant of an integer matrix"
   },
   {
@@ -55,6 +59,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     difficultyParam: "constraintCount",
     minDifficulty: 1,
     maxDifficulty: 20, // Extended: more complex problems
+    anchorDifficulties: [1, 3, 6, 10, 15, 20],
     description: "solve exact combinatorial counting tasks"
   },
   {
@@ -64,6 +69,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     difficultyParam: "sequenceLength",
     minDifficulty: 20,
     maxDifficulty: 2000, // Extended: longer sequences
+    anchorDifficulties: [20, 50, 100, 250, 500, 1000, 2000],
     description: "generate digit sequences tested for distribution quality"
   },
   {
@@ -73,6 +79,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     difficultyParam: "constraintDepth",
     minDifficulty: 1,
     maxDifficulty: 20, // Extended: more constraints
+    anchorDifficulties: [1, 3, 6, 10, 15, 20],
     description: "generate text satisfying strict mechanical constraints"
   },
   {
@@ -82,6 +89,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     difficultyParam: "gridComplexity",
     minDifficulty: 1,
     maxDifficulty: 10, // Extended: more complex requirements
+    anchorDifficulties: [1, 2, 4, 6, 8, 10],
     description: "produce Sudoku puzzles with validity constraints"
   },
   {
@@ -91,6 +99,7 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     difficultyParam: "sampleSize",
     minDifficulty: 10,
     maxDifficulty: 1000, // Extended: larger samples
+    anchorDifficulties: [10, 25, 50, 100, 250, 500, 1000],
     description: "generate values that match a target distribution"
   },
   {
@@ -100,16 +109,18 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
     difficultyParam: "propertyCount",
     minDifficulty: 1,
     maxDifficulty: 20, // Extended: more properties to track
+    anchorDifficulties: [1, 3, 6, 10, 15, 20],
     description: "write text describing its own measurable properties"
   },
   {
     key: "counting",
     label: "Counting In Context",
     tier: 2,
-    difficultyParam: "inputLength",
-    minDifficulty: 2,
-    maxDifficulty: 200, // Extended: much longer texts
-    description: "count target character or token occurrences in given text"
+    difficultyParam: "inputWords",
+    minDifficulty: 10,
+    maxDifficulty: 400, // Passage word count
+    anchorDifficulties: [10, 20, 40, 80, 160, 320, 400],
+    description: "count target word occurrences in a passage of N words"
   }
 ];
 

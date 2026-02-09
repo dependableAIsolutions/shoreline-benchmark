@@ -25,8 +25,8 @@ export const combinatoricsTask: TaskGenerator = {
   },
   generate(difficulty: number): GeneratedTask {
     const letters = "ABCDEFGHIJKLMN";
-    const uniqueLetters = Math.max(2, Math.min(6, 2 + Math.floor(difficulty / 2)));
-    const totalLength = Math.max(5, Math.min(14, 4 + difficulty));
+    const uniqueLetters = Math.max(2, Math.min(8, 2 + Math.floor((difficulty - 1) / 3)));
+    const totalLength = Math.max(uniqueLetters + 1, Math.min(24, 6 + Math.floor(difficulty * 0.9)));
 
     const counts = Array.from({ length: uniqueLetters }, () => 1);
     let remaining = totalLength - uniqueLetters;
