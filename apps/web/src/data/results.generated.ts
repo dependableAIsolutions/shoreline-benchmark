@@ -4,280 +4,567 @@ export const generatedResults: ModelResult[] = [
   {
     "modelId": "google/gemini-3-flash-preview",
     "modelDisplayName": "google/gemini-3-flash-preview",
-    "timestamp": "2026-02-08T21:57:04.149Z",
+    "timestamp": "2026-02-09T04:30:50.318Z",
     "categories": {
       "mult": {
         "category": "mult",
-        "claimed": 3.6666666666666665,
-        "claimedDepth": 0.23032919292831183,
-        "claimedLoose": 0,
-        "claimedThick": 0,
-        "sand": 0.23032919292831183,
-        "solid": 4.590339402895964,
-        "concrete": 4.590339402895964,
-        "discernment": 83.33333333333334,
+        "claimed": 24.636363636363637,
+        "claimedDepth": 2.8361366484014576,
+        "claimedLoose": 2.8361366484014576,
+        "claimedThick": 2.8361366484014576,
+        "sand": 2.8361366484014576,
+        "solid": 3.9817334679554928,
+        "concrete": 3.9817334679554928,
+        "discernment": 95.45454545454545,
         "falseConfidence": 0,
-        "trueUncertainty": 33.33333333333333,
-        "failureAwareness": 33.33333333333333,
-        "calibrationError": 63,
-        "capability": 18.75,
-        "trialCount": 6,
-        "difficultyRange": [
+        "trueUncertainty": 45.45454545454545,
+        "failureAwareness": 45.45454545454545,
+        "calibrationError": 29.909090909090907,
+        "capability": 16.666666666666664,
+        "sandFrontierDifficulty": 8,
+        "solidFrontierDifficulty": 10,
+        "concreteFrontierDifficulty": 50,
+        "sampleDifficulties": [
+          2,
+          4,
+          5,
           6,
-          16
+          8,
+          10,
+          12,
+          15,
+          16,
+          32,
+          50
         ],
-        "transitionZone": 11
+        "trialsByDifficulty": {
+          "2": 2,
+          "4": 2,
+          "5": 2,
+          "6": 2,
+          "8": 2,
+          "10": 2,
+          "12": 2,
+          "15": 2,
+          "16": 2,
+          "32": 2,
+          "50": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 22,
+        "difficultyRange": [
+          2,
+          50
+        ],
+        "transitionZone": 10
       },
       "modexp": {
         "category": "modexp",
-        "claimed": 69.16666666666667,
-        "claimedDepth": 3.5423272391003007,
-        "claimedLoose": 5.903878731833834,
+        "claimed": 61.65,
+        "claimedDepth": 8.625867368405281,
+        "claimedLoose": 14.376445614008801,
         "claimedThick": 1.713635366232464,
-        "sand": 3.5423272391003007,
-        "solid": 3.4151849549792925,
-        "concrete": 3.4151849549792925,
-        "discernment": 100,
-        "falseConfidence": 0,
-        "trueUncertainty": 33.33333333333333,
-        "failureAwareness": 33.33333333333333,
-        "calibrationError": 2.5000000000000133,
-        "capability": 15,
-        "trialCount": 6,
-        "difficultyRange": [
+        "sand": 8.625867368405281,
+        "solid": 3.884135334305567,
+        "concrete": 3.884135334305567,
+        "discernment": 95,
+        "falseConfidence": 5,
+        "trueUncertainty": 55.00000000000001,
+        "failureAwareness": 55.00000000000001,
+        "calibrationError": 21.64999999999999,
+        "capability": 16.666666666666664,
+        "sandFrontierDifficulty": 32,
+        "solidFrontierDifficulty": 14,
+        "concreteFrontierDifficulty": 64,
+        "sampleDifficulties": [
+          4,
           8,
-          18
+          9,
+          12,
+          14,
+          16,
+          19,
+          32,
+          48,
+          64
         ],
-        "transitionZone": 13
+        "trialsByDifficulty": {
+          "4": 2,
+          "8": 2,
+          "9": 2,
+          "12": 2,
+          "14": 2,
+          "16": 2,
+          "19": 2,
+          "32": 2,
+          "48": 2,
+          "64": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 20,
+        "difficultyRange": [
+          4,
+          64
+        ],
+        "transitionZone": 14
       },
       "bool": {
         "category": "bool",
-        "claimed": 36.25,
-        "claimedDepth": 22.24990476382159,
-        "claimedLoose": 37.08317460636932,
-        "claimedThick": 0,
-        "sand": 22.24990476382159,
+        "claimed": 62.388888888888886,
+        "claimedDepth": 23.53752293690252,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 3.9817334679554928,
+        "sand": 23.53752293690252,
         "solid": 39.22920489483753,
         "concrete": 0,
         "discernment": 100,
         "falseConfidence": 0,
         "trueUncertainty": 0,
         "failureAwareness": 0,
-        "calibrationError": 63.74999999999999,
+        "calibrationError": 37.611111111111114,
         "capability": 100,
-        "trialCount": 4,
-        "difficultyRange": [
+        "sandFrontierDifficulty": 50,
+        "solidFrontierDifficulty": 50,
+        "sampleDifficulties": [
+          2,
+          5,
+          10,
+          20,
           26,
+          35,
+          45,
+          48,
+          50
+        ],
+        "trialsByDifficulty": {
+          "2": 2,
+          "5": 2,
+          "10": 2,
+          "20": 2,
+          "26": 2,
+          "35": 2,
+          "45": 2,
+          "48": 2,
+          "50": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 18,
+        "difficultyRange": [
+          2,
           50
         ],
         "transitionZone": 50
       },
       "matrix": {
         "category": "matrix",
-        "claimed": 61.666666666666664,
-        "claimedDepth": 7.008231014772461,
+        "claimed": 52.1875,
+        "claimedDepth": 10.011758592532088,
         "claimedLoose": 10.011758592532088,
-        "claimedThick": 6.789582577793213,
-        "sand": 7.008231014772461,
+        "claimedThick": 10.011758592532088,
+        "sand": 10.011758592532088,
         "solid": 10.011758592532088,
         "concrete": 10.011758592532088,
-        "discernment": 100,
+        "discernment": 87.5,
         "falseConfidence": 0,
-        "trueUncertainty": 33.33333333333333,
-        "failureAwareness": 33.33333333333333,
-        "calibrationError": 4.999999999999993,
-        "capability": 30,
-        "trialCount": 6,
+        "trueUncertainty": 50,
+        "failureAwareness": 50,
+        "calibrationError": 8.437499999999998,
+        "capability": 20,
+        "sandFrontierDifficulty": 5,
+        "solidFrontierDifficulty": 5,
+        "concreteFrontierDifficulty": 12,
+        "sampleDifficulties": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          12
+        ],
+        "trialsByDifficulty": {
+          "2": 2,
+          "3": 2,
+          "4": 2,
+          "5": 2,
+          "6": 2,
+          "7": 2,
+          "9": 2,
+          "12": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 16,
         "difficultyRange": [
           2,
-          10
+          12
         ],
-        "transitionZone": 5
+        "transitionZone": 4
       },
       "combo": {
         "category": "combo",
-        "claimed": 77.5,
-        "claimedDepth": 28.92383126607958,
+        "claimed": 79,
+        "claimedDepth": 27.46044342638627,
         "claimedLoose": 39.22920489483753,
-        "claimedThick": 34.02803678362304,
-        "sand": 28.92383126607958,
-        "solid": 39.22920489483753,
+        "claimedThick": 24.237725345473805,
+        "sand": 27.46044342638627,
+        "solid": 26.60371039043464,
         "concrete": 0,
-        "discernment": 100,
-        "falseConfidence": 0,
+        "discernment": 83.33333333333334,
+        "falseConfidence": 16.666666666666664,
         "trueUncertainty": 0,
         "failureAwareness": 0,
-        "calibrationError": 22.499999999999996,
-        "capability": 100,
-        "trialCount": 4,
-        "difficultyRange": [
+        "calibrationError": 4.333333333333334,
+        "capability": 42.10526315789473,
+        "sandFrontierDifficulty": 20,
+        "solidFrontierDifficulty": 15,
+        "sampleDifficulties": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
           11,
+          14,
+          15,
           20
         ],
-        "transitionZone": 20
+        "trialsByDifficulty": {
+          "1": 2,
+          "3": 2,
+          "4": 2,
+          "5": 2,
+          "6": 2,
+          "7": 2,
+          "9": 2,
+          "10": 2,
+          "11": 2,
+          "14": 2,
+          "15": 2,
+          "20": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 24,
+        "difficultyRange": [
+          1,
+          20
+        ],
+        "transitionZone": 9
       },
       "random": {
         "category": "random",
-        "claimed": 16.666666666666668,
-        "claimedDepth": 8.01624713491131,
-        "claimedLoose": 8.01624713491131,
-        "claimedThick": 8.01624713491131,
-        "sand": 8.01624713491131,
-        "solid": 7.826768581257644,
-        "concrete": 0,
-        "discernment": 50,
-        "falseConfidence": 0,
-        "trueUncertainty": 0,
-        "failureAwareness": 0,
-        "calibrationError": 69.67725659604007,
-        "capability": 31.060606060606062,
-        "trialCount": 6,
-        "difficultyRange": [
-          328,
-          640
+        "claimed": 33.333333333333336,
+        "claimedDepth": 39.22920489483753,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 39.22920489483753,
+        "sand": 39.22920489483753,
+        "solid": 12.24888835537187,
+        "concrete": 12.24888835537187,
+        "discernment": 55.55555555555556,
+        "falseConfidence": 33.33333333333333,
+        "trueUncertainty": 11.11111111111111,
+        "failureAwareness": 11.11111111111111,
+        "calibrationError": 25.024336499250833,
+        "capability": 0,
+        "sandFrontierDifficulty": 2000,
+        "solidFrontierDifficulty": 1000,
+        "concreteFrontierDifficulty": 2000,
+        "sampleDifficulties": [
+          20,
+          22,
+          25,
+          50,
+          100,
+          250,
+          500,
+          1000,
+          2000
         ],
-        "transitionZone": 635
+        "trialsByDifficulty": {
+          "20": 2,
+          "22": 2,
+          "25": 2,
+          "50": 2,
+          "100": 2,
+          "250": 2,
+          "500": 2,
+          "1000": 2,
+          "2000": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 18,
+        "difficultyRange": [
+          20,
+          2000
+        ],
+        "transitionZone": 20
       },
       "constrained": {
         "category": "constrained",
-        "claimed": 81.66666666666667,
-        "claimedDepth": 5.019223750134725,
-        "claimedLoose": 7.721882692514962,
-        "claimedThick": 3.029233183185692,
-        "sand": 5.019223750134725,
-        "solid": 1.5443765385029922,
+        "claimed": 80.83333333333333,
+        "claimedDepth": 29.421903671128145,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 7.721882692514962,
+        "sand": 29.421903671128145,
+        "solid": 13.07640163161251,
         "concrete": 0,
         "discernment": 0,
         "falseConfidence": 100,
         "trueUncertainty": 0,
         "failureAwareness": 0,
-        "calibrationError": 75.00000000000001,
+        "calibrationError": 56.13756613756613,
         "capability": 0,
-        "trialCount": 3,
+        "sandFrontierDifficulty": 20,
+        "solidFrontierDifficulty": 20,
+        "sampleDifficulties": [
+          1,
+          3,
+          6,
+          10,
+          15,
+          20
+        ],
+        "trialsByDifficulty": {
+          "1": 2,
+          "3": 2,
+          "6": 2,
+          "10": 2,
+          "15": 2,
+          "20": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 12,
         "difficultyRange": [
           1,
-          6
+          20
         ],
         "transitionZone": 1
       },
       "sudoku": {
         "category": "sudoku",
-        "claimed": 90,
-        "claimedDepth": 16.73141300271796,
-        "claimedLoose": 19.68401529731525,
+        "claimed": 86.64285714285714,
+        "claimedDepth": 23.53752293690252,
+        "claimedLoose": 39.22920489483753,
         "claimedThick": 19.68401529731525,
-        "sand": 16.73141300271796,
-        "solid": 0.7290376036042685,
-        "concrete": 0,
-        "discernment": 0,
-        "falseConfidence": 100,
-        "trueUncertainty": 0,
-        "failureAwareness": 0,
-        "calibrationError": 86.29629629629629,
+        "sand": 23.53752293690252,
+        "solid": 2.4270593937462612,
+        "concrete": 2.4270593937462612,
+        "discernment": 7.142857142857142,
+        "falseConfidence": 85.71428571428571,
+        "trueUncertainty": 7.142857142857142,
+        "failureAwareness": 7.142857142857142,
+        "calibrationError": 82.18791228612658,
         "capability": 0,
-        "trialCount": 3,
+        "sandFrontierDifficulty": 10,
+        "solidFrontierDifficulty": 10,
+        "concreteFrontierDifficulty": 4,
+        "sampleDifficulties": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          8,
+          10
+        ],
+        "trialsByDifficulty": {
+          "1": 2,
+          "2": 2,
+          "3": 2,
+          "4": 2,
+          "6": 2,
+          "8": 2,
+          "10": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 14,
         "difficultyRange": [
           1,
-          6
+          10
         ],
         "transitionZone": 1
       },
       "distrib": {
         "category": "distrib",
-        "claimed": 18.333333333333332,
-        "claimedDepth": 0.12702551799820297,
-        "claimedLoose": 0.1494417858802388,
-        "claimedThick": 0.1494417858802388,
-        "sand": 0.12702551799820297,
-        "solid": 0.06169466833611433,
-        "concrete": 0,
-        "discernment": 0,
-        "falseConfidence": 83.33333333333334,
-        "trueUncertainty": 0,
-        "failureAwareness": 0,
-        "calibrationError": 5.25364125127169,
-        "capability": 3.080808080808081,
-        "trialCount": 6,
-        "difficultyRange": [
+        "claimed": 30,
+        "claimedDepth": 37.26774465009565,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 39.22920489483753,
+        "sand": 37.26774465009565,
+        "solid": 1.8611572057758545,
+        "concrete": 1.8611572057758545,
+        "discernment": 44.44444444444444,
+        "falseConfidence": 50,
+        "trueUncertainty": 33.33333333333333,
+        "failureAwareness": 33.33333333333333,
+        "calibrationError": 7.461752485917014,
+        "capability": 0,
+        "sandFrontierDifficulty": 1000,
+        "solidFrontierDifficulty": 250,
+        "concreteFrontierDifficulty": 1000,
+        "sampleDifficulties": [
+          10,
+          12,
+          15,
           25,
-          46
+          50,
+          100,
+          250,
+          500,
+          1000
         ],
-        "transitionZone": 40.5
+        "trialsByDifficulty": {
+          "10": 2,
+          "12": 2,
+          "15": 2,
+          "25": 2,
+          "50": 2,
+          "100": 2,
+          "250": 2,
+          "500": 2,
+          "1000": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 18,
+        "difficultyRange": [
+          10,
+          1000
+        ],
+        "transitionZone": 10
       },
       "selfref": {
         "category": "selfref",
-        "claimed": 93.33333333333333,
-        "claimedDepth": 6.5636002886377165,
-        "claimedLoose": 7.721882692514962,
-        "claimedThick": 7.721882692514962,
-        "sand": 6.5636002886377165,
-        "solid": 1.9304706731287404,
+        "claimed": 87.08333333333333,
+        "claimedDepth": 29.421903671128145,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 26.60371039043464,
+        "sand": 29.421903671128145,
+        "solid": 4.358800543870837,
         "concrete": 0,
         "discernment": 0,
         "falseConfidence": 100,
         "trueUncertainty": 0,
         "failureAwareness": 0,
-        "calibrationError": 68.33333333333333,
+        "calibrationError": 64.79497354497353,
         "capability": 0,
-        "trialCount": 3,
+        "sandFrontierDifficulty": 20,
+        "solidFrontierDifficulty": 20,
+        "sampleDifficulties": [
+          1,
+          3,
+          6,
+          10,
+          15,
+          20
+        ],
+        "trialsByDifficulty": {
+          "1": 2,
+          "3": 2,
+          "6": 2,
+          "10": 2,
+          "15": 2,
+          "20": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 12,
         "difficultyRange": [
           1,
-          6
+          20
         ],
         "transitionZone": 1
       },
       "counting": {
         "category": "counting",
-        "claimed": 66.83333333333333,
-        "claimedDepth": 7.888441328550826,
-        "claimedLoose": 8.303622451106133,
-        "claimedThick": 8.303622451106133,
-        "sand": 7.888441328550826,
-        "solid": 8.303622451106133,
+        "claimed": 82.11538461538461,
+        "claimedDepth": 29.421903671128145,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 28.800326321745928,
+        "sand": 29.421903671128145,
+        "solid": 39.22920489483753,
         "concrete": 0,
-        "discernment": 66.66666666666666,
-        "falseConfidence": 33.33333333333333,
+        "discernment": 96.15384615384616,
+        "falseConfidence": 3.8461538461538463,
         "trueUncertainty": 0,
         "failureAwareness": 0,
-        "calibrationError": 0.16666666666667052,
-        "capability": 30.303030303030305,
-        "trialCount": 6,
-        "difficultyRange": [
-          32,
-          67
+        "calibrationError": 14.038461538461544,
+        "capability": 69.23076923076923,
+        "sandFrontierDifficulty": 400,
+        "solidFrontierDifficulty": 400,
+        "sampleDifficulties": [
+          10,
+          20,
+          40,
+          80,
+          145,
+          160,
+          275,
+          278,
+          280,
+          282,
+          285,
+          320,
+          400
         ],
-        "transitionZone": 62
+        "trialsByDifficulty": {
+          "10": 2,
+          "20": 2,
+          "40": 2,
+          "80": 2,
+          "145": 2,
+          "160": 2,
+          "275": 2,
+          "278": 2,
+          "280": 2,
+          "282": 2,
+          "285": 2,
+          "320": 2,
+          "400": 2
+        },
+        "avgTrialsPerDifficulty": 2,
+        "trialCount": 26,
+        "difficultyRange": [
+          10,
+          400
+        ],
+        "transitionZone": 280
       }
     },
     "aggregate": {
-      "avgClaimed": 55.91666666666667,
-      "avgSand": 9.663688590877543,
-      "avgSolid": 10.624696659638026,
-      "avgConcrete": 1.6379348136733947,
-      "avgDiscernment": 54.54545454545455,
-      "avgFalseConfidence": 37.87878787878788,
-      "avgTrueUncertainty": 9.09090909090909,
-      "avgCalibrationError": 41.95247219487346,
-      "calibrationIndex": 58.04752780512654,
-      "avgCapability": 29.83585858585859,
-      "overconfidence": 2.226573083062833,
-      "underconfidence": 3.187581151823316,
-      "blindSpots": 37.87878787878788,
-      "falseConfidence": 37.87878787878788,
-      "totalGap": 43.29294211367403
+      "avgClaimed": 61.80645402577222,
+      "avgSand": 23.70653749707707,
+      "avgSolid": 14.264732245934562,
+      "avgConcrete": 3.1286120317897397,
+      "avgDiscernment": 60.416780189507456,
+      "avgFalseConfidence": 35.86913086913087,
+      "avgTrueUncertainty": 18.367440640167914,
+      "avgCalibrationError": 31.962367076893724,
+      "calibrationIndex": 68.03763292310627,
+      "avgCapability": 24.06085142927248,
+      "overconfidence": 11.864039796706003,
+      "underconfidence": 2.422234545563494,
+      "blindSpots": 35.86913086913087,
+      "falseConfidence": 35.86913086913087,
+      "totalGap": 50.155405211400364
     },
     "metadata": {
       "adapter": "openrouter",
       "temperature": 0.7,
-      "totalTokensUsed": 159924,
-      "totalPromptTokensUsed": 0,
-      "totalCompletionTokensUsed": 0,
-      "costMeasuredCalls": 0,
-      "missingCostCalls": 159,
-      "totalModelCalls": 159,
-      "totalLatencyMs": 925466,
-      "averageLatencyMs": 5820.540880503145,
-      "totalTrials": 53,
+      "totalTokensUsed": 603065,
+      "totalPromptTokensUsed": 292777,
+      "totalCompletionTokensUsed": 310288,
+      "totalCost": 1.0772525000000008,
+      "providerReportedCost": 1.0772525000000008,
+      "estimatedCost": 0,
+      "costMeasuredCalls": 600,
+      "missingCostCalls": 0,
+      "totalModelCalls": 600,
+      "totalLatencyMs": 2817354,
+      "averageLatencyMs": 4695.59,
+      "runDurationMs": 1456768,
+      "totalTrials": 200,
       "invalidTrials": 0
     }
   },
@@ -301,6 +588,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 99,
         "capability": 50,
+        "sandFrontierDifficulty": 26,
+        "sampleDifficulties": [
+          26
+        ],
+        "trialsByDifficulty": {
+          "26": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           26,
@@ -323,6 +618,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 97,
         "capability": 50,
+        "sandFrontierDifficulty": 34,
+        "concreteFrontierDifficulty": 34,
+        "sampleDifficulties": [
+          34
+        ],
+        "trialsByDifficulty": {
+          "34": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           34,
@@ -345,6 +649,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 100,
         "capability": 50,
+        "solidFrontierDifficulty": 26,
+        "sampleDifficulties": [
+          26
+        ],
+        "trialsByDifficulty": {
+          "26": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           26,
@@ -367,6 +679,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 95,
         "capability": 50,
+        "sandFrontierDifficulty": 7,
+        "sampleDifficulties": [
+          7
+        ],
+        "trialsByDifficulty": {
+          "7": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           7,
@@ -389,6 +709,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 7.9999999999999964,
         "capability": 52.63157894736842,
+        "sandFrontierDifficulty": 11,
+        "solidFrontierDifficulty": 11,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -411,6 +740,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 98,
         "capability": 50,
+        "sandFrontierDifficulty": 1010,
+        "sampleDifficulties": [
+          1010
+        ],
+        "trialsByDifficulty": {
+          "1010": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           1010,
@@ -433,6 +770,16 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 32.00000000000001,
         "capability": 52.63157894736842,
+        "sandFrontierDifficulty": 11,
+        "solidFrontierDifficulty": 11,
+        "concreteFrontierDifficulty": 11,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -455,6 +802,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 4.0000000000000036,
         "capability": 55.55555555555556,
+        "sandFrontierDifficulty": 6,
+        "solidFrontierDifficulty": 6,
+        "sampleDifficulties": [
+          6
+        ],
+        "trialsByDifficulty": {
+          "6": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           6,
@@ -477,6 +833,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 92,
         "capability": 50,
+        "sandFrontierDifficulty": 505,
+        "concreteFrontierDifficulty": 505,
+        "sampleDifficulties": [
+          505
+        ],
+        "trialsByDifficulty": {
+          "505": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           505,
@@ -499,6 +864,16 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 69,
         "capability": 52.63157894736842,
+        "sandFrontierDifficulty": 11,
+        "solidFrontierDifficulty": 11,
+        "concreteFrontierDifficulty": 11,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -509,10 +884,10 @@ export const generatedResults: ModelResult[] = [
       "counting": {
         "category": "counting",
         "claimed": 10,
-        "claimedDepth": 1.549379668485646,
+        "claimedDepth": 0.5562684776946627,
         "claimedLoose": 0,
         "claimedThick": 0,
-        "sand": 1.549379668485646,
+        "sand": 0.5562684776946627,
         "solid": 0,
         "concrete": 0,
         "discernment": 100,
@@ -520,7 +895,16 @@ export const generatedResults: ModelResult[] = [
         "trueUncertainty": 100,
         "failureAwareness": 100,
         "calibrationError": 10,
-        "capability": 50,
+        "capability": 23.333333333333332,
+        "sandFrontierDifficulty": 101,
+        "concreteFrontierDifficulty": 101,
+        "sampleDifficulties": [
+          101
+        ],
+        "trialsByDifficulty": {
+          "101": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           101,
@@ -531,7 +915,7 @@ export const generatedResults: ModelResult[] = [
     },
     "aggregate": {
       "avgClaimed": 78.63636363636364,
-      "avgSand": 13.248164943883136,
+      "avgSand": 13.157882108356683,
       "avgSolid": 6.1707612123324544,
       "avgConcrete": 1.3524629517149085,
       "avgDiscernment": 63.63636363636363,
@@ -539,12 +923,12 @@ export const generatedResults: ModelResult[] = [
       "avgTrueUncertainty": 45.45454545454545,
       "avgCalibrationError": 64,
       "calibrationIndex": 36,
-      "avgCapability": 51.22275385433281,
-      "overconfidence": 8.7139820398726,
+      "avgCapability": 48.798511430090386,
+      "overconfidence": 8.623699204346146,
       "underconfidence": 1.6365783083219185,
       "blindSpots": 27.272727272727273,
       "falseConfidence": 27.272727272727273,
-      "totalGap": 37.62328762092179
+      "totalGap": 37.533004785395335
     },
     "metadata": {
       "adapter": "openrouter",
@@ -559,286 +943,6 @@ export const generatedResults: ModelResult[] = [
       "averageLatencyMs": 7263.515151515152,
       "totalTrials": 11,
       "invalidTrials": 0
-    }
-  },
-  {
-    "modelId": "deepseek/deepseek-v3.2",
-    "modelDisplayName": "deepseek/deepseek-v3.2",
-    "timestamp": "2026-02-08T22:04:56.169Z",
-    "categories": {
-      "mult": {
-        "category": "mult",
-        "claimed": 84,
-        "claimedDepth": 2.8869230361234344,
-        "claimedLoose": 3.396380042498158,
-        "claimedThick": 3.396380042498158,
-        "sand": 2.8869230361234344,
-        "solid": 1.8007536497305194,
-        "concrete": 1.8007536497305194,
-        "discernment": 100,
-        "falseConfidence": 0,
-        "trueUncertainty": 20,
-        "failureAwareness": 20,
-        "calibrationError": 3.9999999999999925,
-        "capability": 3.125,
-        "trialCount": 5,
-        "difficultyRange": [
-          2,
-          9
-        ],
-        "transitionZone": 3.5
-      },
-      "modexp": {
-        "category": "modexp",
-        "claimed": 96.5,
-        "claimedDepth": 3.6899285675902886,
-        "claimedLoose": 3.884135334305567,
-        "claimedThick": 3.884135334305567,
-        "sand": 3.6899285675902886,
-        "solid": 1.713635366232464,
-        "concrete": 1.713635366232464,
-        "discernment": 66.66666666666666,
-        "falseConfidence": 16.666666666666664,
-        "trueUncertainty": 16.666666666666664,
-        "failureAwareness": 16.666666666666664,
-        "calibrationError": 29.833333333333336,
-        "capability": 7.5,
-        "trialCount": 6,
-        "difficultyRange": [
-          4,
-          14
-        ],
-        "transitionZone": 8.5
-      },
-      "bool": {
-        "category": "bool",
-        "claimed": 70,
-        "claimedDepth": 27.46044342638627,
-        "claimedLoose": 39.22920489483753,
-        "claimedThick": 15.814803841402473,
-        "sand": 27.46044342638627,
-        "solid": 39.22920489483753,
-        "concrete": 0,
-        "discernment": 100,
-        "falseConfidence": 0,
-        "trueUncertainty": 0,
-        "failureAwareness": 0,
-        "calibrationError": 30.000000000000004,
-        "capability": 100,
-        "trialCount": 4,
-        "difficultyRange": [
-          26,
-          50
-        ],
-        "transitionZone": 50
-      },
-      "matrix": {
-        "category": "matrix",
-        "claimed": 86.33333333333333,
-        "claimedDepth": 25.431717712775136,
-        "claimedLoose": 29.919667897382514,
-        "claimedThick": 29.919667897382514,
-        "sand": 25.431717712775136,
-        "solid": 6.789582577793213,
-        "concrete": 6.789582577793213,
-        "discernment": 83.33333333333334,
-        "falseConfidence": 0,
-        "trueUncertainty": 33.33333333333333,
-        "failureAwareness": 33.33333333333333,
-        "calibrationError": 36.33333333333333,
-        "capability": 30,
-        "trialCount": 6,
-        "difficultyRange": [
-          2,
-          10
-        ],
-        "transitionZone": 5
-      },
-      "combo": {
-        "category": "combo",
-        "claimed": 86,
-        "claimedDepth": 20.602066543652732,
-        "claimedLoose": 24.237725345473805,
-        "claimedThick": 24.237725345473805,
-        "sand": 20.602066543652732,
-        "solid": 17.502461728075286,
-        "concrete": 0,
-        "discernment": 83.33333333333334,
-        "falseConfidence": 16.666666666666664,
-        "trueUncertainty": 0,
-        "failureAwareness": 0,
-        "calibrationError": 2.6666666666666616,
-        "capability": 42.10526315789473,
-        "trialCount": 6,
-        "difficultyRange": [
-          4,
-          14
-        ],
-        "transitionZone": 9
-      },
-      "random": {
-        "category": "random",
-        "claimed": 43.333333333333336,
-        "claimedDepth": 0.0062428031842577895,
-        "claimedLoose": 0.0013893621517236938,
-        "claimedThick": 0.0013893621517236938,
-        "sand": 0.0062428031842577895,
-        "solid": 0.009928683976494658,
-        "concrete": 0,
-        "discernment": 66.66666666666666,
-        "falseConfidence": 33.33333333333333,
-        "trueUncertainty": 0,
-        "failureAwareness": 0,
-        "calibrationError": 26.547761008366543,
-        "capability": 0,
-        "trialCount": 3,
-        "difficultyRange": [
-          20,
-          25
-        ],
-        "transitionZone": 20
-      },
-      "constrained": {
-        "category": "constrained",
-        "claimed": 68.33333333333333,
-        "claimedDepth": 3.4748472116317326,
-        "claimedLoose": 3.029233183185692,
-        "claimedThick": 0.6874150112618715,
-        "sand": 3.4748472116317326,
-        "solid": 1.5443765385029922,
-        "concrete": 1.5443765385029922,
-        "discernment": 33.33333333333333,
-        "falseConfidence": 66.66666666666666,
-        "trueUncertainty": 33.33333333333333,
-        "failureAwareness": 33.33333333333333,
-        "calibrationError": 61.66666666666666,
-        "capability": 0,
-        "trialCount": 3,
-        "difficultyRange": [
-          1,
-          6
-        ],
-        "transitionZone": 1
-      },
-      "sudoku": {
-        "category": "sudoku",
-        "claimed": 88.33333333333333,
-        "claimedDepth": 16.73141300271796,
-        "claimedLoose": 19.68401529731525,
-        "claimedThick": 19.68401529731525,
-        "sand": 16.73141300271796,
-        "solid": 0.2859956552783319,
-        "concrete": 0,
-        "discernment": 0,
-        "falseConfidence": 100,
-        "trueUncertainty": 0,
-        "failureAwareness": 0,
-        "calibrationError": 87.09876543209876,
-        "capability": 0,
-        "trialCount": 3,
-        "difficultyRange": [
-          1,
-          6
-        ],
-        "transitionZone": 1
-      },
-      "distrib": {
-        "category": "distrib",
-        "claimed": 10,
-        "claimedDepth": 0.0023394567743018103,
-        "claimedLoose": 0,
-        "claimedThick": 0,
-        "sand": 0.0023394567743018103,
-        "solid": 0.007730539428475146,
-        "concrete": 0.0035392404779308996,
-        "discernment": 33.33333333333333,
-        "falseConfidence": 33.33333333333333,
-        "trueUncertainty": 33.33333333333333,
-        "failureAwareness": 33.33333333333333,
-        "calibrationError": 2.03703703703704,
-        "capability": 0,
-        "trialCount": 3,
-        "difficultyRange": [
-          10,
-          15
-        ],
-        "transitionZone": 10
-      },
-      "selfref": {
-        "category": "selfref",
-        "claimed": 80,
-        "claimedDepth": 5.791412019386221,
-        "claimedLoose": 7.721882692514962,
-        "claimedThick": 3.029233183185692,
-        "sand": 5.791412019386221,
-        "solid": 3.860941346257481,
-        "concrete": 0,
-        "discernment": 0,
-        "falseConfidence": 100,
-        "trueUncertainty": 0,
-        "failureAwareness": 0,
-        "calibrationError": 46.66666666666667,
-        "capability": 0,
-        "trialCount": 3,
-        "difficultyRange": [
-          1,
-          6
-        ],
-        "transitionZone": 1
-      },
-      "counting": {
-        "category": "counting",
-        "claimed": 80.83333333333333,
-        "claimedDepth": 13.5265490062872,
-        "claimedLoose": 15.913587066220236,
-        "claimedThick": 15.913587066220236,
-        "sand": 13.5265490062872,
-        "solid": 0,
-        "concrete": 0,
-        "discernment": 16.666666666666664,
-        "falseConfidence": 83.33333333333334,
-        "trueUncertainty": 16.666666666666664,
-        "failureAwareness": 16.666666666666664,
-        "calibrationError": 80.83333333333333,
-        "capability": 48.484848484848484,
-        "trialCount": 6,
-        "difficultyRange": [
-          50,
-          103
-        ],
-        "transitionZone": 98
-      }
-    },
-    "aggregate": {
-      "avgClaimed": 72.15151515151516,
-      "avgSand": 10.873080253319047,
-      "avgSolid": 6.613146452737525,
-      "avgConcrete": 1.0774443066124653,
-      "avgDiscernment": 53.03030303030303,
-      "avgFalseConfidence": 40.90909090909091,
-      "avgTrueUncertainty": 13.939393939393938,
-      "avgCalibrationError": 37.06214213431839,
-      "calibrationIndex": 62.93785786568161,
-      "avgCapability": 21.01955560388575,
-      "overconfidence": 5.3306463852994925,
-      "underconfidence": 1.07071258471797,
-      "blindSpots": 40.90909090909091,
-      "falseConfidence": 40.90909090909091,
-      "totalGap": 47.31044987910837
-    },
-    "metadata": {
-      "adapter": "openrouter",
-      "temperature": 0.7,
-      "totalTokensUsed": 149188,
-      "totalPromptTokensUsed": 0,
-      "totalCompletionTokensUsed": 0,
-      "costMeasuredCalls": 0,
-      "missingCostCalls": 144,
-      "totalModelCalls": 144,
-      "totalLatencyMs": 4171418,
-      "averageLatencyMs": 28968.180555555555,
-      "totalTrials": 48,
-      "invalidTrials": 2
     }
   },
   {
@@ -861,6 +965,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 99,
         "capability": 50,
+        "sandFrontierDifficulty": 26,
+        "concreteFrontierDifficulty": 26,
+        "sampleDifficulties": [
+          26
+        ],
+        "trialsByDifficulty": {
+          "26": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           26,
@@ -883,6 +996,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 100,
         "capability": 50,
+        "sandFrontierDifficulty": 34,
+        "sampleDifficulties": [
+          34
+        ],
+        "trialsByDifficulty": {
+          "34": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           34,
@@ -905,6 +1026,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 100,
         "capability": 50,
+        "solidFrontierDifficulty": 26,
+        "sampleDifficulties": [
+          26
+        ],
+        "trialsByDifficulty": {
+          "26": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           26,
@@ -927,6 +1056,13 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 0,
         "capability": 50,
+        "sampleDifficulties": [
+          7
+        ],
+        "trialsByDifficulty": {
+          "7": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           7,
@@ -949,6 +1085,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 100,
         "capability": 52.63157894736842,
+        "sandFrontierDifficulty": 11,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -971,6 +1115,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 95,
         "capability": 50,
+        "sandFrontierDifficulty": 1010,
+        "concreteFrontierDifficulty": 1010,
+        "sampleDifficulties": [
+          1010
+        ],
+        "trialsByDifficulty": {
+          "1010": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           1010,
@@ -993,6 +1146,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 60,
         "capability": 52.63157894736842,
+        "solidFrontierDifficulty": 11,
+        "concreteFrontierDifficulty": 11,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -1015,6 +1177,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 30.333333333333336,
         "capability": 55.55555555555556,
+        "sandFrontierDifficulty": 6,
+        "solidFrontierDifficulty": 6,
+        "sampleDifficulties": [
+          6
+        ],
+        "trialsByDifficulty": {
+          "6": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           6,
@@ -1037,6 +1208,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 0,
         "capability": 50,
+        "concreteFrontierDifficulty": 505,
+        "sampleDifficulties": [
+          505
+        ],
+        "trialsByDifficulty": {
+          "505": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           505,
@@ -1059,6 +1238,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 50,
         "capability": 52.63157894736842,
+        "sandFrontierDifficulty": 11,
+        "solidFrontierDifficulty": 11,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -1080,7 +1268,14 @@ export const generatedResults: ModelResult[] = [
         "trueUncertainty": 0,
         "failureAwareness": 0,
         "calibrationError": 0,
-        "capability": 50,
+        "capability": 23.333333333333332,
+        "sampleDifficulties": [
+          101
+        ],
+        "trialsByDifficulty": {
+          "101": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           101,
@@ -1099,7 +1294,7 @@ export const generatedResults: ModelResult[] = [
       "avgTrueUncertainty": 36.36363636363637,
       "avgCalibrationError": 57.66666666666667,
       "calibrationIndex": 42.33333333333333,
-      "avgCapability": 51.22275385433281,
+      "avgCapability": 48.798511430090386,
       "overconfidence": 7.112893816640388,
       "underconfidence": 2.3923891707497855,
       "blindSpots": 45.45454545454545,
@@ -1122,6 +1317,574 @@ export const generatedResults: ModelResult[] = [
     }
   },
   {
+    "modelId": "deepseek/deepseek-v3.2",
+    "modelDisplayName": "deepseek/deepseek-v3.2",
+    "timestamp": "2026-02-09T05:38:52.619Z",
+    "categories": {
+      "mult": {
+        "category": "mult",
+        "claimed": 67.5,
+        "claimedDepth": 17.97223175280795,
+        "claimedLoose": 21.143802062126998,
+        "claimedThick": 21.143802062126998,
+        "sand": 17.97223175280795,
+        "solid": 1.3323728858789725,
+        "concrete": 0,
+        "discernment": 50,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "failureAwareness": 0,
+        "calibrationError": 17.500000000000004,
+        "capability": 2.083333333333333,
+        "sandFrontierDifficulty": 32,
+        "solidFrontierDifficulty": 5,
+        "sampleDifficulties": [
+          2,
+          3,
+          4,
+          5,
+          8,
+          16,
+          32,
+          50
+        ],
+        "trialsByDifficulty": {
+          "2": 1,
+          "3": 1,
+          "4": 1,
+          "5": 1,
+          "8": 1,
+          "16": 1,
+          "32": 1,
+          "50": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 8,
+        "difficultyRange": [
+          2,
+          50
+        ],
+        "transitionZone": 3
+      },
+      "modexp": {
+        "category": "modexp",
+        "claimed": 96.22222222222223,
+        "claimedDepth": 33.3448241606119,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 39.22920489483753,
+        "sand": 33.3448241606119,
+        "solid": 0.9912774274175689,
+        "concrete": 0,
+        "discernment": 22.22222222222222,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "failureAwareness": 0,
+        "calibrationError": 74.00000000000001,
+        "capability": 1.6666666666666667,
+        "sandFrontierDifficulty": 64,
+        "solidFrontierDifficulty": 7,
+        "sampleDifficulties": [
+          4,
+          5,
+          7,
+          8,
+          10,
+          16,
+          32,
+          48,
+          64
+        ],
+        "trialsByDifficulty": {
+          "4": 1,
+          "5": 1,
+          "7": 1,
+          "8": 1,
+          "10": 1,
+          "16": 1,
+          "32": 1,
+          "48": 1,
+          "64": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 9,
+        "difficultyRange": [
+          4,
+          64
+        ],
+        "transitionZone": 5
+      },
+      "bool": {
+        "category": "bool",
+        "claimed": 87.91666666666667,
+        "claimedDepth": 33.3448241606119,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 39.22920489483753,
+        "sand": 33.3448241606119,
+        "solid": 39.22920489483753,
+        "concrete": 0,
+        "discernment": 58.333333333333336,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "failureAwareness": 0,
+        "calibrationError": 29.58333333333334,
+        "capability": 77.08333333333334,
+        "sandFrontierDifficulty": 50,
+        "solidFrontierDifficulty": 50,
+        "sampleDifficulties": [
+          2,
+          5,
+          10,
+          20,
+          21,
+          34,
+          35,
+          37,
+          39,
+          41,
+          44,
+          50
+        ],
+        "trialsByDifficulty": {
+          "2": 1,
+          "5": 1,
+          "10": 1,
+          "20": 1,
+          "21": 1,
+          "34": 1,
+          "35": 1,
+          "37": 1,
+          "39": 1,
+          "41": 1,
+          "44": 1,
+          "50": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 12,
+        "difficultyRange": [
+          2,
+          50
+        ],
+        "transitionZone": 39
+      },
+      "matrix": {
+        "category": "matrix",
+        "claimed": 92.375,
+        "claimedDepth": 37.26774465009565,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 39.22920489483753,
+        "sand": 37.26774465009565,
+        "solid": 3.927533291840915,
+        "concrete": 0,
+        "discernment": 25,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "failureAwareness": 0,
+        "calibrationError": 67.375,
+        "capability": 20,
+        "sandFrontierDifficulty": 12,
+        "solidFrontierDifficulty": 3,
+        "sampleDifficulties": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          12
+        ],
+        "trialsByDifficulty": {
+          "2": 1,
+          "3": 1,
+          "4": 1,
+          "5": 1,
+          "6": 1,
+          "7": 1,
+          "9": 1,
+          "12": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 8,
+        "difficultyRange": [
+          2,
+          12
+        ],
+        "transitionZone": 4
+      },
+      "combo": {
+        "category": "combo",
+        "claimed": 83.75,
+        "claimedDepth": 33.3448241606119,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 39.22920489483753,
+        "sand": 33.3448241606119,
+        "solid": 9.508266937623887,
+        "concrete": 0,
+        "discernment": 50,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "failureAwareness": 0,
+        "calibrationError": 33.75,
+        "capability": 42.10526315789473,
+        "sandFrontierDifficulty": 20,
+        "solidFrontierDifficulty": 7,
+        "sampleDifficulties": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11,
+          14,
+          15,
+          20
+        ],
+        "trialsByDifficulty": {
+          "1": 1,
+          "3": 1,
+          "4": 1,
+          "5": 1,
+          "6": 1,
+          "7": 1,
+          "9": 1,
+          "10": 1,
+          "11": 1,
+          "14": 1,
+          "15": 1,
+          "20": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 12,
+        "difficultyRange": [
+          1,
+          20
+        ],
+        "transitionZone": 9
+      },
+      "random": {
+        "category": "random",
+        "claimed": 1.1538461538461537,
+        "claimedDepth": 1.9614602447418767,
+        "claimedLoose": 0,
+        "claimedThick": 0,
+        "sand": 1.9614602447418767,
+        "solid": 0.33861824847523464,
+        "concrete": 0,
+        "discernment": 23.076923076923077,
+        "falseConfidence": 38.46153846153847,
+        "trueUncertainty": 0,
+        "failureAwareness": 0,
+        "calibrationError": 43.968345223365546,
+        "capability": 1.1363636363636365,
+        "sandFrontierDifficulty": 2000,
+        "solidFrontierDifficulty": 100,
+        "sampleDifficulties": [
+          20,
+          31,
+          38,
+          41,
+          43,
+          45,
+          48,
+          50,
+          100,
+          250,
+          500,
+          1000,
+          2000
+        ],
+        "trialsByDifficulty": {
+          "20": 1,
+          "31": 1,
+          "38": 1,
+          "41": 1,
+          "43": 1,
+          "45": 1,
+          "48": 1,
+          "50": 1,
+          "100": 1,
+          "250": 1,
+          "500": 1,
+          "1000": 1,
+          "2000": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 13,
+        "difficultyRange": [
+          20,
+          2000
+        ],
+        "transitionZone": 42.5
+      },
+      "constrained": {
+        "category": "constrained",
+        "claimed": 52.5,
+        "claimedDepth": 15.962226234260783,
+        "claimedLoose": 26.60371039043464,
+        "claimedThick": 0,
+        "sand": 15.962226234260783,
+        "solid": 16.34550203951564,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 66.66666666666666,
+        "trueUncertainty": 0,
+        "failureAwareness": 0,
+        "calibrationError": 28.796296296296298,
+        "capability": 0,
+        "sandFrontierDifficulty": 15,
+        "solidFrontierDifficulty": 20,
+        "sampleDifficulties": [
+          1,
+          3,
+          6,
+          10,
+          15,
+          20
+        ],
+        "trialsByDifficulty": {
+          "1": 1,
+          "3": 1,
+          "6": 1,
+          "10": 1,
+          "15": 1,
+          "20": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 6,
+        "difficultyRange": [
+          1,
+          20
+        ],
+        "transitionZone": 1
+      },
+      "sudoku": {
+        "category": "sudoku",
+        "claimed": 80,
+        "claimedDepth": 29.421903671128145,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 11.38650638850306,
+        "sand": 29.421903671128145,
+        "solid": 0,
+        "concrete": 0,
+        "discernment": 0,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "failureAwareness": 0,
+        "calibrationError": 80,
+        "capability": 0,
+        "sandFrontierDifficulty": 10,
+        "sampleDifficulties": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          8,
+          10
+        ],
+        "trialsByDifficulty": {
+          "1": 1,
+          "2": 1,
+          "3": 1,
+          "4": 1,
+          "6": 1,
+          "8": 1,
+          "10": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 7,
+        "difficultyRange": [
+          1,
+          10
+        ],
+        "transitionZone": 1
+      },
+      "distrib": {
+        "category": "distrib",
+        "claimed": 17.22222222222222,
+        "claimedDepth": 5.88438073422563,
+        "claimedLoose": 0,
+        "claimedThick": 0,
+        "sand": 5.88438073422563,
+        "solid": 0.1419505276317331,
+        "concrete": 0.1419505276317331,
+        "discernment": 22.22222222222222,
+        "falseConfidence": 0,
+        "trueUncertainty": 22.22222222222222,
+        "failureAwareness": 22.22222222222222,
+        "calibrationError": 12.098765432098766,
+        "capability": 0,
+        "sandFrontierDifficulty": 1000,
+        "solidFrontierDifficulty": 50,
+        "concreteFrontierDifficulty": 500,
+        "sampleDifficulties": [
+          10,
+          12,
+          15,
+          25,
+          50,
+          100,
+          250,
+          500,
+          1000
+        ],
+        "trialsByDifficulty": {
+          "10": 1,
+          "12": 1,
+          "15": 1,
+          "25": 1,
+          "50": 1,
+          "100": 1,
+          "250": 1,
+          "500": 1,
+          "1000": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 9,
+        "difficultyRange": [
+          10,
+          1000
+        ],
+        "transitionZone": 10
+      },
+      "selfref": {
+        "category": "selfref",
+        "claimed": 61.666666666666664,
+        "claimedDepth": 23.53752293690252,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 3.029233183185692,
+        "sand": 23.53752293690252,
+        "solid": 2.564884194468575,
+        "concrete": 2.564884194468575,
+        "discernment": 16.666666666666664,
+        "falseConfidence": 16.666666666666664,
+        "trueUncertainty": 16.666666666666664,
+        "failureAwareness": 16.666666666666664,
+        "calibrationError": 49.16666666666667,
+        "capability": 0,
+        "sandFrontierDifficulty": 20,
+        "solidFrontierDifficulty": 10,
+        "concreteFrontierDifficulty": 3,
+        "sampleDifficulties": [
+          1,
+          3,
+          6,
+          10,
+          15,
+          20
+        ],
+        "trialsByDifficulty": {
+          "1": 1,
+          "3": 1,
+          "6": 1,
+          "10": 1,
+          "15": 1,
+          "20": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 6,
+        "difficultyRange": [
+          1,
+          20
+        ],
+        "transitionZone": 1
+      },
+      "counting": {
+        "category": "counting",
+        "claimed": 90.38461538461539,
+        "claimedDepth": 33.3448241606119,
+        "claimedLoose": 39.22920489483753,
+        "claimedThick": 39.22920489483753,
+        "sand": 33.3448241606119,
+        "solid": 15.442463364645642,
+        "concrete": 0,
+        "discernment": 69.23076923076923,
+        "falseConfidence": 0,
+        "trueUncertainty": 0,
+        "failureAwareness": 0,
+        "calibrationError": 21.153846153846157,
+        "capability": 48.717948717948715,
+        "sandFrontierDifficulty": 400,
+        "solidFrontierDifficulty": 205,
+        "sampleDifficulties": [
+          10,
+          20,
+          40,
+          80,
+          105,
+          160,
+          195,
+          198,
+          200,
+          202,
+          205,
+          320,
+          400
+        ],
+        "trialsByDifficulty": {
+          "10": 1,
+          "20": 1,
+          "40": 1,
+          "80": 1,
+          "105": 1,
+          "160": 1,
+          "195": 1,
+          "198": 1,
+          "200": 1,
+          "202": 1,
+          "205": 1,
+          "320": 1,
+          "400": 1
+        },
+        "avgTrialsPerDifficulty": 1,
+        "trialCount": 13,
+        "difficultyRange": [
+          10,
+          400
+        ],
+        "transitionZone": 200
+      }
+    },
+    "aggregate": {
+      "avgClaimed": 66.4264763014763,
+      "avgSand": 24.12606971514638,
+      "avgSolid": 8.1656430738487,
+      "avgConcrete": 0.24607588382730075,
+      "avgDiscernment": 30.613830613830615,
+      "avgFalseConfidence": 11.072261072261073,
+      "avgTrueUncertainty": 3.535353535353535,
+      "avgCalibrationError": 41.58111391869153,
+      "calibrationIndex": 58.41888608130847,
+      "avgCapability": 17.52662807686731,
+      "overconfidence": 16.53021359943227,
+      "underconfidence": 0.5697869581345898,
+      "blindSpots": 11.072261072261073,
+      "falseConfidence": 11.072261072261073,
+      "totalGap": 28.17226162982793
+    },
+    "metadata": {
+      "adapter": "openrouter",
+      "temperature": 0.7,
+      "totalTokensUsed": 106769,
+      "totalPromptTokensUsed": 50069,
+      "totalCompletionTokensUsed": 56700,
+      "totalCost": 0.033884159000000004,
+      "providerReportedCost": 0.033884159000000004,
+      "estimatedCost": 0,
+      "costMeasuredCalls": 254,
+      "missingCostCalls": 55,
+      "totalModelCalls": 309,
+      "totalLatencyMs": 5109568,
+      "averageLatencyMs": 16535.81877022654,
+      "runDurationMs": 2546562,
+      "totalTrials": 103,
+      "invalidTrials": 54
+    }
+  },
+  {
     "modelId": "moonshotai/kimi-k2.5",
     "modelDisplayName": "moonshotai/kimi-k2.5",
     "timestamp": "2026-02-08T04:42:44.963Z",
@@ -1141,6 +1904,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 85,
         "capability": 50,
+        "sandFrontierDifficulty": 26,
+        "sampleDifficulties": [
+          26
+        ],
+        "trialsByDifficulty": {
+          "26": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           26,
@@ -1163,6 +1934,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 100,
         "capability": 50,
+        "sandFrontierDifficulty": 34,
+        "sampleDifficulties": [
+          34
+        ],
+        "trialsByDifficulty": {
+          "34": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           34,
@@ -1185,6 +1964,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 95,
         "capability": 50,
+        "sandFrontierDifficulty": 26,
+        "sampleDifficulties": [
+          26
+        ],
+        "trialsByDifficulty": {
+          "26": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           26,
@@ -1207,6 +1994,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 100,
         "capability": 50,
+        "sandFrontierDifficulty": 7,
+        "sampleDifficulties": [
+          7
+        ],
+        "trialsByDifficulty": {
+          "7": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           7,
@@ -1229,6 +2024,13 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 0,
         "capability": 52.63157894736842,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -1251,6 +2053,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 100,
         "capability": 50,
+        "sandFrontierDifficulty": 1010,
+        "concreteFrontierDifficulty": 1010,
+        "sampleDifficulties": [
+          1010
+        ],
+        "trialsByDifficulty": {
+          "1010": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           1010,
@@ -1273,6 +2084,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 85,
         "capability": 52.63157894736842,
+        "sandFrontierDifficulty": 11,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -1295,6 +2114,13 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 0,
         "capability": 55.55555555555556,
+        "sampleDifficulties": [
+          6
+        ],
+        "trialsByDifficulty": {
+          "6": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           6,
@@ -1317,6 +2143,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 95,
         "capability": 50,
+        "sandFrontierDifficulty": 505,
+        "concreteFrontierDifficulty": 505,
+        "sampleDifficulties": [
+          505
+        ],
+        "trialsByDifficulty": {
+          "505": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           505,
@@ -1339,6 +2174,13 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 0,
         "capability": 52.63157894736842,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -1349,10 +2191,10 @@ export const generatedResults: ModelResult[] = [
       "counting": {
         "category": "counting",
         "claimed": 95,
-        "claimedDepth": 14.719106850613636,
-        "claimedLoose": 15.49379668485646,
-        "claimedThick": 15.49379668485646,
-        "sand": 14.719106850613636,
+        "claimedDepth": 5.284550538099295,
+        "claimedLoose": 5.562684776946627,
+        "claimedThick": 5.562684776946627,
+        "sand": 5.284550538099295,
         "solid": 0,
         "concrete": 0,
         "discernment": 0,
@@ -1360,7 +2202,15 @@ export const generatedResults: ModelResult[] = [
         "trueUncertainty": 0,
         "failureAwareness": 0,
         "calibrationError": 95,
-        "capability": 50,
+        "capability": 23.333333333333332,
+        "sandFrontierDifficulty": 101,
+        "sampleDifficulties": [
+          101
+        ],
+        "trialsByDifficulty": {
+          "101": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           101,
@@ -1371,7 +2221,7 @@ export const generatedResults: ModelResult[] = [
     },
     "aggregate": {
       "avgClaimed": 68.63636363636364,
-      "avgSand": 11.012793657783575,
+      "avgSand": 10.155106720282271,
       "avgSolid": 0,
       "avgConcrete": 0,
       "avgDiscernment": 18.181818181818183,
@@ -1379,12 +2229,12 @@ export const generatedResults: ModelResult[] = [
       "avgTrueUncertainty": 18.181818181818183,
       "avgCalibrationError": 68.63636363636364,
       "calibrationIndex": 31.36363636363636,
-      "avgCapability": 51.22275385433281,
-      "overconfidence": 11.012793657783575,
+      "avgCapability": 48.798511430090386,
+      "overconfidence": 10.155106720282271,
       "underconfidence": 0,
       "blindSpots": 9.090909090909092,
       "falseConfidence": 9.090909090909092,
-      "totalGap": 20.10370274869267
+      "totalGap": 19.246015811191363
     },
     "metadata": {
       "adapter": "openrouter",
@@ -1421,6 +2271,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 100,
         "capability": 50,
+        "sandFrontierDifficulty": 26,
+        "concreteFrontierDifficulty": 26,
+        "sampleDifficulties": [
+          26
+        ],
+        "trialsByDifficulty": {
+          "26": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           26,
@@ -1443,6 +2302,14 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 100,
         "capability": 50,
+        "sandFrontierDifficulty": 34,
+        "sampleDifficulties": [
+          34
+        ],
+        "trialsByDifficulty": {
+          "34": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           34,
@@ -1465,6 +2332,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 0,
         "capability": 50,
+        "sandFrontierDifficulty": 26,
+        "solidFrontierDifficulty": 26,
+        "sampleDifficulties": [
+          26
+        ],
+        "trialsByDifficulty": {
+          "26": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           26,
@@ -1487,6 +2363,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 0,
         "capability": 50,
+        "sandFrontierDifficulty": 7,
+        "solidFrontierDifficulty": 7,
+        "sampleDifficulties": [
+          7
+        ],
+        "trialsByDifficulty": {
+          "7": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           7,
@@ -1509,6 +2394,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 0,
         "capability": 52.63157894736842,
+        "sandFrontierDifficulty": 11,
+        "solidFrontierDifficulty": 11,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -1531,6 +2425,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 56.60066006600661,
         "capability": 50,
+        "sandFrontierDifficulty": 1010,
+        "solidFrontierDifficulty": 1010,
+        "sampleDifficulties": [
+          1010
+        ],
+        "trialsByDifficulty": {
+          "1010": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           1010,
@@ -1553,6 +2456,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 44.99999999999999,
         "capability": 52.63157894736842,
+        "sandFrontierDifficulty": 11,
+        "solidFrontierDifficulty": 11,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -1575,6 +2487,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 0,
         "capability": 55.55555555555556,
+        "sandFrontierDifficulty": 6,
+        "solidFrontierDifficulty": 6,
+        "sampleDifficulties": [
+          6
+        ],
+        "trialsByDifficulty": {
+          "6": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           6,
@@ -1597,6 +2518,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 100,
         "calibrationError": 95,
         "capability": 50,
+        "sandFrontierDifficulty": 505,
+        "concreteFrontierDifficulty": 505,
+        "sampleDifficulties": [
+          505
+        ],
+        "trialsByDifficulty": {
+          "505": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           505,
@@ -1619,6 +2549,15 @@ export const generatedResults: ModelResult[] = [
         "failureAwareness": 0,
         "calibrationError": 25,
         "capability": 52.63157894736842,
+        "sandFrontierDifficulty": 11,
+        "solidFrontierDifficulty": 11,
+        "sampleDifficulties": [
+          11
+        ],
+        "trialsByDifficulty": {
+          "11": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           11,
@@ -1629,18 +2568,27 @@ export const generatedResults: ModelResult[] = [
       "counting": {
         "category": "counting",
         "claimed": 100,
-        "claimedDepth": 15.49379668485646,
-        "claimedLoose": 15.49379668485646,
-        "claimedThick": 15.49379668485646,
-        "sand": 15.49379668485646,
-        "solid": 15.49379668485646,
+        "claimedDepth": 5.562684776946627,
+        "claimedLoose": 5.562684776946627,
+        "claimedThick": 5.562684776946627,
+        "sand": 5.562684776946627,
+        "solid": 5.562684776946627,
         "concrete": 0,
         "discernment": 100,
         "falseConfidence": 0,
         "trueUncertainty": 0,
         "failureAwareness": 0,
         "calibrationError": 0,
-        "capability": 50,
+        "capability": 23.333333333333332,
+        "sandFrontierDifficulty": 101,
+        "solidFrontierDifficulty": 101,
+        "sampleDifficulties": [
+          101
+        ],
+        "trialsByDifficulty": {
+          "101": 1
+        },
+        "avgTrialsPerDifficulty": 1,
         "trialCount": 1,
         "difficultyRange": [
           101,
@@ -1651,15 +2599,15 @@ export const generatedResults: ModelResult[] = [
     },
     "aggregate": {
       "avgClaimed": 95.9090909090909,
-      "avgSand": 15.944700378144512,
-      "avgSolid": 9.839833736206229,
+      "avgSand": 15.041872022879984,
+      "avgSolid": 8.937005380941699,
       "avgConcrete": 0,
       "avgDiscernment": 63.63636363636363,
       "avgFalseConfidence": 27.272727272727273,
       "avgTrueUncertainty": 18.181818181818183,
       "avgCalibrationError": 38.32733273327333,
       "calibrationIndex": 61.67266726672667,
-      "avgCapability": 51.22275385433281,
+      "avgCapability": 48.798511430090386,
       "overconfidence": 6.104866641938283,
       "underconfidence": 0,
       "blindSpots": 27.272727272727273,

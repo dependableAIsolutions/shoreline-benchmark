@@ -251,7 +251,20 @@ async function runThreePhaseTrial(
   const evalResult = task.evaluate(phase2.content);
 
   const phase3Prompt = buildPhase3Prompt(task.prompt, phase2.content, quickMode);
-  const phase3 = await safeComplete(adapter, phase3Prompt, `Phase 3 (${categoryKey} d=${difficulty})`, callTimeoutMs);
+  const phase3 = phase2.failed
+    ? {
+        content: "",
+        tokensUsed: 0,
+        latencyMs: 0,
+        promptTokens: 0,
+        completionTokens: 0,
+        cost: 0,
+        costSource: "unavailable" as const,
+        tokensPerSecond: undefined,
+        timeToFirstTokenMs: undefined,
+        failed: true
+      }
+    : await safeComplete(adapter, phase3Prompt, `Phase 3 (${categoryKey} d=${difficulty})`, callTimeoutMs);
   const phase3Confidence = extractConfidence(phase3.content);
 
   const trial: TrialResult = {
@@ -504,7 +517,7 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
               mandatoryDifficulties: category.anchorDifficulties
             },
             async (difficulty, probeTrials) => {
-              const effectiveProbeTrials = categoryKey === "counting" ? Math.max(3, probeTrials) : Math.max(2, probeTrials);
+              const effectiveProbeTrials = Math.max(1, probeTrials);
               logInfo(`Category ${category.label}: probe difficulty=${difficulty} (trials=${effectiveProbeTrials})`);
               return runPhase2Probe(config.adapter, generator, difficulty, effectiveProbeTrials, quickMode, callTimeoutMs);
             }

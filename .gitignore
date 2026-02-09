@@ -9,3 +9,5 @@ dist
 benchmark/state/*.json
 results/*/*
 !results/.gitkeep
+apps/web/src/data/results.generated.json
+apps/web/src/data/samples.generated.json
