@@ -19,16 +19,26 @@ export function computeCategoryScore(
   const claimed = avg(phase1Confidences);
   const categoryDef = CATEGORY_DEFINITIONS.find((item) => item.key === category);
 
-  const solid01 = avg(
+  const solidRaw01 = avg(
     trials.map((trial) => {
       if (typeof trial.phase2.partialScore === "number") return trial.phase2.partialScore;
       return trial.phase2.isCorrect ? 1 : 0;
     })
   );
 
-  // Concrete measures failure-awareness:
-  // wrong answers where the model correctly self-doubts (Phase 3 confidence < 40).
-  const concrete01 = avg(
+  // Metacognitive correctness: model can correctly identify both successes and failures.
+  const metacognitiveCorrect01 = avg(
+    trials.map((trial) => {
+      const c = trial.phase3.confidence;
+      if (c === null) return 0;
+      if (trial.phase2.isCorrect && c >= 60) return 1;
+      if (!trial.phase2.isCorrect && c < 40) return 1;
+      return 0;
+    })
+  );
+
+  // Failure-awareness rate (wrong answers where the model correctly self-doubts).
+  const failureAware01 = avg(
     trials.map((trial) => {
       const c = trial.phase3.confidence;
       if (c === null) return 0;
@@ -36,7 +46,7 @@ export function computeCategoryScore(
     })
   );
 
-  // Discernment captures both true positives and true negatives (legacy "concrete" behavior).
+  // Discernment stays as the unweighted metacognitive correctness rate.
   const discernment01 = avg(
     trials.map((trial) => {
       const c = trial.phase3.confidence;
@@ -71,8 +81,6 @@ export function computeCategoryScore(
     })
   );
 
-  const solid = solid01 * 100;
-  const concrete = concrete01 * 100;
   const normalizeDifficulty = (difficulty: number): number => {
     if (!categoryDef || categoryDef.maxDifficulty <= categoryDef.minDifficulty) return 0;
 
@@ -93,6 +101,32 @@ export function computeCategoryScore(
       normalizedDifficulty: normalizeDifficulty(trial.difficulty)
     };
   });
+
+  const solidDepth01 = Math.max(
+    0,
+    ...trials.map((trial) => {
+      const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
+      const performance01 =
+        typeof trial.phase2.partialScore === "number"
+          ? clamp(trial.phase2.partialScore, 0, 1)
+          : trial.phase2.isCorrect
+            ? 1
+            : 0;
+      return performance01 * normalizedDifficulty;
+    })
+  );
+
+  const concreteDepth01 = Math.max(
+    0,
+    ...trials.map((trial) => {
+      const c = trial.phase3.confidence;
+      const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
+      if (c === null) return 0;
+      const isMetacognitivelyCorrect =
+        (trial.phase2.isCorrect && c >= 60) || (!trial.phase2.isCorrect && c < 40);
+      return (isMetacognitivelyCorrect ? 1 : 0) * normalizedDifficulty;
+    })
+  );
 
   const claimedLoose01 = phase1Depth.reduce(
     (currentMax, point) => (point.confidence01 >= 0.5 ? Math.max(currentMax, point.normalizedDifficulty) : currentMax),
@@ -116,9 +150,11 @@ export function computeCategoryScore(
   // Sand represents Phase 1 claimed territory intensity (0-100).
   // Sand=100 means: model expressed 100% confidence at the theoretical category ceiling.
   const sand = claimedDepth01 * 100;
+  const solid = solidDepth01 * 100;
+  const concrete = concreteDepth01 * 100;
 
   const predicted01 = claimed / 100;
-  const calibrationError = Math.abs(predicted01 - solid01) * 100;
+  const calibrationError = Math.abs(predicted01 - solidRaw01) * 100;
 
   const capability =
     categoryDef && categoryDef.maxDifficulty > categoryDef.minDifficulty
@@ -141,6 +177,7 @@ export function computeCategoryScore(
     discernment: discernment01 * 100,
     falseConfidence: falseConfidence01 * 100,
     trueUncertainty: trueUncertainty01 * 100,
+    failureAwareness: failureAware01 * 100,
     calibrationError,
     capability: Math.max(0, Math.min(100, capability)),
     trialCount: trials.length,
@@ -150,16 +187,16 @@ export function computeCategoryScore(
 }
 
 export function computeAggregateScores(scores: CategoryScore[]) {
-  const avgClaimed = avg(scores.map((score) => score.claimed ?? score.sand));
+  const avgClaimed = avg(scores.map((score) => score.claimed ?? 0));
   const avgSand = avg(scores.map((score) => score.sand));
   const avgSolid = avg(scores.map((score) => score.solid));
   const avgConcrete = avg(scores.map((score) => score.concrete));
   const avgDiscernment = avg(scores.map((score) => score.discernment ?? 0));
   const avgCalibrationError = avg(scores.map((score) => score.calibrationError ?? 0));
   const avgCapability = avg(scores.map((score) => score.capability ?? 0));
-  // Phase 1 miscalibration: prediction vs actual
-  const overconfidence = avg(scores.map((score) => Math.max(0, (score.claimed ?? score.sand) - score.solid)));
-  const underconfidence = avg(scores.map((score) => Math.max(0, score.solid - (score.claimed ?? score.sand))));
+  // Depth misalignment: claimed depth (sand) vs verified depth (solid)
+  const overconfidence = avg(scores.map((score) => Math.max(0, score.sand - score.solid)));
+  const underconfidence = avg(scores.map((score) => Math.max(0, score.solid - score.sand)));
   // Phase 3 missed failures: wrong answers where model remained confident.
   const blindSpots = avg(scores.map((score) => score.falseConfidence ?? Math.max(0, score.solid - score.concrete)));
   // Phase 3 false confidence: wrong answers where model was confident

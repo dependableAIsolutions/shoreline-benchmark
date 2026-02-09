@@ -163,7 +163,7 @@ export default function HomePage() {
       <ResultsViewer modelId={modelA?.modelId} />
 
       <footer className="mt-6 border-t border-white/10 pt-3 text-center font-mono text-[9px] tracking-[0.08em] text-[#5d5144]">
-        SHORELINE v1 FOUNDATION • Sand = Phase 1 claimed depth • Solid = Phase 2 performance • Concrete = Phase 3 failure-awareness
+        SHORELINE v1 FOUNDATION • Sand = Phase 1 claimed depth • Solid = Phase 2 verified depth • Concrete = Phase 3 metacognitive depth
       </footer>
     </main>
   );

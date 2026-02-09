@@ -30,6 +30,7 @@ interface SuiteConfig {
   categoryConcurrency?: number;
   rampMode?: "balanced" | "fast";
   temperature?: number;
+  callTimeoutMs?: number;
   outputRoot?: string;
   staticOutput?: string;
   skipCompleted?: boolean;
@@ -46,6 +47,8 @@ interface SuiteConfig {
   openrouter?: {
     apiKeyEnv?: string;
     timeoutMs?: number;
+    maxRetries?: number;
+    retryBaseDelayMs?: number;
   };
   models: SuiteModel[];
 }
@@ -163,7 +166,11 @@ function buildAdapter(config: SuiteConfig, modelId: string, dryRun: boolean): { 
         apiKey,
         model: modelId,
         temperature: config.temperature ?? 0.7,
-        timeoutMs: config.openrouter?.timeoutMs ?? Number.parseInt(process.env.OPENROUTER_TIMEOUT_MS ?? "120000", 10)
+        timeoutMs: config.openrouter?.timeoutMs ?? Number.parseInt(process.env.OPENROUTER_TIMEOUT_MS ?? "120000", 10),
+        maxRetries: config.openrouter?.maxRetries ?? Number.parseInt(process.env.OPENROUTER_MAX_RETRIES ?? "4", 10),
+        retryBaseDelayMs:
+          config.openrouter?.retryBaseDelayMs ??
+          Number.parseInt(process.env.OPENROUTER_RETRY_BASE_DELAY_MS ?? "1500", 10)
       }),
       name: "openrouter"
     };
@@ -267,6 +274,7 @@ async function main(): Promise<void> {
   const quickPointsOverride = parseArg("quick-points");
   const categoryConcurrencyOverride = parseArg("category-concurrency");
   const rampModeOverride = parseArg("ramp-mode") ?? parseArg("ramp");
+  const callTimeoutOverride = parseArg("call-timeout-ms");
   const modelFilter = parseArg("models")?.split(",").map((item) => item.trim()).filter(Boolean);
   const limitArg = parseArg("limit");
   const limit = limitArg ? Math.max(1, Number.parseInt(limitArg, 10)) : undefined;
@@ -295,6 +303,10 @@ async function main(): Promise<void> {
   );
   const rampMode: "balanced" | "fast" =
     rampModeOverride === "fast" || rampModeOverride === "balanced" ? rampModeOverride : (config.rampMode ?? "balanced");
+  const callTimeoutMs = Math.max(
+    1_000,
+    Number.parseInt(callTimeoutOverride ?? String(config.callTimeoutMs ?? process.env.BENCHMARK_CALL_TIMEOUT_MS ?? "120000"), 10)
+  );
 
   const selected = config.models.filter((model) => {
     if (model.enabled === false) return false;
@@ -310,6 +322,7 @@ async function main(): Promise<void> {
   console.log(`[suite] Models queued: ${runModels.length}`);
   console.log(`[suite] Category concurrency: ${categoryConcurrency}`);
   console.log(`[suite] Ramp mode: ${rampMode}`);
+  console.log(`[suite] Per-call timeout: ${callTimeoutMs}ms`);
   if (quickMode) console.log(`[suite] Quick points/category: ${quickPoints}`);
 
   let completedCount = 0;
@@ -364,7 +377,8 @@ async function main(): Promise<void> {
         quickPoints,
         categoryConcurrency,
         rampMode,
-        resume: canResume
+        resume: canResume,
+        callTimeoutMs
       });
 
       state.models[model.id] = {

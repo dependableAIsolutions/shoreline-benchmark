@@ -85,10 +85,10 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
 
       <div className="mt-3 flex gap-3 rounded-xl bg-white/[0.02] px-3 py-3">
         <Tooltip content={metricTooltips.concrete} className="flex-1">
-          <StatBlock label="CONCRETE" value={formatMetric(stats.avgConcrete)} color="#8A9CAA" sub="failure-aware" />
+          <StatBlock label="CONCRETE" value={formatMetric(stats.avgConcrete)} color="#8A9CAA" sub="metacognitive depth" />
         </Tooltip>
         <Tooltip content={metricTooltips.solid} className="flex-1">
-          <StatBlock label="SOLID" value={formatMetric(stats.avgSolid)} color="#3DA84A" sub="actual" />
+          <StatBlock label="SOLID" value={formatMetric(stats.avgSolid)} color="#3DA84A" sub="verified depth" />
         </Tooltip>
         <Tooltip content={metricTooltips.sand} className="flex-1">
           <StatBlock label="SAND" value={formatMetric(stats.avgSand)} color="#F59E0B" sub="claimed depth" />

@@ -61,9 +61,16 @@ export async function findTransitionZone(
 
     if (accuracy > 0.7) {
       lastPassingDifficulty = difficulty;
+      if (difficulty >= config.maxDifficulty) {
+        break;
+      }
       // Exponential increase: double the step each time
       step = Math.min(step * 2, Math.floor(range / (rampMode === "fast" ? 2 : 4)));
-      difficulty = Math.min(difficulty + step, config.maxDifficulty);
+      const nextDifficulty = Math.min(difficulty + step, config.maxDifficulty);
+      if (nextDifficulty === difficulty) {
+        break;
+      }
+      difficulty = nextDifficulty;
     } else {
       firstFailingDifficulty = difficulty;
       foundFailure = true;

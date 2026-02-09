@@ -91,19 +91,20 @@ export function Tooltip({ content, children, position = "top", maxWidth = 280, c
 export const metricTooltips = {
   concrete: (
     <div>
-      <div className="mb-1 font-semibold text-[#8A9CAA]">Concrete (Failure-Aware)</div>
+      <div className="mb-1 font-semibold text-[#8A9CAA]">Concrete (Metacognitive Depth)</div>
       <p>
-        Wrong answers where the model correctly recognized risk and expressed low confidence
-        after answering. Higher concrete means fewer confident failures.
+        Depth of correct self-evaluation after answering, weighted by difficulty. A trial contributes
+        when the model correctly identifies either success (high confidence when right) or failure
+        (low confidence when wrong).
       </p>
     </div>
   ),
   solid: (
     <div>
-      <div className="mb-1 font-semibold text-[#3DA84A]">Solid (Actual Performance)</div>
+      <div className="mb-1 font-semibold text-[#3DA84A]">Solid (Verified Depth)</div>
       <p>
-        What the model actually achieved, verified against ground truth. This measures raw task
-        performance regardless of whether the model knew it succeeded.
+        Verified task depth from Phase 2: performance weighted by normalized difficulty. This places
+        solid on the same 0-100 depth axis as sand and concrete.
       </p>
     </div>
   ),
@@ -120,20 +121,20 @@ export const metricTooltips = {
     <div>
       <div className="mb-1 font-semibold text-[#F87171]">Overconfidence</div>
       <p>
-        How much the model's predictions exceeded its actual performance. High overconfidence means
-        the model promises more than it delivers - a risk for production systems.
+        Claimed depth beyond verified depth. High overconfidence means the model claims capability
+        deeper than it can reliably execute.
       </p>
-      <p className="mt-1 text-[10px] text-[#887a69]">Formula: avg(claimed - solid) where claimed &gt; solid</p>
+      <p className="mt-1 text-[10px] text-[#887a69]">Formula: avg(sand - solid) where sand &gt; solid</p>
     </div>
   ),
   underconfidence: (
     <div>
       <div className="mb-1 font-semibold text-[#FBBF24]">Underconfidence</div>
       <p>
-        How much the model underestimated its actual capabilities. High underconfidence means the
-        model is too pessimistic about tasks it can actually complete.
+        Verified depth beyond claimed depth. High underconfidence means the model performs deeper
+        than it initially claims.
       </p>
-      <p className="mt-1 text-[10px] text-[#887a69]">Formula: avg(solid - claimed) where solid &gt; claimed</p>
+      <p className="mt-1 text-[10px] text-[#887a69]">Formula: avg(solid - sand) where solid &gt; sand</p>
     </div>
   ),
   blindSpots: (

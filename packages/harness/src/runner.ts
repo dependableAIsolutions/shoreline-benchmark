@@ -31,12 +31,20 @@ export interface BenchmarkRunnerConfig {
   categoryConcurrency?: number;
   rampMode?: "balanced" | "fast";
   resume?: boolean;
+  callTimeoutMs?: number;
 }
 
 interface TrialRunResult {
   trial: TrialResult;
   tokensUsed: number;
   invalidConfidence: boolean;
+}
+
+interface SafeCompletion {
+  content: string;
+  tokensUsed: number;
+  latencyMs: number;
+  failed: boolean;
 }
 
 interface CategoryCheckpoint {
@@ -131,12 +139,26 @@ async function saveCheckpoint(checkpointPath: string, checkpoint: RunCheckpoint)
   await writeFile(checkpointPath, JSON.stringify(checkpoint, null, 2));
 }
 
+async function withTimeout<T>(operation: Promise<T>, timeoutMs: number, label: string): Promise<T> {
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutHandle = setTimeout(() => reject(new Error(`${label} timed out after ${timeoutMs}ms`)), timeoutMs);
+  });
+
+  try {
+    return await Promise.race([operation, timeoutPromise]);
+  } finally {
+    if (timeoutHandle) clearTimeout(timeoutHandle);
+  }
+}
+
 async function runThreePhaseTrial(
   adapter: ModelAdapter,
   generator: TaskGenerator,
   categoryKey: CategoryKey,
   difficulty: number,
-  quickMode: boolean
+  quickMode: boolean,
+  callTimeoutMs: number
 ): Promise<TrialRunResult> {
   const task = generator.generate(difficulty);
   const category = getCategoryOrThrow(categoryKey);
@@ -145,12 +167,15 @@ async function runThreePhaseTrial(
   const phase2Prompt = buildPhase2Prompt(task.prompt, quickMode);
   // Phase 1 (self-prediction) and Phase 2 (task execution) are independent by design.
   // Execute them concurrently so there is no sequential coupling through request timing.
-  const [phase1, phase2] = await Promise.all([adapter.complete(phase1Prompt), adapter.complete(phase2Prompt)]);
+  const [phase1, phase2] = await Promise.all([
+    safeComplete(adapter, phase1Prompt, `Phase 1 (${categoryKey} d=${difficulty})`, callTimeoutMs),
+    safeComplete(adapter, phase2Prompt, `Phase 2 (${categoryKey} d=${difficulty})`, callTimeoutMs)
+  ]);
   const phase1Confidence = extractConfidence(phase1.content);
   const evalResult = task.evaluate(phase2.content);
 
   const phase3Prompt = buildPhase3Prompt(task.prompt, phase2.content, quickMode);
-  const phase3 = await adapter.complete(phase3Prompt);
+  const phase3 = await safeComplete(adapter, phase3Prompt, `Phase 3 (${categoryKey} d=${difficulty})`, callTimeoutMs);
   const phase3Confidence = extractConfidence(phase3.content);
 
   const trial: TrialResult = {
@@ -195,17 +220,49 @@ async function runPhase2Probe(
   generator: TaskGenerator,
   difficulty: number,
   trials: number,
-  quickMode: boolean
+  quickMode: boolean,
+  callTimeoutMs: number
 ): Promise<number> {
   let correct = 0;
   for (let i = 0; i < trials; i += 1) {
     const task = generator.generate(difficulty);
     const prompt = buildPhase2Prompt(task.prompt, quickMode);
-    const response = await adapter.complete(prompt);
+    const response = await safeComplete(
+      adapter,
+      prompt,
+      `Probe Phase 2 (${generator.key} d=${difficulty})`,
+      callTimeoutMs
+    );
     const evaluation = task.evaluate(response.content);
     if (evaluation.isCorrect) correct += 1;
   }
   return correct / trials;
+}
+
+async function safeComplete(
+  adapter: ModelAdapter,
+  prompt: string,
+  label: string,
+  callTimeoutMs: number
+): Promise<SafeCompletion> {
+  try {
+    const result = await withTimeout(adapter.complete(prompt), callTimeoutMs, label);
+    return {
+      content: result.content,
+      tokensUsed: result.tokensUsed,
+      latencyMs: result.latencyMs,
+      failed: false
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logWarn(`${label} failed: ${message}`);
+    return {
+      content: "",
+      tokensUsed: 0,
+      latencyMs: callTimeoutMs,
+      failed: true
+    };
+  }
 }
 
 function buildEmptyScoreMap(): Record<CategoryKey, CategoryScore> {
@@ -240,6 +297,9 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
   const startedAt = new Date().toISOString();
   const quickMode = config.quickMode ?? false;
   const quickPoints = Math.max(1, Math.floor(config.quickPoints ?? (quickMode ? 3 : 1)));
+  const callTimeoutMs =
+    config.callTimeoutMs ??
+    Math.max(1_000, Number.parseInt(process.env.BENCHMARK_CALL_TIMEOUT_MS ?? "120000", 10));
 
   await mkdir(config.outputDir, { recursive: true });
 
@@ -340,8 +400,10 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
               probeTrials: config.probeTrials ?? 3,
               rampMode: config.rampMode ?? "balanced"
             },
-            async (difficulty, probeTrials) =>
-              runPhase2Probe(config.adapter, generator, difficulty, probeTrials, quickMode)
+            async (difficulty, probeTrials) => {
+              logInfo(`Category ${category.label}: probe difficulty=${difficulty} (trials=${probeTrials})`);
+              return runPhase2Probe(config.adapter, generator, difficulty, probeTrials, quickMode, callTimeoutMs);
+            }
           );
 
           logInfo(
@@ -376,7 +438,14 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
         }
 
         while (completedCount < config.trialsPerDifficulty) {
-          const result = await runThreePhaseTrial(config.adapter, generator, categoryKey, difficulty, quickMode);
+          const result = await runThreePhaseTrial(
+            config.adapter,
+            generator,
+            categoryKey,
+            difficulty,
+            quickMode,
+            callTimeoutMs
+          );
 
           allTrials.push(result.trial);
           categoryTrials.push(result.trial);

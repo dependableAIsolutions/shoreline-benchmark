@@ -42,6 +42,10 @@ async function main(): Promise<void> {
 
   const trialsPerDifficulty = Number.parseInt(parseArg("trials") ?? "20", 10);
   const temperature = Number.parseFloat(parseArg("temperature") ?? "0.7");
+  const timeoutMsArg = parseArg("timeout-ms");
+  const callTimeoutMsArg = parseArg("call-timeout-ms");
+  const maxRetriesArg = parseArg("max-retries");
+  const retryBaseDelayMsArg = parseArg("retry-base-delay-ms");
   const quickPointsArg = parseArg("quick-points");
   const categoryConcurrencyArg = parseArg("category-concurrency");
   const rampModeArg = parseArg("ramp-mode") ?? parseArg("ramp");
@@ -96,7 +100,12 @@ async function main(): Promise<void> {
       apiKey,
       model: finalModel,
       temperature,
-      timeoutMs: Number.parseInt(parseArg("timeout-ms") ?? process.env.OPENROUTER_TIMEOUT_MS ?? "120000", 10)
+      timeoutMs: Number.parseInt(timeoutMsArg ?? process.env.OPENROUTER_TIMEOUT_MS ?? "120000", 10),
+      maxRetries: Number.parseInt(maxRetriesArg ?? process.env.OPENROUTER_MAX_RETRIES ?? "4", 10),
+      retryBaseDelayMs: Number.parseInt(
+        retryBaseDelayMsArg ?? process.env.OPENROUTER_RETRY_BASE_DELAY_MS ?? "1500",
+        10
+      )
     });
     finalAdapterName = "openrouter";
   } else if (adapterName === "lmstudio") {
@@ -110,7 +119,7 @@ async function main(): Promise<void> {
     adapter = new LocalApiAdapter({
       apiUrl: parseArg("local-api-url") ?? process.env.LOCAL_MODEL_API_URL ?? "http://localhost:5555/api/v1/chat",
       model: finalModel,
-      timeoutMs: Number.parseInt(parseArg("timeout-ms") ?? process.env.LOCAL_MODEL_TIMEOUT_MS ?? "45000", 10),
+      timeoutMs: Number.parseInt(timeoutMsArg ?? process.env.LOCAL_MODEL_TIMEOUT_MS ?? "45000", 10),
       defaultSystemPrompt:
         parseArg("system-prompt") ??
         process.env.LOCAL_MODEL_SYSTEM_PROMPT ??
@@ -138,6 +147,15 @@ async function main(): Promise<void> {
   if (quick) console.log(`Quick points/category: ${quickPoints}`);
   console.log(`Category concurrency: ${categoryConcurrency}`);
   console.log(`Ramp mode: ${rampMode}`);
+  if (callTimeoutMsArg) console.log(`Per-call timeout: ${callTimeoutMsArg}ms`);
+  if (adapterName === "openrouter") {
+    const retries = Number.parseInt(maxRetriesArg ?? process.env.OPENROUTER_MAX_RETRIES ?? "4", 10);
+    const baseDelay = Number.parseInt(
+      retryBaseDelayMsArg ?? process.env.OPENROUTER_RETRY_BASE_DELAY_MS ?? "1500",
+      10
+    );
+    console.log(`OpenRouter retries: ${retries} (base delay ${baseDelay}ms)`);
+  }
   console.log(`Resume mode: ${resume ? "on" : "off"}`);
   console.log(`Output: ${outputDir}`);
 
@@ -153,7 +171,8 @@ async function main(): Promise<void> {
     quickPoints,
     categoryConcurrency,
     rampMode,
-    resume
+    resume,
+    callTimeoutMs: callTimeoutMsArg ? Number.parseInt(callTimeoutMsArg, 10) : undefined
   });
 
   console.log("Benchmark complete.");

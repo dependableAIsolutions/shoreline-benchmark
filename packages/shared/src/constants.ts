@@ -2,8 +2,8 @@ import type { CategoryDefinition } from "./types";
 
 export const SHORELINE_LAYERS = {
   sand: "Phase 1 claimed depth",
-  solid: "Phase 2 task performance",
-  concrete: "Phase 3 failure-awareness"
+  solid: "Phase 2 verified depth",
+  concrete: "Phase 3 metacognitive depth"
 } as const;
 
 // Sand normalization is intentionally model-agnostic and extends beyond
