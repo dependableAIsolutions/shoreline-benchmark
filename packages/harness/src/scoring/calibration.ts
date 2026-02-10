@@ -74,12 +74,20 @@ export function computeCategoryScore(
     if (!categoryDef || categoryDef.maxDifficulty <= categoryDef.minDifficulty) return 0;
 
     // Model-agnostic theoretical ceiling:
-    // tested max maps below 1.0 so sand=100 is outside normal benchmark range.
+    // The headroom multiplier ensures max tested difficulty maps below 1.0,
+    // reserving space for theoretical super-human performance.
+    //
+    // Example with mult category (2-50, span=49) and headroom=1.25:
+    //   - theoreticalSpan = 49 * 1.25 = 61.25
+    //   - At difficulty=50: linear = 49/61.25 ≈ 0.80
+    //   - With exponent=1.15: normalized = 0.80^1.15 ≈ 0.77
+    //   - Perfect performance at max difficulty yields ~77% of visual range
     const span = categoryDef.maxDifficulty - categoryDef.minDifficulty + 1;
     const theoreticalSpan = span * SAND_DIFFICULTY_HEADROOM_MULTIPLIER;
     const linear = clamp((difficulty - categoryDef.minDifficulty + 1) / theoreticalSpan, 0, 1);
 
-    // Exponential difficulty ramp: higher levels consume disproportionate territory.
+    // Mild exponential curve: slightly compresses lower difficulties
+    // to give more visual weight to higher difficulty achievements.
     return clamp(linear ** SAND_DIFFICULTY_EXPONENT, 0, 1);
   };
 

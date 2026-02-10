@@ -8,8 +8,15 @@ export const SHORELINE_LAYERS = {
 
 // Sand normalization is intentionally model-agnostic and extends beyond
 // the benchmarked range so 100 is a theoretical outer ceiling.
-export const SAND_DIFFICULTY_HEADROOM_MULTIPLIER = 2;
-export const SAND_DIFFICULTY_EXPONENT = 1.35;
+//
+// With headroom=1.25, max tested difficulty maps to ~0.8 linear (80% of range).
+// With exponent=1.15, this becomes ~0.77 normalized, leaving ~23% headroom
+// for theoretical super-human performance beyond the tested range.
+//
+// Previous values (headroom=2, exponent=1.35) were too aggressive, causing
+// all islands to compress into the 0-40 range even with perfect performance.
+export const SAND_DIFFICULTY_HEADROOM_MULTIPLIER = 1.25;
+export const SAND_DIFFICULTY_EXPONENT = 1.15;
 
 export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
   {
