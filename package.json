@@ -13,7 +13,8 @@
     "benchmark": "tsx scripts/run-benchmark.ts",
     "benchmark:suite": "tsx scripts/run-benchmark-suite.ts",
     "recompute-scores": "tsx scripts/recompute-scores.ts",
-    "generate-static": "tsx scripts/generate-static.ts"
+    "generate-static": "tsx scripts/generate-static.ts",
+    "deploy:hosting": "./deploy.sh"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

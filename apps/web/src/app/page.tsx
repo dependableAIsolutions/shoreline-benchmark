@@ -6,6 +6,7 @@ import { CompareView } from "../components/CompareView";
 import { IslandCard } from "../components/IslandCard";
 import { Legend } from "../components/Legend";
 import { ResultsViewer } from "../components/ResultsViewer";
+import { Tooltip, metricTooltips } from "../components/Tooltip";
 import { modelResults } from "../data/results";
 import type { CategoryKey } from "../lib/types";
 
@@ -191,7 +192,7 @@ export default function HomePage() {
       {mode === "leaderboard" ? (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <h2 className="font-mono text-sm tracking-[0.16em] text-[#8c7d6b]">LEADERBOARD (75% Solid + 25% Concrete)</h2>
+            <h2 className="font-mono text-sm tracking-[0.16em] text-[#8c7d6b]">LEADERBOARD</h2>
             <button
               type="button"
               onClick={() => setShowTelemetry((value) => !value)}
@@ -216,7 +217,11 @@ export default function HomePage() {
                 <tr className="border-b border-white/10 text-left font-mono text-[11px] tracking-[0.14em] text-[#5d5144]">
                   <th className="px-2 py-2">Rank</th>
                   <th className="px-2 py-2">Model</th>
-                  <th className="px-2 py-2">Score</th>
+                  <th className="px-2 py-2">
+                    <Tooltip content={metricTooltips.leaderboardScore} position="bottom" maxWidth={300}>
+                      <span className="inline-flex items-center underline decoration-dotted underline-offset-2">Score</span>
+                    </Tooltip>
+                  </th>
                   <th className="px-2 py-2">Concrete</th>
                   <th className="px-2 py-2">Solid</th>
                   <th className="px-2 py-2">Sand</th>

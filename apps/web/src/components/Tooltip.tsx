@@ -116,6 +116,16 @@ export const metricTooltips = {
       </p>
     </div>
   ),
+  leaderboardScore: (
+    <div>
+      <div className="mb-1 font-semibold text-[#7ab8ad]">Leaderboard Score</div>
+      <p>
+        Composite ranking score that emphasizes verified capability while still rewarding
+        failure-awareness.
+      </p>
+      <p className="mt-1 text-[10px] text-[#887a69]">Formula: 75% solid + 25% concrete</p>
+    </div>
+  ),
   overconfidence: (
     <div>
       <div className="mb-1 font-semibold text-[#F87171]">Overconfidence</div>

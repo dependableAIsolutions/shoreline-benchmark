@@ -203,3 +203,34 @@ curl http://localhost:5555/api/v1/chat \
 corepack pnpm typecheck
 corepack pnpm build
 ```
+
+## Firebase Hosting deploy
+
+Project is configured for Firebase Hosting with:
+- `.firebaserc` default project: `shoreline-714c6`
+- `firebase.json` hosting public dir: `apps/web/out`
+
+One-time setup:
+
+```bash
+firebase login
+firebase use shoreline-714c6
+```
+
+Deploy:
+
+```bash
+./deploy.sh
+```
+
+Or via package script:
+
+```bash
+corepack pnpm deploy:hosting
+```
+
+Optional override (deploy to a different project):
+
+```bash
+FIREBASE_PROJECT=your-project-id ./deploy.sh
+```
