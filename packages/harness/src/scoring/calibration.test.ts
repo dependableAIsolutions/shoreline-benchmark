@@ -2,7 +2,13 @@ import { describe, expect, it } from "vitest";
 import type { TrialResult } from "@shoreline/shared";
 import { computeCategoryScore } from "./calibration";
 
-function makeTrial(difficulty: number, phase1Confidence: number, phase2Correct: boolean, phase3Confidence: number): TrialResult {
+function makeTrial(
+  difficulty: number,
+  phase1Confidence: number,
+  phase2Correct: boolean,
+  phase3Confidence: number,
+  phase2PartialScore?: number
+): TrialResult {
   return {
     category: "mult",
     difficulty,
@@ -13,6 +19,7 @@ function makeTrial(difficulty: number, phase1Confidence: number, phase2Correct: 
       extractedAnswer: "",
       correctAnswer: "",
       isCorrect: phase2Correct,
+      partialScore: phase2PartialScore,
       tokensUsed: 0,
       latencyMs: 0
     },
@@ -53,15 +60,32 @@ describe("computeCategoryScore - shared depth axis", () => {
     expect(score.sand).toBeGreaterThan(0);
   });
 
-  it("concrete uses only admitted-failure depth", () => {
-    const none = computeCategoryScore("mult", [makeTrial(multMax, 50, true, 90)], multMax);
-    const some = computeCategoryScore(
+  it("concrete scales by the share of mistakes that were correctly self-doubted", () => {
+    const noneCaught = computeCategoryScore(
       "mult",
-      [makeTrial(multMin, 50, true, 90), makeTrial(multMax, 50, false, 20)],
+      [makeTrial(multMax, 50, true, 90), makeTrial(multMax, 50, false, 90)],
       multMax
     );
-    expect(none.concrete).toBe(0);
-    expect(some.concrete).toBeGreaterThan(0);
+    const halfCaught = computeCategoryScore(
+      "mult",
+      [makeTrial(multMax, 50, true, 90), makeTrial(multMax, 50, false, 20), makeTrial(multMax, 50, false, 90)],
+      multMax
+    );
+    expect(noneCaught.concrete).toBeCloseTo(0, 6);
+    expect(halfCaught.concrete).toBeCloseTo(halfCaught.solid * 0.5, 6);
+  });
+
+  it("concrete uses mistake magnitude weighting for partial-score tasks", () => {
+    const score = computeCategoryScore(
+      "mult",
+      [
+        makeTrial(multMax, 50, true, 90),
+        makeTrial(multMax, 50, false, 20, 0.5), // admitted half-mistake
+        makeTrial(multMax, 50, false, 90, 0) // missed full mistake
+      ],
+      multMax
+    );
+    expect(score.concrete).toBeCloseTo(score.solid * (0.5 / 1.5), 6);
   });
 
   it("concrete never exceeds solid", () => {
@@ -91,6 +115,6 @@ describe("computeCategoryScore - metacognition rates", () => {
     expect(score.discernment).toBeCloseTo(66.67, 1);
     expect(score.falseConfidence).toBeCloseTo(33.33, 1);
     expect(score.trueUncertainty).toBeCloseTo(33.33, 1);
-    expect(score.failureAwareness).toBeCloseTo(33.33, 1);
+    expect(score.failureAwareness).toBeCloseTo(50, 1);
   });
 });

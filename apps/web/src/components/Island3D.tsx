@@ -627,6 +627,7 @@ function CategoryLabels({
             key={category}
             position={[x, 0.1, z]}
             center
+            zIndexRange={[20, 0]}
             style={{ pointerEvents: "auto" }}
             onPointerEnter={() => onHover(idx)}
             onPointerLeave={() => onHover(null)}
@@ -654,7 +655,7 @@ function MetricsTooltip({
   metrics: CategoryMetrics;
 }) {
   return (
-    <Html position={[0, 0.7, 0]} center>
+    <Html position={[0, 0.7, 0]} center zIndexRange={[30, 0]}>
       <div className="bg-[rgba(10,20,40,0.95)] border border-[#2a4a6a] rounded-lg px-4 py-3 font-mono shadow-xl min-w-[160px]">
         <div className="text-xs font-bold text-white mb-2 border-b border-[#2a4a6a] pb-1">
           {categoryLabels[category]}

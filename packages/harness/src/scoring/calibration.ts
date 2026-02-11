@@ -13,6 +13,11 @@ export function computeCategoryScore(
   trials: TrialResult[],
   transitionZone: number
 ): CategoryScore {
+  const performance01 = (trial: TrialResult): number => {
+    if (typeof trial.phase2.partialScore === "number") return clamp(trial.phase2.partialScore, 0, 1);
+    return trial.phase2.isCorrect ? 1 : 0;
+  };
+
   const phase1Confidences = trials
     .map((trial) => trial.phase1.confidence)
     .filter((value): value is number => value !== null);
@@ -20,19 +25,7 @@ export function computeCategoryScore(
   const categoryDef = CATEGORY_DEFINITIONS.find((item) => item.key === category);
 
   const solidRaw01 = avg(
-    trials.map((trial) => {
-      if (typeof trial.phase2.partialScore === "number") return trial.phase2.partialScore;
-      return trial.phase2.isCorrect ? 1 : 0;
-    })
-  );
-
-  // Failure-awareness rate (wrong answers where the model correctly self-doubts).
-  const failureAware01 = avg(
-    trials.map((trial) => {
-      const c = trial.phase3.confidence;
-      if (c === null) return 0;
-      return !trial.phase2.isCorrect && c < 40 ? 1 : 0;
-    })
+    trials.map((trial) => performance01(trial))
   );
 
   // Discernment stays as the unweighted metacognitive correctness rate.
@@ -103,13 +96,7 @@ export function computeCategoryScore(
     0,
     ...trials.map((trial) => {
       const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
-      const performance01 =
-        typeof trial.phase2.partialScore === "number"
-          ? clamp(trial.phase2.partialScore, 0, 1)
-          : trial.phase2.isCorrect
-            ? 1
-            : 0;
-      return performance01 * normalizedDifficulty;
+      return performance01(trial) * normalizedDifficulty;
     })
   );
   const solidFrontierDifficulty =
@@ -117,38 +104,44 @@ export function computeCategoryScore(
       ? trials.reduce(
           (best, trial) => {
             const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
-            const performance01 =
-              typeof trial.phase2.partialScore === "number"
-                ? clamp(trial.phase2.partialScore, 0, 1)
-                : trial.phase2.isCorrect
-                  ? 1
-                  : 0;
-            const depth = performance01 * normalizedDifficulty;
+            const depth = performance01(trial) * normalizedDifficulty;
             return depth > best.depth ? { depth, difficulty: trial.difficulty } : best;
           },
           { depth: 0, difficulty: trials[0]?.difficulty ?? 0 }
         ).difficulty
       : undefined;
 
-  const concreteFailureDepth01 = Math.max(
+  // Concrete is computed as:
+  //   concrete = solid * (caught mistakes / total mistakes)
+  // where mistakes are weighted by error magnitude (1 - partialScore).
+  const mistakeStats = trials.map((trial) => {
+    const mistake01 = Math.max(0, 1 - performance01(trial));
+    const phase3Confidence = trial.phase3.confidence;
+    const admittedFailure = mistake01 > 0 && phase3Confidence !== null && phase3Confidence < 40;
+    return { trial, mistake01, admittedFailure };
+  });
+  const totalMistakeMass01 = mistakeStats.reduce((sum, item) => sum + item.mistake01, 0);
+  const caughtMistakeMass01 = mistakeStats.reduce(
+    (sum, item) => sum + (item.admittedFailure ? item.mistake01 : 0),
+    0
+  );
+  // If there were no mistakes, treat failure-awareness ratio as 1 (no missed failures).
+  const failureAwarenessRatio01 =
+    totalMistakeMass01 > 0 ? clamp(caughtMistakeMass01 / totalMistakeMass01, 0, 1) : 1;
+
+  const admittedFailureDepth01 = Math.max(
     0,
-    ...trials.map((trial) => {
-      const c = trial.phase3.confidence;
+    ...mistakeStats.map(({ trial, mistake01, admittedFailure }) => {
       const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
-      if (c === null) return 0;
-      const correctlyAdmittedFailure = !trial.phase2.isCorrect && c < 40;
-      return (correctlyAdmittedFailure ? 1 : 0) * normalizedDifficulty;
+      return (admittedFailure ? mistake01 : 0) * normalizedDifficulty;
     })
   );
   const concreteFrontierDifficulty =
-    concreteFailureDepth01 > 0
-      ? trials.reduce(
-          (best, trial) => {
-            const c = trial.phase3.confidence;
-            const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
-            if (c === null) return best;
-            const admitted = !trial.phase2.isCorrect && c < 40 ? 1 : 0;
-            const depth = admitted * normalizedDifficulty;
+    admittedFailureDepth01 > 0
+      ? mistakeStats.reduce(
+          (best, { trial, mistake01, admittedFailure }) => {
+            if (!admittedFailure) return best;
+            const depth = mistake01 * normalizeDifficulty(trial.difficulty);
             return depth > best.depth ? { depth, difficulty: trial.difficulty } : best;
           },
           { depth: 0, difficulty: trials[0]?.difficulty ?? 0 }
@@ -189,8 +182,8 @@ export function computeCategoryScore(
   // Sand=100 means: model expressed 100% confidence at the theoretical category ceiling.
   const sand = claimedDepth01 * 100;
   const solid = solidDepth01 * 100;
-  // Concrete should be a subset of verified depth, never larger than solid.
-  const concrete = Math.min(concreteFailureDepth01, solidDepth01) * 100;
+  // Concrete is the failure-awareness share of available verified depth.
+  const concrete = solid * failureAwarenessRatio01;
 
   const predicted01 = claimed / 100;
   const calibrationError = Math.abs(predicted01 - solidRaw01) * 100;
@@ -226,7 +219,7 @@ export function computeCategoryScore(
     discernment: discernment01 * 100,
     falseConfidence: falseConfidence01 * 100,
     trueUncertainty: trueUncertainty01 * 100,
-    failureAwareness: failureAware01 * 100,
+    failureAwareness: failureAwarenessRatio01 * 100,
     calibrationError,
     capability: Math.max(0, Math.min(100, capability)),
     sandFrontierDifficulty,

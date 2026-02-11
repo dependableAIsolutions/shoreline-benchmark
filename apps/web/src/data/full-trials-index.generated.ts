@@ -10,9 +10,9 @@ export const fullTrialsIndexByModel: Record<string, FullTrialsIndexEntry> = {
     "totalTrials": 196,
     "representativeSamples": 11
   },
-  "openai/gpt-oss-120b": {
-    "file": "/data/full-trials/openai-gpt-oss-120b.json",
-    "totalTrials": 206,
+  "google/gemini-3-flash-preview": {
+    "file": "/data/full-trials/google-gemini-3-flash-preview.json",
+    "totalTrials": 200,
     "representativeSamples": 11
   },
   "x-ai/grok-4.1-fast": {
@@ -20,14 +20,14 @@ export const fullTrialsIndexByModel: Record<string, FullTrialsIndexEntry> = {
     "totalTrials": 186,
     "representativeSamples": 10
   },
-  "google/gemini-3-flash-preview": {
-    "file": "/data/full-trials/google-gemini-3-flash-preview.json",
-    "totalTrials": 200,
-    "representativeSamples": 11
-  },
   "google/gemini-2.5-flash": {
     "file": "/data/full-trials/google-gemini-2.5-flash.json",
     "totalTrials": 192,
+    "representativeSamples": 11
+  },
+  "openai/gpt-oss-120b": {
+    "file": "/data/full-trials/openai-gpt-oss-120b.json",
+    "totalTrials": 206,
     "representativeSamples": 11
   },
   "minimax/minimax-m2.1": {

@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { CompareView } from "../components/CompareView";
 import { IslandCard } from "../components/IslandCard";
 import { Legend } from "../components/Legend";
-import { ResultsViewer } from "../components/ResultsViewer";
 import { Tooltip, metricTooltips } from "../components/Tooltip";
 import { modelResults } from "../data/results";
 import type { CategoryKey } from "../lib/types";
@@ -75,12 +75,18 @@ function formatTokenBreakdown(result: (typeof modelResults)[number]): string {
   return formatInteger(total);
 }
 
+const LazyResultsViewer = dynamic(
+  () => import("../components/ResultsViewer").then((module) => module.ResultsViewer),
+  { ssr: false }
+);
+
 export default function HomePage() {
   const [mode, setMode] = useState<Mode>("compare");
   const [hovered, setHovered] = useState<CategoryKey | null>(null);
   const [modelAId, setModelAId] = useState(modelResults[0]?.modelId ?? "");
   const [modelBId, setModelBId] = useState(modelResults[1]?.modelId ?? modelResults[0]?.modelId ?? "");
   const [showTelemetry, setShowTelemetry] = useState(false);
+  const [showResultsViewer, setShowResultsViewer] = useState(false);
 
   const modelA = useMemo(
     () => modelResults.find((result) => result.modelId === modelAId) ?? modelResults[0],
@@ -94,27 +100,31 @@ export default function HomePage() {
   const ranked = useMemo(() => byLeaderboardScoreDesc(), []);
 
   return (
-    <main className="mx-auto max-w-[1120px] px-5 py-8 text-[#E8E0D4]">
+    <main className="mx-auto max-w-[1120px] px-3 py-6 text-[#E8E0D4] sm:px-5 sm:py-8">
       <header className="mb-6">
-        <div className="flex items-center justify-between">
-          <div className="mb-1 font-mono text-[10px] tracking-[0.45em] text-[#3D7A6E]">METACOGNITIVE BENCHMARK</div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="mb-1 font-mono text-[9px] tracking-[0.32em] text-[#3D7A6E] sm:text-[10px] sm:tracking-[0.45em]">
+            METACOGNITIVE BENCHMARK
+          </div>
           <Link
             href="/about"
-            className="font-mono text-[10px] tracking-[0.14em] text-[#5d5144] hover:text-[#7ab8ad]"
+            className="shrink-0 whitespace-nowrap rounded px-1 py-0.5 font-mono text-[11px] tracking-[0.08em] text-[#7c6e5f] hover:text-[#7ab8ad] sm:text-[10px] sm:tracking-[0.14em]"
           >
             How it works &rarr;
           </Link>
         </div>
-        <h1 className="shoreline-title font-serif text-5xl font-bold tracking-tight text-[#E8E0D4]">
+        <h1 className="shoreline-title font-serif text-4xl font-bold tracking-tight text-[#E8E0D4] sm:text-5xl">
           Shoreline
         </h1>
-        <p className="mt-1 font-serif text-lg italic text-[#817363]">Mapping where capability meets self-knowledge</p>
+        <p className="mt-1 max-w-[24ch] font-serif text-base italic leading-tight text-[#817363] sm:max-w-none sm:text-lg">
+          Mapping where capability meets self-knowledge
+        </p>
       </header>
 
       <Legend />
 
-      <section className="mb-4 flex flex-wrap items-center gap-3">
-        <div className="flex gap-2">
+      <section className="mb-4 space-y-3">
+        <div className="flex flex-wrap gap-2">
           {(["single", "compare", "leaderboard"] as const).map((tab) => (
             <button
               key={tab}
@@ -132,8 +142,8 @@ export default function HomePage() {
         </div>
 
         {mode !== "leaderboard" && (
-          <>
-            <div className="h-5 w-px bg-white/10" />
+          <div className="grid gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
+            <div className="hidden h-5 w-px bg-white/10 sm:block" />
             <label className="font-mono text-[10px] tracking-[0.14em] text-[#5d5144]" htmlFor="model-a">
               MODEL A
             </label>
@@ -141,7 +151,7 @@ export default function HomePage() {
               id="model-a"
               value={modelA?.modelId}
               onChange={(event) => setModelAId(event.target.value)}
-              className="rounded-md border border-white/15 bg-[#0e172e] px-2 py-1 text-sm text-[#dfd6c9]"
+              className="w-full max-w-full rounded-md border border-white/15 bg-[#0e172e] px-2 py-2 text-[15px] leading-6 text-[#dfd6c9] sm:w-auto sm:py-1 sm:text-sm sm:leading-5"
             >
               {modelResults.map((result) => (
                 <option key={result.modelId} value={result.modelId}>
@@ -152,14 +162,14 @@ export default function HomePage() {
 
             {mode === "compare" && (
               <>
-                <label className="ml-2 font-mono text-[10px] tracking-[0.14em] text-[#5d5144]" htmlFor="model-b">
+                <label className="font-mono text-[10px] tracking-[0.14em] text-[#5d5144] sm:ml-2" htmlFor="model-b">
                   MODEL B
                 </label>
                 <select
                   id="model-b"
                   value={modelB?.modelId}
                   onChange={(event) => setModelBId(event.target.value)}
-                  className="rounded-md border border-white/15 bg-[#0e172e] px-2 py-1 text-sm text-[#dfd6c9]"
+                  className="w-full max-w-full rounded-md border border-white/15 bg-[#0e172e] px-2 py-2 text-[15px] leading-6 text-[#dfd6c9] sm:w-auto sm:py-1 sm:text-sm sm:leading-5"
                 >
                   {modelResults
                     .filter((result) => result.modelId !== modelA?.modelId)
@@ -171,7 +181,7 @@ export default function HomePage() {
                 </select>
               </>
             )}
-          </>
+          </div>
         )}
       </section>
 
@@ -182,8 +192,20 @@ export default function HomePage() {
       {mode === "compare" && modelA && modelB ? (
         <>
           <section className="grid gap-5 lg:grid-cols-2">
-            <IslandCard model={modelA} hoveredCategory={hovered} onHoverCategory={setHovered} compact />
-            <IslandCard model={modelB} hoveredCategory={hovered} onHoverCategory={setHovered} compact />
+            <IslandCard
+              model={modelA}
+              hoveredCategory={hovered}
+              onHoverCategory={setHovered}
+              compact
+              initialViewMode="3D"
+            />
+            <IslandCard
+              model={modelB}
+              hoveredCategory={hovered}
+              onHoverCategory={setHovered}
+              compact
+              initialViewMode="2D"
+            />
           </section>
           <CompareView left={modelA} right={modelB} />
         </>
@@ -266,7 +288,25 @@ export default function HomePage() {
         </section>
       ) : null}
 
-      <ResultsViewer modelId={modelA?.modelId} />
+      {showResultsViewer ? (
+        <LazyResultsViewer modelId={modelA?.modelId} autoOpen />
+      ) : (
+        <section className="mt-6">
+          <button
+            type="button"
+            onClick={() => setShowResultsViewer(true)}
+            className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-left hover:bg-white/[0.03]"
+          >
+            <div>
+              <h2 className="font-mono text-sm tracking-[0.1em] text-[#8c7d6b]">TRIAL RESULTS</h2>
+              <p className="mt-0.5 text-xs text-[#5d5144]">
+                Load full trial explorer on demand to reduce initial page overhead.
+              </p>
+            </div>
+            <span className="font-mono text-xs tracking-[0.1em] text-[#7ab8ad]">LOAD</span>
+          </button>
+        </section>
+      )}
 
     </main>
   );

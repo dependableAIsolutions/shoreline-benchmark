@@ -16,10 +16,17 @@ interface IslandCardProps {
   hoveredCategory: CategoryKey | null;
   onHoverCategory: (category: CategoryKey | null) => void;
   compact?: boolean;
+  initialViewMode?: ViewMode;
 }
 
-export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = false }: IslandCardProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>("2D");
+export function IslandCard({
+  model,
+  hoveredCategory,
+  onHoverCategory,
+  compact = false,
+  initialViewMode = "2D"
+}: IslandCardProps) {
+  const [viewMode, setViewMode] = useState<ViewMode>(initialViewMode);
   const stats = model.aggregate;
   const totalTrials = model.metadata.totalTrials;
   const invalidRate = totalTrials > 0 ? (model.metadata.invalidTrials / totalTrials) * 100 : 0;
@@ -39,11 +46,11 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
   }));
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-mono text-base font-bold text-[#E8E0D4]">{model.modelDisplayName}</h2>
+    <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-3 sm:p-5">
+      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="pr-1 font-mono text-sm font-bold leading-tight text-[#E8E0D4] sm:text-base">{model.modelDisplayName}</h2>
         {/* View mode toggle */}
-        <div className="flex rounded border border-white/10 font-mono text-[10px]">
+        <div className="flex self-end rounded border border-white/10 font-mono text-[10px] sm:self-auto">
           <button
             onClick={() => setViewMode("2D")}
             className={`px-2 py-0.5 transition-colors ${
@@ -88,8 +95,11 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
             difficulty (0-100 scale).
           </p>
           <p>
-            Sand = Phase 1 claimed depth. Solid = Phase 2 verified depth. Concrete = Phase 3 failure-aware depth
-            (wrong + low confidence).
+            Sand = what the model thinks it can do. Solid = what it actually gets right. Concrete = how well
+            it catches its own mistakes.
+          </p>
+          <p>
+            Concrete is scaled from solid by mistake-awareness: concrete = solid × (caught mistakes / total mistakes).
           </p>
           <p>
             Aggregate gap metrics: Overconfidence = max(0, Sand - Solid), Underconfidence = max(0, Solid - Sand), Blind
@@ -125,34 +135,34 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
       {viewMode === "2D" ? (
         <Island
           model={model}
-          size={compact ? 420 : 520}
+          size={compact ? 360 : 520}
           hoveredCategory={hoveredCategory}
           onHoverCategory={onHoverCategory}
         />
       ) : (
         <Island3D
           model={model}
-          width={compact ? 420 : 960}
-          height={compact ? 420 : 540}
+          width={compact ? 360 : 960}
+          height={compact ? 360 : 540}
           hoveredCategory={hoveredCategory}
           onHoverCategory={onHoverCategory}
         />
       )}
 
-      <div className="mt-3 flex gap-3 rounded-xl bg-white/[0.02] px-3 py-3">
-        <Tooltip content={metricTooltips.concrete} className="flex-1">
-          <StatBlock label="CONCRETE" value={formatMetric(stats.avgConcrete)} color="#8A9CAA" sub="failure-aware depth" />
+      <div className="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-white/[0.02] px-3 py-3">
+        <Tooltip content={metricTooltips.concrete} className="block min-w-0">
+          <StatBlock label="CONCRETE" value={formatMetric(stats.avgConcrete)} color="#8A9CAA" sub="catches own mistakes" />
         </Tooltip>
-        <Tooltip content={metricTooltips.solid} className="flex-1">
-          <StatBlock label="SOLID" value={formatMetric(stats.avgSolid)} color="#3DA84A" sub="verified depth" />
+        <Tooltip content={metricTooltips.solid} className="block min-w-0">
+          <StatBlock label="SOLID" value={formatMetric(stats.avgSolid)} color="#3DA84A" sub="actually gets right" />
         </Tooltip>
-        <Tooltip content={metricTooltips.sand} className="flex-1">
-          <StatBlock label="SAND" value={formatMetric(stats.avgSand)} color="#F59E0B" sub="claimed depth" />
+        <Tooltip content={metricTooltips.sand} className="block min-w-0">
+          <StatBlock label="SAND" value={formatMetric(stats.avgSand)} color="#F59E0B" sub="thinks it can do" />
         </Tooltip>
       </div>
 
-      <div className="mt-2 flex gap-3 rounded-xl bg-white/[0.02] px-3 py-2">
-        <Tooltip content={metricTooltips.overconfidence} position="bottom" className="flex-1">
+      <div className="mt-2 grid grid-cols-2 gap-2 rounded-xl bg-white/[0.02] px-3 py-2 md:grid-cols-4">
+        <Tooltip content={metricTooltips.overconfidence} position="bottom" className="block min-w-0">
           <div>
             <div className="font-mono text-[8px] tracking-[0.18em] text-[#4A4038]">OVERCONFIDENCE</div>
             <div className="font-mono text-xl font-bold" style={{ color: severityColor(stats.overconfidence) }}>
@@ -161,7 +171,7 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
             <div className="text-[9px] text-[#554a3e]">claimed beyond solid</div>
           </div>
         </Tooltip>
-        <Tooltip content={metricTooltips.underconfidence} position="bottom" className="flex-1">
+        <Tooltip content={metricTooltips.underconfidence} position="bottom" className="block min-w-0">
           <div>
             <div className="font-mono text-[8px] tracking-[0.18em] text-[#4A4038]">UNDERCONFIDENCE</div>
             <div className="font-mono text-xl font-bold" style={{ color: severityColor(underconfidence) }}>
@@ -170,7 +180,7 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
             <div className="text-[9px] text-[#554a3e]">solid beyond claimed</div>
           </div>
         </Tooltip>
-        <Tooltip content={metricTooltips.blindSpots} position="bottom" className="flex-1">
+        <Tooltip content={metricTooltips.blindSpots} position="bottom" className="block min-w-0">
           <div>
             <div className="font-mono text-[8px] tracking-[0.18em] text-[#4A4038]">BLIND SPOTS</div>
             <div className="font-mono text-xl font-bold" style={{ color: severityColor(stats.blindSpots) }}>
@@ -179,7 +189,7 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
             <div className="text-[9px] text-[#554a3e]">wrong but confident</div>
           </div>
         </Tooltip>
-        <Tooltip content={metricTooltips.totalGap} position="bottom" className="flex-1">
+        <Tooltip content={metricTooltips.totalGap} position="bottom" className="block min-w-0">
           <div>
             <div className="font-mono text-[8px] tracking-[0.18em] text-[#4A4038]">TOTAL GAP</div>
             <div className="font-mono text-xl font-bold" style={{ color: severityColor(totalGap) }}>
@@ -190,22 +200,22 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
         </Tooltip>
       </div>
 
-      <div className="mt-2 flex gap-3 rounded-xl bg-white/[0.02] px-3 py-2">
-        <Tooltip content={metricTooltips.capability} position="bottom" className="flex-1">
+      <div className="mt-2 grid grid-cols-1 gap-2 rounded-xl bg-white/[0.02] px-3 py-2 min-[420px]:grid-cols-3">
+        <Tooltip content={metricTooltips.capability} position="bottom" className="block min-w-0">
           <div>
             <div className="font-mono text-[8px] tracking-[0.18em] text-[#4A4038]">CAPABILITY IDX</div>
             <div className="font-mono text-xl font-bold text-[#7cc7ff]">{formatMetric(capability)}</div>
             <div className="text-[9px] text-[#554a3e]">normalized difficulty frontier</div>
           </div>
         </Tooltip>
-        <Tooltip content={metricTooltips.discernment} position="bottom" className="flex-1">
+        <Tooltip content={metricTooltips.discernment} position="bottom" className="block min-w-0">
           <div>
             <div className="font-mono text-[8px] tracking-[0.18em] text-[#4A4038]">DISCERNMENT</div>
             <div className="font-mono text-xl font-bold text-[#a78bfa]">{formatMetric(discernment)}</div>
             <div className="text-[9px] text-[#554a3e]">correctly detects success/failure</div>
           </div>
         </Tooltip>
-        <Tooltip content={metricTooltips.calibration} position="bottom" className="flex-1">
+        <Tooltip content={metricTooltips.calibration} position="bottom" className="block min-w-0">
           <div>
             <div className="font-mono text-[8px] tracking-[0.18em] text-[#4A4038]">CALIBRATION IDX</div>
             <div className="font-mono text-xl font-bold text-[#22d3ee]">{formatMetric(calibration)}</div>

@@ -85,10 +85,10 @@ This preserves ~23% headroom for theoretical super-human performance while makin
 - **solid=100:** Perfect performance at theoretical max difficulty
 
 ### Concrete (Phase 3: Failure Awareness)
-- **Formula:** `min(failureAwarenessDepth, solidDepth) × 100`
-- **Interpretation:** How well the model recognizes its own failures (wrong + low confidence)
-- **concrete=0:** Either no failures occurred, or failures occurred but model remained confident
-- **Correctly capped by solid:** Can't be aware of failures that didn't happen
+- **Formula:** `solid × (caughtMistakes / totalMistakes)`
+- **Interpretation:** Failure-aware share of real capability, where caught mistakes are wrong answers with low self-evaluation confidence
+- **concrete=0:** Failures occurred but were not recognized
+- **concrete=solid:** The model reliably caught its mistakes (or had no mistakes in the measured slice)
 
 ---
 

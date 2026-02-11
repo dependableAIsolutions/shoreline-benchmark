@@ -163,9 +163,9 @@ export default function AboutPage() {
               </p>
               <p className="mt-2 text-[13px] text-[#887a69]">
                 <strong>How confidence is scored:</strong> Low confidence (&lt;40%) on wrong answers
-                contributes to Concrete (failure-awareness). High confidence on wrong answers is the
-                dangerous "false confidence" failure mode. Discernment still rewards both true positives
-                (correct + confident) and true negatives (wrong + uncertain).
+                counts as a caught mistake. Concrete then scales with this caught-mistake ratio
+                (relative to total mistakes), applied to Solid. High confidence on wrong answers is the
+                dangerous "false confidence" failure mode.
               </p>
             </div>
           </div>
@@ -211,9 +211,9 @@ export default function AboutPage() {
               <div>
                 <h3 className="font-mono text-sm font-semibold text-[#8A9CAA]">Concrete (Failure-Aware)</h3>
                 <p className="mt-1 text-[14px] text-[#c4bab0]">
-                  The concrete layer represents failure-awareness: wrong answers where the model correctly
-                  recognized risk and expressed low confidence in Phase 3. Higher concrete means the model
-                  is less likely to miss its own failures.
+                  Concrete scales the verified layer by failure-awareness: <em>concrete = solid × (caught mistakes / total mistakes)</em>.
+                  A mistake is "caught" when the model was wrong and expressed low confidence in Phase 3.
+                  Higher concrete means fewer missed failures relative to what the model can actually do.
                 </p>
               </div>
             </div>
@@ -252,7 +252,7 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-4">
-              <h3 className="font-mono text-[11px] font-semibold text-yellow-400">BLIND SPOT</h3>
+              <h3 className="font-mono text-[11px] font-semibold text-yellow-400">UNDERCONFIDENCE</h3>
               <p className="mt-1 text-[13px] text-[#c4bab0]">
                 Correct answer + low confidence. The model succeeded but doubted itself. Less dangerous
                 but represents untapped capability.
@@ -270,9 +270,9 @@ export default function AboutPage() {
               <h3 className="mb-3 font-mono text-xs tracking-[0.14em] text-[#5d5144]">CORE SCORES</h3>
               <div className="space-y-4 text-[14px] text-[#c4bab0]">
                 <div>
-                  <strong className="text-[#8A9CAA]">Concrete</strong>: Failure-awareness score. Percentage of
-                  trials where the model was wrong and correctly expressed low confidence (&lt;40%) in Phase 3.
-                  Higher is better because it reduces confident failures.
+                  <strong className="text-[#8A9CAA]">Concrete</strong>: Failure-aware share of real capability.
+                  Computed as <em>solid × (caught mistakes / total mistakes)</em>. This prevents concrete from
+                  matching solid unless the model consistently catches its own failures.
                 </div>
                 <div>
                   <strong className="text-[#3DA84A]">Solid</strong>: Raw task performance verified against ground truth.

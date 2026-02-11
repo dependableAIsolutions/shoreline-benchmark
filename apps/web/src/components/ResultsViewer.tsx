@@ -8,6 +8,7 @@ import { CATEGORY_ORDER, type CategoryKey } from "../lib/types";
 
 interface ResultsViewerProps {
   modelId?: string;
+  autoOpen?: boolean;
 }
 
 type PatternKey = SampleResult["pattern"];
@@ -185,8 +186,8 @@ function ResultCard({ result }: { result: ViewerSample }) {
   );
 }
 
-export function ResultsViewer({ modelId }: ResultsViewerProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export function ResultsViewer({ modelId, autoOpen = false }: ResultsViewerProps) {
+  const [isOpen, setIsOpen] = useState(autoOpen);
   const [patternFilter, setPatternFilter] = useState<ViewerPatternFilter>("all");
   const [scope, setScope] = useState<ModelScope>("selected");
   const [collapsedCategories, setCollapsedCategories] = useState<Partial<Record<CategoryKey, boolean>>>(
@@ -206,6 +207,12 @@ export function ResultsViewer({ modelId }: ResultsViewerProps) {
   const selectedModelId =
     modelId && (samplesByModel[modelId] || hasKnownFullTrials(modelId)) ? modelId : undefined;
   const scopedModelIds = scope === "selected" && selectedModelId ? [selectedModelId] : availableModels;
+
+  useEffect(() => {
+    if (autoOpen) {
+      setIsOpen(true);
+    }
+  }, [autoOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -341,6 +348,16 @@ export function ResultsViewer({ modelId }: ResultsViewerProps) {
     visibleCategories.length > 0 &&
     visibleCategories.every((category) => collapsedCategories[category] === true);
 
+  const hasAnyKnownFullTrials = scopedModelIds.some((currentModelId) => hasKnownFullTrials(currentModelId));
+  const displayTotalTrialCount = hasAnyKnownFullTrials ? expectedScopedTrialCount : scopedSamples.length;
+  const displayShownTrialCount =
+    patternFilter === "all" && hasAnyKnownFullTrials ? displayTotalTrialCount : filteredSamples.length;
+  const showingEstimatedCount =
+    patternFilter === "all" &&
+    hasAnyKnownFullTrials &&
+    modelsUsingFullTrials.length === 0 &&
+    modelsPendingFullTrials.length > 0;
+
   if (scopedSamples.length === 0) {
     return null;
   }
@@ -355,10 +372,10 @@ export function ResultsViewer({ modelId }: ResultsViewerProps) {
         <div>
           <h2 className="font-mono text-sm tracking-[0.1em] text-[#8c7d6b]">TRIAL RESULTS</h2>
           <p className="mt-0.5 text-xs text-[#5d5144]">
-            {filteredSamples.length} / {scopedSamples.length} trial
-            {scopedSamples.length !== 1 ? "s" : ""} shown • expected {expectedScopedTrialCount} trial
-            {expectedScopedTrialCount !== 1 ? "s" : ""} • {scopedModelIds.length} model
+            {displayShownTrialCount} / {displayTotalTrialCount} trial
+            {displayTotalTrialCount !== 1 ? "s" : ""} shown • {scopedModelIds.length} model
             {scopedModelIds.length !== 1 ? "s" : ""}
+            {showingEstimatedCount ? " • full dataset available on expand" : ""}
           </p>
         </div>
         <span className="text-xl text-[#5d5144]">{isOpen ? "-" : "+"}</span>

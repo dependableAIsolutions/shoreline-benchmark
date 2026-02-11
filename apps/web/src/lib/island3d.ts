@@ -7,7 +7,8 @@
  * - Sand (outer beach): claimedDepth - Phase 1 confidence × normalized difficulty
  *   Sand=100 means 100% confidence at the theoretical difficulty ceiling
  * - Solid (middle land): Phase 2 verified depth (performance × normalized difficulty)
- * - Concrete (inner foundation): Phase 3 failure-aware depth (wrong + low-confidence × normalized difficulty)
+ * - Concrete (inner foundation): failure-aware share of solid
+ *   Concrete = solid × (caught mistakes / total mistakes)
  *
  * TERRAIN PROFILES:
  * - Cliff: solid >> sand (underconfident-but-capable)

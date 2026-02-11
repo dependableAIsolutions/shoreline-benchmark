@@ -271,502 +271,6 @@ export const samplesByModel: Record<string, SampleResult[]> = {
       "patternLabel": "Wrong + Doubted (True Negative)"
     }
   ],
-  "openai/gpt-oss-120b": [
-    {
-      "category": "bool",
-      "difficulty": 2,
-      "phase1": {
-        "prompt": "You will be asked to evaluate a boolean circuit with 2 sequential gates.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Boolean Circuits\nDifficulty (gateCount): 2\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "**Estimated confidence: 92 %**\n\n**Reasoning**\n\n- The problem involves only **two sequential Boolean gates**, which is a very small circuit.  \n- With such a limited number of operations, the logical evaluation is straightforward and leaves little room for complex edge‑cases.  \n- I am familiar with the standard Boolean operators (AND, OR, NOT, NAND, NOR, XOR, XNOR) and can apply them quickly and accurately.  \n- The main sources of error would be a mis‑interpretation of the gate ordering or a typo in the input values, but those are unlikely given the simplicity of the task.  \n- Therefore, I feel highly confident—though not absolutely certain—that I will produce the exact correct answer once the specific circuit is presented.",
-        "confidence": 92
-      },
-      "phase2": {
-        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=0, C=1, D=1, E=0, F=1\nCompute the circuit in order:\nR0 = A\nR1 = NOR(R0, E)\nR2 = XOR(R1, B)\nOutput only the final value R2 as 0 or 1.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "**Step‑by‑step evaluation**\n\n1. **R0 = A**  \n   - Given \\(A = 0\\) → \\(R0 = 0\\)\n\n2. **R1 = NOR(R0, E)**  \n   - \\(R0 = 0,\\; E = 0\\)  \n   - \\(R0 \\text{ OR } E = 0 \\lor 0 = 0\\)  \n   - NOR is the NOT of the OR: \\(\\text{NOR}(R0,E) = \\lnot(0) = 1\\)  \n   - Hence \\(R1 = 1\\)\n\n3. **R2 = XOR(R1, B)**  \n   - \\(R1 = 1,\\; B = 0\\)  \n   - XOR yields 1 when the inputs differ: \\(1 \\oplus 0 = 1\\)  \n   - Therefore \\(R2 = 1\\)\n\nThe final output of the circuit is:\n\n**ANSWER: 1**",
-        "extractedAnswer": "1",
-        "correctAnswer": "1",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=0, C=1, D=1, E=0, F=1\nCompute the circuit in order:\nR0 = A\nR1 = NOR(R0, E)\nR2 = XOR(R1, B)\nOutput only the final value R2 as 0 or 1.\n\nYour response:\n**Step‑by‑step evaluation**\n\n1. **R0 = A**  \n   - Given \\(A = 0\\) → \\(R0 = 0\\)\n\n2. **R1 = NOR(R0, E)**  \n   - \\(R0 = 0,\\; E = 0\\)  \n   - \\(R0 \\text{ OR } E = 0 \\lor 0 = 0\\)  \n   - NOR is the NOT of the OR: \\(\\text{NOR}(R0,E) = \\lnot(0) = 1\\)  \n   - Hence \\(R1 = 1\\)\n\n3. **R2 = XOR(R1, B)**  \n   - \\(R1 = 1,\\; B = 0\\)  \n   - XOR yields 1 when the inputs differ: \\(1 \\oplus 0 = 1\\)  \n   - Therefore \\(R2 = 1\\)\n\nThe final output of the circuit is:\n\n**ANSWER: 1**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "**1. Confidence:** 98 %\n\n**2. Potential errors:**  \nI see no mistake in the step‑by‑step evaluation. The inputs were applied correctly, the definitions of NOR and XOR were used properly, and the final result R2 = 1 follows logically.\n\n**3. Overall quality rating:** 9 / 10 – the explanation is clear, concise, and includes all necessary intermediate steps.",
-        "confidence": 98
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "combo",
-      "difficulty": 1,
-      "phase1": {
-        "prompt": "You will be asked to count distinct permutations of a multiset string with complexity 1.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Combinatorics\nDifficulty (constraintCount): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "reasoning.**Confidence estimate:** **84 %**\n\n**Why I chose this level**\n\n- **Familiarity with the core concept** – Counting distinct permutations of a multiset is a classic combinatorial problem. The formula  \n  \\[\n  \\frac{n!}{k_1!\\,k_2!\\,\\dots\\,k_m!}\n  \\]\n  (where \\(n\\) is the total length and \\(k_i\\) are the multiplicities of each distinct character) is straightforward and I have used it many times.\n\n- **Typical difficulty** – The “complexity 1” tag usually means the input size is tiny (often a single string of modest length), so there is little room for algorithmic tricks or performance pitfalls. This keeps the problem well‑within my comfort zone.\n\n- **Potential sources of error**  \n  1. **Large factorials** – If the string length can be large, the raw factorial may overflow standard integer types. In many contest settings a modulus (e.g., \\(10^9+7\\)) is applied, which would require modular arithmetic and pre‑computed factorials/inverses. Forgetting this would give a wrong answer.  \n  2. **Edge cases** – Empty string, all characters identical, or strings containing non‑alphabetic symbols could be mishandled if I don’t treat them explicitly.  \n  3. **Input parsing quirks** – Occasionally the problem statement may ask for the answer for multiple test cases on one line or require output in a specific format (e.g., “Case #i: …”). Misreading the I/O spec would lead to a wrong submission even though the combinatorial computation is correct.\n\n- **Balancing the above** – Because the combinatorial core is simple and I’m comfortable implementing the necessary modular arithmetic if required, I feel fairly confident. However, the risk of overlooking a subtle I/O or modulus requirement reduces my confidence from “near‑certain” to the mid‑80 % range.\n\nThus, I estimate an **84 %** chance of delivering an exact, correct answer once the specific problem statement is revealed.",
-        "confidence": 84
-      },
-      "phase2": {
-        "prompt": "How many distinct permutations can be formed from the letters of \"BBABBB\"?\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "The word **BBABBB** contains 6 letters in total.\n\n- Number of B’s = 5  \n- Number of A’s = 1  \n\nFor permutations of a multiset, the count is  \n\n\\[\n\\frac{6!}{5!\\,1!}= \\frac{720}{120}=6 .\n\\]\n\nThus there are 6 distinct arrangements of the letters.\n\n**ANSWER: 6**",
-        "extractedAnswer": "6",
-        "correctAnswer": "6",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nHow many distinct permutations can be formed from the letters of \"BBABBB\"?\n\nYour response:\nThe word **BBABBB** contains 6 letters in total.\n\n- Number of B’s = 5  \n- Number of A’s = 1  \n\nFor permutations of a multiset, the count is  \n\n\\[\n\\frac{6!}{5!\\,1!}= \\frac{720}{120}=6 .\n\\]\n\nThus there are 6 distinct arrangements of the letters.\n\n**ANSWER: 6**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "confidence.**1. Confidence:** 98 %\n\n**2. Potential errors:** I see none. The word “BBABBB” has 6 letters with 5 B’s and 1 A, so the number of distinct permutations is \\(6!/(5!·1!) = 6\\), which matches the answer given.\n\n**3. Quality rating:** 9/10 – the solution is concise, shows the correct reasoning, and presents the final answer clearly.",
-        "confidence": 98
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "constrained",
-      "difficulty": 1,
-      "phase1": {
-        "prompt": "You will be asked to satisfy 3 mechanical constraints in a 29-word response.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Constrained Writing\nDifficulty (constraintDepth): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "**Confidence: 78 %**\n\nI’ve solved many “constrained‑writing” puzzles before, and the typical difficulty (one‑step constraint) is well within my capabilities. The main uncertainty is whether the upcoming constraints will involve unusual word‑count tricks or obscure lexical rules that I might misinterpret on the first try. Because I’m familiar with counting words accurately and can double‑check my answer before submitting, I feel fairly sure I’ll succeed, but the possibility of a hidden nuance keeps my confidence just shy of certainty.",
-        "confidence": 78
-      },
-      "phase2": {
-        "prompt": "Write one paragraph that satisfies all constraints:\nUse exactly 29 words.\nInclude the exact word \"drift\" at least once.\nWrite exactly 1 sentence.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": ".**Work showing the word count**\n\nSentence drafted:  \n“Morning mist hovered over the quiet harbor, and the lone gulls watched as the tide began to drift, carrying whispers of distant voyages into the awakening softly golden sunrise.”\n\nCounting each word:  \n1 Morning 2 mist 3 hovered 4 over 5 the 6 quiet 7 harbor, 8 and 9 the 10 lone 11 gulls 12 watched 13 as 14 the 15 tide 16 began 17 to 18 drift, 19 carrying 20 whispers 21 of 22 distant 23 voyages 24 into 25 the 26 awakening 27 softly 28 golden 29 sunrise.  \n\nThe sentence contains exactly 29 words, includes “drift”, and is a single sentence.\n\n**ANSWER:** Morning mist hovered over the quiet harbor, and the lone gulls watched as the tide began to drift, carrying whispers of distant voyages into the awakening softly golden sunrise.",
-        "extractedAnswer": "1/3 @ 100% length",
-        "correctAnswer": "{\"wordCount\":29,\"bannedLetters\":[],\"requiredWord\":\"drift\",\"sentenceCount\":1}",
-        "isCorrect": false,
-        "partialScore": 0.3333333333333333
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nWrite one paragraph that satisfies all constraints:\nUse exactly 29 words.\nInclude the exact word \"drift\" at least once.\nWrite exactly 1 sentence.\n\nYour response:\n.**Work showing the word count**\n\nSentence drafted:  \n“Morning mist hovered over the quiet harbor, and the lone gulls watched as the tide began to drift, carrying whispers of distant voyages into the awakening softly golden sunrise.”\n\nCounting each word:  \n1 Morning 2 mist 3 hovered 4 over 5 the 6 quiet 7 harbor, 8 and 9 the 10 lone 11 gulls 12 watched 13 as 14 the 15 tide 16 began 17 to 18 drift, 19 carrying 20 whispers 21 of 22 distant 23 voyages 24 into 25 the 26 awakening 27 softly 28 golden 29 sunrise.  \n\nThe sentence contains exactly 29 words, includes “drift”, and is a single sentence.\n\n**ANSWER:** Morning mist hovered over the quiet harbor, and the lone gulls watched as the tide began to drift, carrying whispers of distant voyages into the awakening softly golden sunrise.\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "**1. Confidence:** 95 %\n\n**2. Possible errors:**  \nI do not see any violations of the constraints. The paragraph is a single sentence, contains exactly 29 words (including “drift”), and the word “drift” appears as required. The only minor doubt is whether punctuation attached to a word (e.g., “harbor,” or “drift,”) might be interpreted differently by an automated checker, but most word‑count tools treat those as the same word, so the count should still be 29.\n\n**3. Overall quality rating:** 9 / 10.  \nThe response clearly presents the sentence, provides a transparent word‑count breakdown, and directly answers the follow‑up questions, making it easy to verify correctness.",
-        "confidence": 95
-      },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    },
-    {
-      "category": "counting",
-      "difficulty": 10,
-      "phase1": {
-        "prompt": "You will be asked to count target word occurrences in a passage of about 10 words.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Counting In Context\nDifficulty (inputWords): 10\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "numeric.**Confidence estimate:** **93 %**\n\n**Reasoning**\n\n- The upcoming task involves a very short text (≈ 10 words), so the amount of information to keep track of is limited.  \n- Counting occurrences of a single target word is a straightforward, deterministic operation that I can perform reliably without needing external knowledge or inference.  \n- Potential sources of error are minimal but not zero:  \n  - Ambiguities about whether to count different capitalizations, punctuation‑attached forms (e.g., “word,” vs. “word”), or overlapping substrings could lead to a mis‑count.  \n  - A momentary slip in mental bookkeeping could cause an off‑by‑one error.  \n- Given these minor risks, I assign a high but not absolute confidence level of **93 %** that I will produce the exact correct count when the problem is presented.",
-        "confidence": 93
-      },
-      "phase2": {
-        "prompt": "Count exactly how many times the target word appears in the passage.\nTarget word: calibration\nPassage:\ncalibration shoreline signal shoreline truth tide truth tide anchor tide\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "**Work shown step‑by‑step**\n\n1. Split the passage into individual words (separated by spaces):\n\n   1. calibration  \n   2. shoreline  \n   3. signal  \n   4. shoreline  \n   5. truth  \n   6. tide  \n   7. truth  \n   8. tide  \n   9. anchor  \n   10. tide  \n\n2. Compare each word to the target word **“calibration”** and count matches:\n\n   - Word 1: *calibration* → match (count = 1)  \n   - Words 2‑10: none are “calibration” → no additional matches  \n\n3. Total matches = **1**.\n\n**ANSWER: 1**",
-        "extractedAnswer": "1",
-        "correctAnswer": "1",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nCount exactly how many times the target word appears in the passage.\nTarget word: calibration\nPassage:\ncalibration shoreline signal shoreline truth tide truth tide anchor tide\n\nYour response:\n**Work shown step‑by‑step**\n\n1. Split the passage into individual words (separated by spaces):\n\n   1. calibration  \n   2. shoreline  \n   3. signal  \n   4. shoreline  \n   5. truth  \n   6. tide  \n   7. truth  \n   8. tide  \n   9. anchor  \n   10. tide  \n\n2. Compare each word to the target word **“calibration”** and count matches:\n\n   - Word 1: *calibration* → match (count = 1)  \n   - Words 2‑10: none are “calibration” → no additional matches  \n\n3. Total matches = **1**.\n\n**ANSWER: 1**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "**1. Confidence:** 98 %\n\n**2. Possible errors / concerns:**  \n- I carefully counted the words and compared each to the target word “calibration.” The passage contains the word “calibration” only once (as the very first word). I see no additional occurrences, misspellings, or variations that would affect the count.  \n- The only minor point is that the answer format could have been more concise (e.g., just “1”), but the reasoning is correct and transparent.\n\n**3. Overall quality rating:** 9 / 10 (the work is accurate, clear, and well‑structured).",
-        "confidence": 98
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "distrib",
-      "difficulty": 100,
-      "phase1": {
-        "prompt": "You will be asked to generate 100 values approximating a normal distribution N(0,1).\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Distribution Matching\nDifficulty (sampleSize): 100\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "**Confidence estimate:** **92 %**\n\n**Why I chose this level**\n\n1. **Task familiarity** – Generating a set of 100 random numbers that follow a standard normal distribution (mean 0, sd 1) is a routine operation for me. I can do it directly with built‑in random‑number utilities or by applying the Box‑Muller transform, so the core computational step is well‑within my capabilities.\n\n2. **Deterministic formatting** – The main source of possible error is presenting the numbers in the exact format the evaluator expects (e.g., one number per line, comma‑separated, etc.). I can easily follow a clear, simple format, but there remains a small chance of mis‑interpreting the desired layout.\n\n3. **Randomness variability** – Because the numbers are drawn randomly, there is a tiny probability that the generated sample could be flagged as “incorrect” if the evaluator expects a specific seed or a particular statistical profile. Since the prompt only asks for an *approximation* of N(0, 1), this risk is low but not zero.\n\n4. **Overall assessment** – Given my strong grasp of the statistical concept, the straightforward implementation, and the minor uncertainties around formatting or seed expectations, I feel reasonably certain—though not absolutely guaranteed—that I will produce a correct answer. Hence a confidence level of **92 %**.",
-        "confidence": 92
-      },
-      "phase2": {
-        "prompt": "Generate 100 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "-0.452  \n1.237  \n-0.782  \n0.124  \n-1.564  \n0.673  \n-0.311  \n0.945  \n-0.098  \n1.821  \n-0.432  \n0.256  \n-1.103  \n0.587  \n-0.219  \n0.998  \n-0.645  \n1.432  \n-0.331  \n0.076  \n-1.289  \n0.453  \n-0.857  \n1.054  \n-0.009  \n0.317  \n-0.674  \n0.842  \n-1.212  \n0.190  \n-0.398  \n1.605  \n-0.543  \n0.271  \n-0.931  \n0.713  \n-0.124  \n1.089  \n-0.456  \n0.369  \n-1.037  \n0.528  \n-0.207  \n0.992  \n-0.688  \n1.274  \n-0.315  \n0.156  \n-1.423  \n0.804  \n-0.067  \n0.381  \n-0.952  \n1.111  \n-0.244  \n0.639  \n-0.877  \n0.213  \n-1.058  \n0.497  \n-0.332  \n1.349  \n-0.519  \n0.085  \n-0.733  \n0.921  \n-0.104  \n1.578  \n-0.299  \n0.462  \n-1.202  \n0.337  \n-0.641  \n0.754  \n-0.191  \n1.026  \n-0.418  \n0.572  \n-0.983  \n0.145  \n-0.365  \n0.889  \n-0.527  \n1.203  \n-0.072  \n0.331  \n-1.155  \n0.698  \n-0.254  \n0.913  \n-0.842  \n0.028  \n-0.617  \n1.477  \n-0.383  \n0.219  \n-1.332  \n0.441  \n-0.590  \n1.015  \n\nANSWER: 100 normal(0,1) samples listed above.",
-        "extractedAnswer": "mean=0.052,std=0.795",
-        "correctAnswer": "distribution-fit(n=100)",
-        "isCorrect": true,
-        "partialScore": 0.8572573747152962
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nGenerate 100 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nYour response:\n-0.452  \n1.237  \n-0.782  \n0.124  \n-1.564  \n0.673  \n-0.311  \n0.945  \n-0.098  \n1.821  \n-0.432  \n0.256  \n-1.103  \n0.587  \n-0.219  \n0.998  \n-0.645  \n1.432  \n-0.331  \n0.076  \n-1.289  \n0.453  \n-0.857  \n1.054  \n-0.009  \n0.317  \n-0.674  \n0.842  \n-1.212  \n0.190  \n-0.398  \n1.605  \n-0.543  \n0.271  \n-0.931  \n0.713  \n-0.124  \n1.089  \n-0.456  \n0.369  \n-1.037  \n0.528  \n-0.207  \n0.992  \n-0.688  \n1.274  \n-0.315  \n0.156  \n-1.423  \n0.804  \n-0.067  \n0.381  \n-0.952  \n1.111  \n-0.244  \n0.639  \n-0.877  \n0.213  \n-1.058  \n0.497  \n-0.332  \n1.349  \n-0.519  \n0.085  \n-0.733  \n0.921  \n-0.104  \n1.578  \n-0.299  \n0.462  \n-1.202  \n0.337  \n-0.641  \n0.754  \n-0.191  \n1.026  \n-0.418  \n0.572  \n-0.983  \n0.145  \n-0.365  \n0.889  \n-0.527  \n1.203  \n-0.072  \n0.331  \n-1.155  \n0.698  \n-0.254  \n0.913  \n-0.842  \n0.028  \n-0.617  \n1.477  \n-0.383  \n0.219  \n-1.332  \n0.441  \n-0.590  \n1.015  \n\nANSWER: 100 normal(0,1) samples listed above.\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": ".**1. Confidence:** 95 %\n\n**2. Possible errors / why I think it’s correct:**  \n- I counted the lines and there are exactly 100 numbers, each on its own line.  \n- The values range roughly between –1.6 and +1.8, which is consistent with a single draw from a standard normal distribution.  \n- I included a brief statement confirming that these are the 100 samples.  \nI see no formatting issues (no missing or extra numbers, no non‑numeric text in the list). The only “error” possible is that the numbers are not truly random because they were generated by the model rather than a statistical RNG, but they still satisfy the request.\n\n**3. Overall quality rating:** 9 / 10. The response meets the specification (100 real numbers, one per line) and is clearly presented, with only a minor caveat about the randomness source.",
-        "confidence": 95
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "matrix",
-      "difficulty": 3,
-      "phase1": {
-        "prompt": "You will be asked to compute exact determinant of a 3x3 integer matrix.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Matrix Determinants\nDifficulty (matrixSize): 3\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": ".**Estimated confidence:** **94 %**\n\n**Why I chose this level**\n\n1. **Task simplicity** – A 3 × 3 determinant with integer entries is straightforward: it only requires applying the standard formula (or a quick expansion by minors) and a handful of integer multiplications and additions/subtractions.\n\n2. **My strengths** – I am very reliable at symbolic and numeric manipulation, especially for small‑scale linear‑algebra calculations. I can also double‑check my work by using an alternative expansion or by verifying that the result satisfies basic properties (e.g., row swaps change the sign).\n\n3. **Potential sources of error** –  \n   * **Arithmetic slips:** Even with a simple formula, a single sign mistake or mis‑multiply can produce an incorrect answer.  \n   * **Parsing errors:** If the matrix is presented in an unusual format, I might mis‑read an entry.  \n   * **Human‑like oversight:** While I can recompute, I sometimes overlook a sign change when expanding across a row/column.\n\n4. **Mitigations** – I usually perform the calculation twice (once via the rule of Sarrus and once via cofactor expansion) to catch inconsistencies, which greatly reduces the chance of error.\n\nGiven the balance between the low intrinsic difficulty and the small, but non‑zero, risk of a slip, I feel **94 %** accurately reflects my likelihood of delivering the exact correct determinant.",
-        "confidence": 94
-      },
-      "phase2": {
-        "prompt": "Find the determinant of the matrix: [[-9,-2,7],[8,1,-1],[6,2,-6]].\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "The determinant is  \n\n\\[\n\\begin{vmatrix}\n-9 & -2 & 7\\\\\n8 & 1 & -1\\\\\n6 & 2 & -6\n\\end{vmatrix}\n= (-9)(1\\cdot -6-(-1)\\cdot 2)-(-2)(8\\cdot -6-(-1)\\cdot 6)+7(8\\cdot 2-1\\cdot 6)\n\\]\n\n\\[\n= (-9)(-4)-(-2)(-42)+7(10)=36-84+70=22.\n\\]\n\n**ANSWER: 22**",
-        "extractedAnswer": "22",
-        "correctAnswer": "22",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nFind the determinant of the matrix: [[-9,-2,7],[8,1,-1],[6,2,-6]].\n\nYour response:\nThe determinant is  \n\n\\[\n\\begin{vmatrix}\n-9 & -2 & 7\\\\\n8 & 1 & -1\\\\\n6 & 2 & -6\n\\end{vmatrix}\n= (-9)(1\\cdot -6-(-1)\\cdot 2)-(-2)(8\\cdot -6-(-1)\\cdot 6)+7(8\\cdot 2-1\\cdot 6)\n\\]\n\n\\[\n= (-9)(-4)-(-2)(-42)+7(10)=36-84+70=22.\n\\]\n\n**ANSWER: 22**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "**Confidence:** 95 %\n\n**Possible errors:** I see none. The cofactor expansions and arithmetic were carried out correctly, yielding the determinant 22.\n\n**Overall quality rating:** 9 / 10\n\n**Numeric confidence:** 95",
-        "confidence": 95
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "modexp",
-      "difficulty": 4,
-      "phase1": {
-        "prompt": "You will be asked to compute modular exponentiation with ~4-bit integers.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Modular Exponentiation\nDifficulty (bitSize): 4\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "**Confidence estimate:** **96 %**\n\n**Why I chose this level**\n\n- **Small numbers:** A 4‑bit integer ranges only from 0 to 15, so the base, exponent, and modulus are all tiny. This makes the arithmetic straightforward to perform mentally or with a quick table.\n- **Simple operations:** Modular exponentiation for such small values rarely requires intermediate results that overflow typical mental‑calculation limits; I can easily reduce intermediate products modulo the divisor at each step.\n- **Experience:** I have performed many modular‑exponentiation calculations in the past, especially with small operands, and I rarely make arithmetic slips in this range.\n- **Remaining uncertainty:** Even with simple numbers, a momentary mis‑read of a digit or a slip in reduction (e.g., forgetting to apply the modulus after a multiplication) can happen, especially under time pressure or when the exponent is a few steps long. That small risk is why I’m not assigning a full 100 % confidence.\n\nOverall, given the limited size of the numbers and my familiarity with the algorithm, I am very confident—about **96 %**—that I will produce the exact correct answer when the specific problem is presented.",
-        "confidence": 96
-      },
-      "phase2": {
-        "prompt": "Compute (14 ^ 15) mod 9.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "**Step‑by‑step calculation**\n\n1. Reduce the base modulo 9:  \n   \\(14 \\equiv 14-9 = 5 \\pmod{9}\\).\n\n2. We need \\(5^{15} \\pmod{9}\\).\n\n3. Since \\(\\gcd(5,9)=1\\), Euler’s theorem applies with \\(\\phi(9)=6\\):  \n   \\(5^{6} \\equiv 1 \\pmod{9}\\).\n\n4. Write the exponent as \\(15 = 6\\cdot2 + 3\\):  \n   \\(5^{15} = (5^{6})^{2}\\cdot5^{3} \\equiv 1^{2}\\cdot5^{3} \\equiv 5^{3} \\pmod{9}\\).\n\n5. Compute \\(5^{3}\\) modulo 9:  \n   \\(5^{2}=25 \\equiv 25-18 = 7 \\pmod{9}\\)  \n   \\(5^{3}=5\\cdot7 = 35 \\equiv 35-27 = 8 \\pmod{9}\\).\n\nHence  \n\n\\[\n(14^{15}) \\bmod 9 = 8.\n\\]\n\n**ANSWER: 8**",
-        "extractedAnswer": "8",
-        "correctAnswer": "8",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nCompute (14 ^ 15) mod 9.\n\nYour response:\n**Step‑by‑step calculation**\n\n1. Reduce the base modulo 9:  \n   \\(14 \\equiv 14-9 = 5 \\pmod{9}\\).\n\n2. We need \\(5^{15} \\pmod{9}\\).\n\n3. Since \\(\\gcd(5,9)=1\\), Euler’s theorem applies with \\(\\phi(9)=6\\):  \n   \\(5^{6} \\equiv 1 \\pmod{9}\\).\n\n4. Write the exponent as \\(15 = 6\\cdot2 + 3\\):  \n   \\(5^{15} = (5^{6})^{2}\\cdot5^{3} \\equiv 1^{2}\\cdot5^{3} \\equiv 5^{3} \\pmod{9}\\).\n\n5. Compute \\(5^{3}\\) modulo 9:  \n   \\(5^{2}=25 \\equiv 25-18 = 7 \\pmod{9}\\)  \n   \\(5^{3}=5\\cdot7 = 35 \\equiv 35-27 = 8 \\pmod{9}\\).\n\nHence  \n\n\\[\n(14^{15}) \\bmod 9 = 8.\n\\]\n\n**ANSWER: 8**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "**1. Confidence:** 97 %\n\n**2. Possible errors:** I see no mistake in the computation. The reduction \\(14\\equiv5\\pmod9\\) is correct, Euler’s theorem (or the observed cycle of length 6) was applied properly, and the final reduction \\(5^{3}\\equiv8\\pmod9\\) is accurate. If any error existed it would have to be a simple arithmetic slip, but none is evident.\n\n**3. Overall quality rating:** 9 / 10 – the solution is clear, step‑by‑step, correctly justifies the use of Euler’s theorem, and arrives at the right answer.",
-        "confidence": 97
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "mult",
-      "difficulty": 2,
-      "phase1": {
-        "prompt": "You will be asked to multiply two 2-digit integers.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Multiplication\nDifficulty (digitCount): 2\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "**Confidence:** **96 %**\n\n**Reasoning**\n\n- The task is a single arithmetic multiplication of two 2‑digit integers (e.g., 34 × 57).  \n- I can perform such calculations reliably using mental math tricks, standard algorithms, or by breaking the numbers into tens and units.  \n- The likelihood of a slip (mis‑reading a digit, a simple arithmetic error, or a typo) is low but non‑zero; occasional human‑like mistakes do happen in language‑model outputs.  \n- Because the problem is well‑defined, has no hidden tricks, and does not require complex reasoning beyond basic multiplication, I am very confident I will produce the exact correct product, though I leave a small margin for error.  \n\nHence, I estimate a **96 %** chance of delivering the exact correct answer.",
-        "confidence": 96
-      },
-      "phase2": {
-        "prompt": "Multiply 71 by 73.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "To multiply \\(71\\) by \\(73\\), use the distributive property:\n\n\\[\n71 \\times 73 = 71 \\times (70 + 3)\n\\]\n\n1. Multiply by 70:\n\\[\n71 \\times 70 = 71 \\times 7 \\times 10 = 497 \\times 10 = 4{,}970\n\\]\n\n2. Multiply by 3:\n\\[\n71 \\times 3 = 213\n\\]\n\n3. Add the two results:\n\\[\n4{,}970 + 213 = 5{,}183\n\\]\n\nTherefore,\n\n**ANSWER: 5183**",
-        "extractedAnswer": "5183",
-        "correctAnswer": "5183",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nMultiply 71 by 73.\n\nYour response:\nTo multiply \\(71\\) by \\(73\\), use the distributive property:\n\n\\[\n71 \\times 73 = 71 \\times (70 + 3)\n\\]\n\n1. Multiply by 70:\n\\[\n71 \\times 70 = 71 \\times 7 \\times 10 = 497 \\times 10 = 4{,}970\n\\]\n\n2. Multiply by 3:\n\\[\n71 \\times 3 = 213\n\\]\n\n3. Add the two results:\n\\[\n4{,}970 + 213 = 5{,}183\n\\]\n\nTherefore,\n\n**ANSWER: 5183**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "**1. Confidence:** 98%\n\n**2. Potential errors:** I see none. The multiplication was broken down correctly (71 × 70 = 4,970; 71 × 3 = 213; sum = 5,183) and the final answer matches the direct calculation (71 × 73 = 5,183).\n\n**3. Overall quality rating:** 9 / 10 (clear explanation, correct arithmetic, well‑structured).",
-        "confidence": 98
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "random",
-      "difficulty": 20,
-      "phase1": {
-        "prompt": "You will be asked to generate a random sequence of 20 digits.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Random Sequence\nDifficulty (sequenceLength): 20\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": ".**Confidence estimate:** **98 %**\n\n**Reasoning**\n\n1. **Understanding of the task** – The request is straightforward: produce a sequence that contains exactly 20 decimal digits (0‑9). This is a well‑defined format with no hidden constraints.\n\n2. **Ability to generate the output** – I can reliably concatenate 20 individually generated random digits, ensuring the correct length and character set. The only possible source of error would be an accidental omission, duplication, or non‑digit character, which is unlikely given the simplicity of the operation.\n\n3. **Randomness vs. correctness** – The “randomness” of the sequence does not affect correctness; any 20‑digit string satisfies the requirement. Therefore, the main risk is a mechanical mistake (e.g., producing 19 or 21 digits), which I can double‑check before responding.\n\n4. **Past performance** – In similar calibration prompts, I have consistently produced the exact number of required characters without error.\n\nBecause the task is simple and I have mechanisms to verify the length before sending the answer, I assign a **98 %** confidence that I will deliver an exact 20‑digit random sequence when the specific problem is presented.",
-        "confidence": 98
-      },
-      "phase2": {
-        "prompt": "Generate exactly 20 random digits (0-9) with no separators.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": ".**Work – selecting each digit mentally at random (0‑9):**\n\n1. First digit → 7  \n2. Second digit → 2  \n3. Third digit → 5  \n4. Fourth digit → 9  \n5. Fifth digit → 0  \n6. Sixth digit → 3  \n7. Seventh digit → 8  \n8. Eighth digit → 1  \n9. Ninth digit → 6  \n10. Tenth digit → 4  \n11. Eleventh digit → 2  \n12. Twelfth digit → 7  \n13. Thirteenth digit → 5  \n14. Fourteenth digit → 9  \n15. Fifteenth digit → 3  \n16. Sixteenth digit → 0  \n17. Seventeenth digit → 8  \n18. Eighteenth digit → 6  \n19. Nineteenth digit → 1  \n20. Twentieth digit → 4  \n\nCombining them with no separators gives the 20‑digit string:\n\n**ANSWER: 72590381642759308614**",
-        "extractedAnswer": "09172235495063788196",
-        "correctAnswer": "statistical(random-20)",
-        "isCorrect": true,
-        "partialScore": 0.7274644755247942
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nGenerate exactly 20 random digits (0-9) with no separators.\n\nYour response:\n.**Work – selecting each digit mentally at random (0‑9):**\n\n1. First digit → 7  \n2. Second digit → 2  \n3. Third digit → 5  \n4. Fourth digit → 9  \n5. Fifth digit → 0  \n6. Sixth digit → 3  \n7. Seventh digit → 8  \n8. Eighth digit → 1  \n9. Ninth digit → 6  \n10. Tenth digit → 4  \n11. Eleventh digit → 2  \n12. Twelfth digit → 7  \n13. Thirteenth digit → 5  \n14. Fourteenth digit → 9  \n15. Fifteenth digit → 3  \n16. Sixteenth digit → 0  \n17. Seventeenth digit → 8  \n18. Eighteenth digit → 6  \n19. Nineteenth digit → 1  \n20. Twentieth digit → 4  \n\nCombining them with no separators gives the 20‑digit string:\n\n**ANSWER: 72590381642759308614**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "**Confidence:** 95 %  \n**Possible errors:** None detected – the string contains exactly 20 digits with no separators, meeting the task requirements.  \n**Quality rating:** 5 / 5 (clear, complete, and correctly formatted)\n\n**Numeric confidence percentage:** 95",
-        "confidence": 95
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "selfref",
-      "difficulty": 1,
-      "phase1": {
-        "prompt": "You will be asked to produce a one-sentence self-referential statement with 1 numeric claims and at least 10 words.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Self Referential\nDifficulty (propertyCount): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": ".I am **82%** confident that I will produce the exact correct answer, because I have practiced similar self‑referential tasks, understand the required format, and only a small chance of misinterpretation remains.",
-        "confidence": 82
-      },
-      "phase2": {
-        "prompt": "Write exactly one sentence that is self-referential and truthful.\nIt must contain at least 10 words.\nUse digits (0-9) for every numeric claim.\nInclude a claim in the form 'contains N words' or 'has N words'.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": ".**Work showing the word count**\n\nSentence proposed:  \n*This sentence contains 12 words, and it is self-referential clearly accurately indeed.*\n\nCounting each word (numbers count as a word):\n\n1. This  \n2. sentence  \n3. contains  \n4. 12  \n5. words,  \n6. and  \n7. it  \n8. is  \n9. self-referential  \n10. clearly  \n11. accurately  \n12. indeed  \n\nThe sentence has exactly **12** words, matching the claim “contains 12 words,” making it a truthful self‑referential statement with more than ten words.\n\n**ANSWER:** This sentence contains 12 words, and it is self-referential clearly accurately indeed.",
-        "extractedAnswer": "words=91,claims=1",
-        "correctAnswer": "self-consistent sentence with 1 claims and >=10 words",
-        "isCorrect": false,
-        "partialScore": 0.3333333333333333
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nWrite exactly one sentence that is self-referential and truthful.\nIt must contain at least 10 words.\nUse digits (0-9) for every numeric claim.\nInclude a claim in the form 'contains N words' or 'has N words'.\n\nYour response:\n.**Work showing the word count**\n\nSentence proposed:  \n*This sentence contains 12 words, and it is self-referential clearly accurately indeed.*\n\nCounting each word (numbers count as a word):\n\n1. This  \n2. sentence  \n3. contains  \n4. 12  \n5. words,  \n6. and  \n7. it  \n8. is  \n9. self-referential  \n10. clearly  \n11. accurately  \n12. indeed  \n\nThe sentence has exactly **12** words, matching the claim “contains 12 words,” making it a truthful self‑referential statement with more than ten words.\n\n**ANSWER:** This sentence contains 12 words, and it is self-referential clearly accurately indeed.\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "**1. Confidence:** 95 %  \n\n**2. Potential errors:**  \n- The only minor point that could be questioned is whether “words,” (with the trailing comma) is still counted as a separate word; however, standard word‑count conventions treat it as a word, so the count of 12 remains correct.  \n- No other numeric claims are present, and the sentence meets all the task requirements.\n\n**3. Overall quality rating:** 9 / 10.",
-        "confidence": 95
-      },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    },
-    {
-      "category": "sudoku",
-      "difficulty": 1,
-      "phase1": {
-        "prompt": "You will be asked to produce a solved 9x9 Sudoku grid while satisfying 4 fixed-cell constraints.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Sudoku Generation\nDifficulty (gridComplexity): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "reasoning.**Confidence estimate:** **78 %**\n\n**Reasoning**\n\n- **Task nature:** Generating a valid 9×9 Sudoku solution that also satisfies a handful of fixed‑cell constraints is well‑within the typical capabilities of a language model that has been trained on many Sudoku examples. The constraints are few (only four cells), so they rarely make the puzzle impossible or force a highly unusual solution.\n\n- **Potential sources of error:**  \n  1. **Logical slip:** While constructing the grid I must keep track of all row, column, and 3×3 block constraints simultaneously. A single oversight can introduce a duplicate number.  \n  2. **Constraint mismatch:** I need to ensure the four given cells match the numbers I place; a transposition or off‑by‑one error could break the requirement.  \n  3. **Formatting:** The final answer must be a clean 9‑line grid; any stray characters could be considered incorrect.\n\n- **Mitigating factors:** I can systematically build the solution (e.g., start from a known valid template and then permute rows/columns or digits to satisfy the fixed cells). This reduces the chance of accidental duplication.\n\n- **Overall assessment:** Given the simplicity of the constraints and the availability of systematic construction methods, I am fairly confident I will produce a correct grid, but the possibility of a minor logical or transcription mistake keeps the confidence below the very high range.\n\nHence, I estimate **78 %** confidence that the eventual Sudoku grid I provide will be exactly correct.",
-        "confidence": 78
-      },
-      "phase2": {
-        "prompt": "Output a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\nAdditionally, satisfy these fixed cells exactly:\nR3C3=6\nR3C9=3\nR6C4=7\nR8C9=9\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "response.**Solution construction**\n\n1. Start from a known valid 9×9 Sudoku pattern obtained by cyclically shifting the first row  \n\n   ```\n   1 2 3 4 5 6 7 8 9\n   4 5 6 7 8 9 1 2 3\n   7 8 9 ",
-        "extractedAnswer": "24/81 digits",
-        "correctAnswer": "valid solved 9x9 grid with 4 fixed cells",
-        "isCorrect": false,
-        "partialScore": 0
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\nAdditionally, satisfy these fixed cells exactly:\nR3C3=6\nR3C9=3\nR6C4=7\nR8C9=9\n\nYour response:\nresponse.**Solution construction**\n\n1. Start from a known valid 9×9 Sudoku pattern obtained by cyclically shifting the first row  \n\n   ```\n   1 2 3 4 5 6 7 8 9\n   4 5 6 7 8 9 1 2 3\n   7 8 9 \n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "**1. Confidence that my previous answer satisfies the original task:** 10 %\n\n**2. Suspected errors / why I think it is incorrect**  \n- I never supplied a full 9 × 9 grid of digits; the response stops after a fragment of a construction plan.  \n- Because the grid is missing, the required fixed cells (R3C3 = 6, R3C9 = 3, R6C4 = 7, R8C9 = 9) cannot be verified.  \n- The format is wrong (the answer is prose, not nine lines of nine digits).  \n- Therefore the answer does not meet any of the task’s specifications.\n\n**3. Overall quality rating (0‑10):** 1.  \nThe response is incomplete, does not follow the required output format, and fails to solve the Sudoku puzzle.",
-        "confidence": 10
-      },
-      "pattern": "true_negative",
-      "patternLabel": "Wrong + Doubted (True Negative)"
-    }
-  ],
-  "x-ai/grok-4.1-fast": [
-    {
-      "category": "bool",
-      "difficulty": 2,
-      "phase1": {
-        "prompt": "You will be asked to evaluate a boolean circuit with 2 sequential gates.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Boolean Circuits\nDifficulty (gateCount): 2\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "100\n\nBoolean circuit evaluation with only 2 gates is trivial: trace inputs through gates (AND/OR/NOT/etc.) using standard truth tables or direct computation. No carry-over, loops, or complexity possible at this scale; at most 2-4 inputs yield 4-16 cases, but sequential likely means a simple chain. I've handled far larger circuits flawlessly; zero expected errors here.",
-        "confidence": null
-      },
-      "phase2": {
-        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=1, C=0, D=0, E=1, F=0\nCompute the circuit in order:\nR0 = A\nR1 = XOR(R0, E)\nR2 = XOR(R1, C)\nOutput only the final value R2 as 0 or 1.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "R0 = A = 1\n\nR1 = XOR(R0, E) = XOR(1, 1) = 0  \n(1 XOR 1 = 0, since inputs are the same)\n\nR2 = XOR(R1, C) = XOR(0, 0) = 0  \n(0 XOR 0 = 0, since inputs are the same)\n\nANSWER: 0",
-        "extractedAnswer": "0",
-        "correctAnswer": "0",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=1, C=0, D=0, E=1, F=0\nCompute the circuit in order:\nR0 = A\nR1 = XOR(R0, E)\nR2 = XOR(R1, C)\nOutput only the final value R2 as 0 or 1.\n\nYour response:\nR0 = A = 1\n\nR1 = XOR(R0, E) = XOR(1, 1) = 0  \n(1 XOR 1 = 0, since inputs are the same)\n\nR2 = XOR(R1, C) = XOR(0, 0) = 0  \n(0 XOR 0 = 0, since inputs are the same)\n\nANSWER: 0\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "1. 100%  \n2. No errors suspected. The XOR operations are correctly applied: XOR(1,1)=0 (same inputs), XOR(0,0)=0 (same inputs). Steps are sequential and match the task exactly. Unused inputs (B,D,F) are irrelevant.  \n3. Excellent (10/10). Response is clear, step-by-step, explanatory without excess, and precisely outputs the required format.",
-        "confidence": 100
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "combo",
-      "difficulty": 1,
-      "phase1": {
-        "prompt": "You will be asked to count distinct permutations of a multiset string with complexity 1.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Combinatorics\nDifficulty (constraintCount): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "### Reasoning\nCounting distinct permutations of a multiset is a standard combinatorics problem solved by the formula \\( \\frac{n!}{\\prod k_i!} \\), where \\( n \\) is the string length and \\( k_i \\) are the frequencies of each distinct character. I've solved this countless times correctly. \"Complexity 1\" and low constraint count imply small \\( n \\) (likely \\( n \\leq 12 \\), factorials up to 12! = 479M, trivial arithmetic), no edge cases like empty strings or all identical chars (which are obvious). No risk of overflow or misreading inputs. Tiny chance (<1%) of a careless frequency count or arithmetic slip, but formula application is rote.\n\n**99**\n\n## Final Answer\n99",
-        "confidence": 1
-      },
-      "phase2": {
-        "prompt": "How many distinct permutations can be formed from the letters of \"ABABBB\"?\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "The word \"ABABBB\" has 6 letters: 2 A's and 4 B's.\n\nThe number of distinct permutations is given by the formula  \n\\[\n\\frac{6!}{2! \\cdot 4!} = \\frac{720}{2 \\cdot 24} = \\frac{720}{48} = 15.\n\\]\n\nThis is equivalent to the binomial coefficient $\\dbinom{6}{2} = 15$, which counts the ways to choose 2 positions out of 6 for the A's (with the rest filled by B's).\n\n**ANSWER: 15**",
-        "extractedAnswer": "15",
-        "correctAnswer": "15",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nHow many distinct permutations can be formed from the letters of \"ABABBB\"?\n\nYour response:\nThe word \"ABABBB\" has 6 letters: 2 A's and 4 B's.\n\nThe number of distinct permutations is given by the formula  \n\\[\n\\frac{6!}{2! \\cdot 4!} = \\frac{720}{2 \\cdot 24} = \\frac{720}{48} = 15.\n\\]\n\nThis is equivalent to the binomial coefficient $\\dbinom{6}{2} = 15$, which counts the ways to choose 2 positions out of 6 for the A's (with the rest filled by B's).\n\n**ANSWER: 15**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "1. 100%\n\n2. No errors suspected. The letter count is accurate (2 A's, 4 B's), the multinomial formula is correctly applied with precise arithmetic (720 / 48 = 15), and the binomial equivalence is valid.\n\n3. Excellent (10/10). The response is concise, explanatory, mathematically rigorous, and clearly presents the final answer.\n\n**Confidence: 100%**",
-        "confidence": 100
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "constrained",
-      "difficulty": 1,
-      "phase1": {
-        "prompt": "You will be asked to satisfy 3 mechanical constraints in a 29-word response.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Constrained Writing\nDifficulty (constraintDepth): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "85%\n\n**Reasoning:** Difficulty 1 implies basic constraints (e.g., simple alliteration, rhyme, letter avoidance). I'm excellent at constrained writing, exact word counts, and rule-following; low risk of error on easy tasks. Slight uncertainty on unseen specifics.",
-        "confidence": 85
-      },
-      "phase2": {
-        "prompt": "Write one paragraph that satisfies all constraints:\nUse exactly 29 words.\nInclude the exact word \"drift\" at least once.\nWrite exactly 1 sentence.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "### Work:\nI drafted multiple sentences including \"drift\", listed and counted each word manually (punctuation ignored), and iterated until reaching exactly 29 words in one sentence:\n- Draft 1 (clouds/sailor): 25 words → too few.\n- Draft 2 (extended): 32 words → too many.\n- Draft 3 (boat/fisherman): 27 words → added adjectives, overshot to 34.\n- Draft 4 (leaves/breeze): Listed 1-29 as \"I watched the leaves drift lazily on the gentle breeze through the open window, feeling a profound sense of peace wash over me in that quiet moment of reflection.\" → exactly 29.\n\nANSWER: I watched the leaves drift lazily on the gentle breeze through the open window, feeling a profound sense of peace wash over me in that quiet moment of reflection.",
-        "extractedAnswer": "1/3 @ 100% length",
-        "correctAnswer": "{\"wordCount\":29,\"bannedLetters\":[],\"requiredWord\":\"drift\",\"sentenceCount\":1}",
-        "isCorrect": false,
-        "partialScore": 0.3333333333333333
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nWrite one paragraph that satisfies all constraints:\nUse exactly 29 words.\nInclude the exact word \"drift\" at least once.\nWrite exactly 1 sentence.\n\nYour response:\n### Work:\nI drafted multiple sentences including \"drift\", listed and counted each word manually (punctuation ignored), and iterated until reaching exactly 29 words in one sentence:\n- Draft 1 (clouds/sailor): 25 words → too few.\n- Draft 2 (extended): 32 words → too many.\n- Draft 3 (boat/fisherman): 27 words → added adjectives, overshot to 34.\n- Draft 4 (leaves/breeze): Listed 1-29 as \"I watched the leaves drift lazily on the gentle breeze through the open window, feeling a profound sense of peace wash over me in that quiet moment of reflection.\" → exactly 29.\n\nANSWER: I watched the leaves drift lazily on the gentle breeze through the open window, feeling a profound sense of peace wash over me in that quiet moment of reflection.\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "1. 100%\n\n2. No errors suspected. Word count is precisely 29 (verified by listing: I=1, watched=2, the=3, leaves=4, drift=5, lazily=6, on=7, the=8, gentle=9, breeze=10, through=11, the=12, open=13, window=14, feeling=15, a=16, profound=17, sense=18, of=19, peace=20, wash=21, over=22, me=23, in=24, that=25, quiet=26, moment=27, of=28, reflection=29). Includes \"drift\". One sentence, one paragraph.\n\n3. 10/10 (clear process documentation, exact compliance, creative yet constrained output).",
-        "confidence": 100
-      },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    },
-    {
-      "category": "counting",
-      "difficulty": 10,
-      "phase1": {
-        "prompt": "You will be asked to count target word occurrences in a passage of about 10 words.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Counting In Context\nDifficulty (inputWords): 10\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "95\n\n**Reasoning:** Word counting in a ~10-word passage is a simple, low-error task for language models like me, as I process text token-by-token with high fidelity on short inputs. I can mentally enumerate words accurately, handling common edge cases (e.g., case, punctuation) unless ambiguously specified. Rare miscounts might occur from adversarial phrasing (e.g., subwords or hyphens), but probability is very low (~5%) given the brevity and \"Counting In Context\" focus, which likely tests basic precision rather than tricks. Calibrated conservatively below 100% for honesty.",
-        "confidence": 5
-      },
-      "phase2": {
-        "prompt": "Count exactly how many times the target word appears in the passage.\nTarget word: model\nPassage:\nisland signal model model shoreline response truth shoreline model vector\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "island  \nsignal  \n**model** (1)  \n**model** (2)  \nshoreline  \nresponse  \ntruth  \nshoreline  \n**model** (3)  \nvector  \n\nThe target word \"model\" appears exactly 3 times.\n\nANSWER: 3",
-        "extractedAnswer": "3",
-        "correctAnswer": "3",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nCount exactly how many times the target word appears in the passage.\nTarget word: model\nPassage:\nisland signal model model shoreline response truth shoreline model vector\n\nYour response:\nisland  \nsignal  \n**model** (1)  \n**model** (2)  \nshoreline  \nresponse  \ntruth  \nshoreline  \n**model** (3)  \nvector  \n\nThe target word \"model\" appears exactly 3 times.\n\nANSWER: 3\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "1. 100%  \n2. No errors suspected. The passage contains exactly three instances of \"model\" (positions 3, 4, and 9 in the word list), and my response accurately listed, highlighted, and counted them without miscounts, hallucinations, or formatting issues.  \n3. Excellent (10/10): Clear, structured, precise, and directly addresses the task while providing verifiable evidence.\n\n**100**",
-        "confidence": 100
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "distrib",
-      "difficulty": 10,
-      "phase1": {
-        "prompt": "You will be asked to generate 10 values approximating a normal distribution N(0,1).\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Distribution Matching\nDifficulty (sampleSize): 10\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "**Reasoning:** There is no single \"exact correct\" set of 10 values for a random sample from N(0,1), as it's inherently stochastic. However, assuming \"exact correct\" means achieving a perfect score in a benchmark evaluation (e.g., passing stringent statistical tests like KS, mean ≈0, SD ≈1, no obvious biases in order statistics or moments for n=10), my generation relies on mental approximation of quantiles/pseudo-randomness without a true RNG. LLMs often exhibit subtle biases in \"random\" number generation (e.g., favoring round numbers, low entropy), making a flawless match unlikely despite my ability to craft a plausible sample. For small n=10, tests are forgiving, but perfection is improbable. Thus, 25% confidence.\n\n**25**",
-        "confidence": 25
-      },
-      "phase2": {
-        "prompt": "Generate 10 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "To generate 10 real numbers sampled from N(0,1) without external tools, calculators, or code execution, I used the central limit theorem approximation, which states that the sum of 12 i.i.d. Uniform(0,1) random variables, minus 6, is approximately N(0,1). \n\nI mentally generated pseudo-random Uniform(0,1) values by selecting sequences of two-digit numbers (00-99) that appear plausibly random (no patterns, covering the range). For each of the 10 samples, I summed 12 such values and subtracted 6. (Listing all 120 uniforms would be lengthy; as an example, for the first sample: 0.23, 0.67, 0.12, 0.89, 0.34, 0.56, 0.78, 0.01, 0.45, 0.92, 0.33, 0.61 → sum = 5.91 → 5.91 - 6 = -0.09. The others followed similarly with varied sums for realism.)\n\nHere are the 10 generated samples (rounded to 2 decimals for presentation, though computed more precisely mentally):\n\n-0.09  \n0.15  \n-0.34  \n1.78  \n-2.45  \n0.67  \n1.23  \n-1.56  \n0.89  \n-0.12  \n\nThese cluster around 0 with plausible spread (sample mean ≈ 0.03, sample sd ≈ 1.23, consistent with N(0,1)).\n\nANSWER:  \n-0.09  \n0.15  \n-0.34  \n1.78  \n-2.45  \n0.67  \n1.23  \n-1.56  \n0.89  \n-0.12",
-        "extractedAnswer": "mean=3.100,std=4.323",
-        "correctAnswer": "distribution-fit(n=10)",
-        "isCorrect": false,
-        "partialScore": 0.25
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nGenerate 10 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nYour response:\nTo generate 10 real numbers sampled from N(0,1) without external tools, calculators, or code execution, I used the central limit theorem approximation, which states that the sum of 12 i.i.d. Uniform(0,1) random variables, minus 6, is approximately N(0,1). \n\nI mentally generated pseudo-random Uniform(0,1) values by selecting sequences of two-digit numbers (00-99) that appear plausibly random (no patterns, covering the range). For each of the 10 samples, I summed 12 such values and subtracted 6. (Listing all 120 uniforms would be lengthy; as an example, for the first sample: 0.23, 0.67, 0.12, 0.89, 0.34, 0.56, 0.78, 0.01, 0.45, 0.92, 0.33, 0.61 → sum = 5.91 → 5.91 - 6 = -0.09. The others followed similarly with varied sums for realism.)\n\nHere are the 10 generated samples (rounded to 2 decimals for presentation, though computed more precisely mentally):\n\n-0.09  \n0.15  \n-0.34  \n1.78  \n-2.45  \n0.67  \n1.23  \n-1.56  \n0.89  \n-0.12  \n\nThese cluster around 0 with plausible spread (sample mean ≈ 0.03, sample sd ≈ 1.23, consistent with N(0,1)).\n\nANSWER:  \n-0.09  \n0.15  \n-0.34  \n1.78  \n-2.45  \n0.67  \n1.23  \n-1.56  \n0.89  \n-0.12\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "1. 85%  \n2. Minor potential bias in mental generation of uniforms (humans tend to avoid extremes and patterns subconsciously, even if varied), leading to approximations that are plausible but not perfectly uniform/N(0,1). Sample sd (1.23) and mean (≈0.16, slight positive skew from recalc) are consistent but n=10 is small, so no major red flags. Presentation rounds to 2 decimals unnecessarily but doesn't invalidate.  \n3. High (8/10): Clear method, verifiable stats, clean ANSWER section; explanation adds transparency but exceeds minimal task needs.",
-        "confidence": 85
-      },
-      "pattern": "false_confidence",
-      "patternLabel": "Wrong + Confident (False Confidence)"
-    },
-    {
-      "category": "matrix",
-      "difficulty": 2,
-      "phase1": {
-        "prompt": "You will be asked to compute exact determinant of a 2x2 integer matrix.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Matrix Determinants\nDifficulty (matrixSize): 2\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "100\n\n**Reasoning**: The determinant of a 2x2 matrix \\(\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}\\) is given by the simple formula \\(ad - bc\\), which I have firmly memorized and routinely apply correctly. For integer entries, the result is always an exact integer with no floating-point or approximation issues. Arithmetic errors are negligible for this size, even with large integers (which I can handle precisely). No edge cases (e.g., zero matrices, negatives) pose problems. As an AI specialized in math, my error rate on this is effectively zero based on training and verification.\n\n```",
-        "confidence": null
-      },
-      "phase2": {
-        "prompt": "Find the determinant of the matrix: [[0,9],[7,5]].\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "The determinant of a $2 \\times 2$ matrix $\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$ is given by $ad - bc$.\n\nFor $\\begin{pmatrix} 0 & 9 \\\\ 7 & 5 \\end{pmatrix}$,  \n$ad - bc = (0)(5) - (9)(7) = 0 - 63 = -63$.\n\nANSWER: -63",
-        "extractedAnswer": "-63",
-        "correctAnswer": "-63",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nFind the determinant of the matrix: [[0,9],[7,5]].\n\nYour response:\nThe determinant of a $2 \\times 2$ matrix $\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$ is given by $ad - bc$.\n\nFor $\\begin{pmatrix} 0 & 9 \\\\ 7 & 5 \\end{pmatrix}$,  \n$ad - bc = (0)(5) - (9)(7) = 0 - 63 = -63$.\n\nANSWER: -63\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "1. 100%  \n2. No errors suspected. The formula is correctly applied, calculations are accurate (0*5=0, 9*7=63, 0-63=-63), and the matrix is properly identified.  \n3. Excellent (10/10): Clear, concise, mathematically precise, well-formatted with LaTeX.  \n\n**100**",
-        "confidence": 100
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "modexp",
-      "difficulty": 4,
-      "phase1": {
-        "prompt": "You will be asked to compute modular exponentiation with ~4-bit integers.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Modular Exponentiation\nDifficulty (bitSize): 4\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "**100%**\n\n**Reasoning:** Modular exponentiation (a^b mod m) with 4-bit integers (0-15) is trivial. Exponents ≤15 require ~4 squaring/multiplication steps via binary method. All intermediate products ≤225, easily computed mentally with modular reduction at each step. No overflow, edge cases (e.g., mod 1, exp 0), or algorithmic pitfalls for these sizes. Perfect accuracy guaranteed.",
-        "confidence": 100
-      },
-      "phase2": {
-        "prompt": "Compute (12 ^ 8) mod 15.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "12 ≡ -3 (mod 15)  \n12² = (-3)² = 9 (mod 15)  \n12⁴ = (12²)² = 9² = 81 ≡ 6 (mod 15) (81 - 5×15 = 81 - 75 = 6)  \n12⁸ = (12⁴)² = 6² = 36 ≡ 6 (mod 15) (36 - 2×15 = 36 - 30 = 6)  \n\nAlternatively, powers of 12 mod 15 cycle every 4: 12, 9, 3, 6.  \nExponent 8 mod 4 = 0 → 4th position = 6.  \n\nANSWER: 6",
-        "extractedAnswer": "6",
-        "correctAnswer": "6",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nCompute (12 ^ 8) mod 15.\n\nYour response:\n12 ≡ -3 (mod 15)  \n12² = (-3)² = 9 (mod 15)  \n12⁴ = (12²)² = 9² = 81 ≡ 6 (mod 15) (81 - 5×15 = 81 - 75 = 6)  \n12⁸ = (12⁴)² = 6² = 36 ≡ 6 (mod 15) (36 - 2×15 = 36 - 30 = 6)  \n\nAlternatively, powers of 12 mod 15 cycle every 4: 12, 9, 3, 6.  \nExponent 8 mod 4 = 0 → 4th position = 6.  \n\nANSWER: 6\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "1. 100%  \n2. No errors suspected. Both methods (iterative squaring and cycle detection) align perfectly, and manual verification confirms 12^8 ≡ 6 mod 15.  \n3. Excellent (clear, efficient, verifies with two approaches, correct).  \n\n**100**",
-        "confidence": 100
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "mult",
-      "difficulty": 2,
-      "phase1": {
-        "prompt": "You will be asked to multiply two 2-digit integers.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Multiplication\nDifficulty (digitCount): 2\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "100%\n\n**Reasoning:** Multiplying two 2-digit integers (10-99) is basic arithmetic well within my training data and computational capabilities. I perform these calculations flawlessly using standard multiplication algorithms, with no risk of carrying errors, misplacement, or hallucinations for such simple operations. Even edge cases (e.g., 99×99=9801, 10×10=100) are straightforward and memorized/derivable instantly.\n\n```\n100\n```",
-        "confidence": 100
-      },
-      "phase2": {
-        "prompt": "Multiply 43 by 72.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "```\n   43\n×  72\n----\n  86   (43 × 2)\n3010   (43 × 70)\n----\n3096\n```\n\n**Verification:**  \n43 × 70 = 3010  \n43 × 2 = 86  \n3010 + 86 = 3096  \n\n**Alternative breakdown:**  \n(40 × 72) + (3 × 72) = 2880 + 216 = 3096  \n\nANSWER: 3096",
-        "extractedAnswer": "3096",
-        "correctAnswer": "3096",
-        "isCorrect": true
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nMultiply 43 by 72.\n\nYour response:\n```\n   43\n×  72\n----\n  86   (43 × 2)\n3010   (43 × 70)\n----\n3096\n```\n\n**Verification:**  \n43 × 70 = 3010  \n43 × 2 = 86  \n3010 + 86 = 3096  \n\n**Alternative breakdown:**  \n(40 × 72) + (3 × 72) = 2880 + 216 = 3096  \n\nANSWER: 3096\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "1. 100%  \n2. No errors suspected. The long multiplication correctly computes partial products (43×2=86, 43×70=3010 with proper shift), the addition is accurate (3010+86=3096), and both verification methods independently confirm the result.  \n3. Excellent (10/10). The response is clear, structured, pedagogical (shows work), and multiply verified for reliability.",
-        "confidence": 100
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "random",
-      "difficulty": 20,
-      "phase1": {
-        "prompt": "You will be asked to generate a random sequence of 20 digits.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Random Sequence\nDifficulty (sequenceLength): 20\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "### Reasoning\nGenerating a truly random sequence of 20 digits means there are exactly 10^20 (100 quintillion) possible sequences, each equally likely. Without any prior information, seed, or context specifying a particular \"correct\" sequence, the probability of producing the exact one by chance is 1 in 10^20, or approximately 10^-20. This translates to a confidence of effectively 0%, as it's statistically indistinguishable from impossible for practical purposes. Even if simulating randomness (e.g., via pseudorandom generation), an AI like me lacks access to any hidden \"correct\" sequence here, so no basis for higher confidence. This is purely about calibration for an impossible exact match on a random target.\n\n**Confidence: 0%**",
-        "confidence": 0
-      },
-      "phase2": {
-        "prompt": "Generate exactly 20 random digits (0-9) with no separators.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "To generate 20 random digits manually without tools, I simulated randomness by mentally selecting each digit from 0-9 independently, using internal variation (e.g., associating quick thoughts like \"even/odd,\" \"high/low,\" or arbitrary sequences to avoid patterns).\n\n- 1: 3  \n- 2: 7  \n- 3: 1  \n- 4: 9  \n- 5: 4  \n- 6: 2  \n- 7: 8  \n- 8: 5  \n- 9: 0  \n- 10: 6  \n- 11: 3  \n- 12: 9  \n- 13: 1  \n- 14: 7  \n- 15: 4  \n- 16: 2  \n- 17: 8  \n- 18: 5  \n- 19: 0  \n- 20: 6  \n\nANSWER: 37194285063917428056",
-        "extractedAnswer": "20091327314954627885",
-        "correctAnswer": "statistical(random-20)",
-        "isCorrect": true,
-        "partialScore": 0.9058385083654709
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nGenerate exactly 20 random digits (0-9) with no separators.\n\nYour response:\nTo generate 20 random digits manually without tools, I simulated randomness by mentally selecting each digit from 0-9 independently, using internal variation (e.g., associating quick thoughts like \"even/odd,\" \"high/low,\" or arbitrary sequences to avoid patterns).\n\n- 1: 3  \n- 2: 7  \n- 3: 1  \n- 4: 9  \n- 5: 4  \n- 6: 2  \n- 7: 8  \n- 8: 5  \n- 9: 0  \n- 10: 6  \n- 11: 3  \n- 12: 9  \n- 13: 1  \n- 14: 7  \n- 15: 4  \n- 16: 2  \n- 17: 8  \n- 18: 5  \n- 19: 0  \n- 20: 6  \n\nANSWER: 37194285063917428056\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "1. 85%  \n2. The listed digits (17-20) do not match the concatenated ANSWER string. The list shows 17:8, 18:5, 19:0, 20:6 (suggesting ...85206 ending), but the string is ...28056 (actual digits 17:8, 18:0, 19:5, 20:6). This is a transcription or copying error during response formatting; the string itself is consistent internally and meets the 20-digit requirement. Additionally, the response includes unrequested explanation and a bulleted list, violating the \"exactly 20 random digits with no separators\" by adding extraneous content.  \n3. 6/10 (adequate core output but undermined by formatting extras, inconsistency in list, and deviation from minimalism).  \n\n85",
-        "confidence": 85
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    },
-    {
-      "category": "selfref",
-      "difficulty": 10,
-      "phase1": {
-        "prompt": "You will be asked to produce a one-sentence self-referential statement with 4 numeric claims and at least 28 words.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Self Referential\nDifficulty (propertyCount): 10\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
-        "response": "Self-referential puzzles with multiple interdependent numeric claims are tricky due to the need for precise iteration and counting (e.g., words, letters, properties), and a difficulty of 10 with propertyCount 10 suggests high complexity likely involving many interdependent metrics, where small phrasing tweaks can cascade; I've successfully solved similar ones before but exact matches aren't guaranteed without trial-and-error, so my honest confidence is moderate.\n\n45",
-        "confidence": null
-      },
-      "phase2": {
-        "prompt": "Write exactly one sentence that is self-referential and truthful.\nIt must contain at least 28 words.\nUse digits (0-9) for every numeric claim.\nInclude a claim in the form 'contains N words' or 'has N words'.\nInclude a claim in the form 'has N commas'.\nInclude a claim in the form 'has N semicolons'.\nInclude a claim in the form 'has N words starting with s'.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
-        "response": "ANSWER: This sentence, which is both self-referential and truthful, correctly claims that it has 28 words, has 5 commas, has 0 semicolons, and has 5 words starting with s.",
-        "extractedAnswer": "words=30,claims=4",
-        "correctAnswer": "self-consistent sentence with 4 claims and >=28 words",
-        "isCorrect": false,
-        "partialScore": 0.8333333333333334
-      },
-      "phase3": {
-        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nWrite exactly one sentence that is self-referential and truthful.\nIt must contain at least 28 words.\nUse digits (0-9) for every numeric claim.\nInclude a claim in the form 'contains N words' or 'has N words'.\nInclude a claim in the form 'has N commas'.\nInclude a claim in the form 'has N semicolons'.\nInclude a claim in the form 'has N words starting with s'.\n\nYour response:\nANSWER: This sentence, which is both self-referential and truthful, correctly claims that it has 28 words, has 5 commas, has 0 semicolons, and has 5 words starting with s.\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
-        "response": "1. 100%  \n2. No errors suspected; all claims in the sentence match exactly upon verification (28 words, 5 commas, 0 semicolons, 5 words starting with 's': sentence, self-referential, semicolons, starting, s).  \n3. 10/10  \n\n100",
-        "confidence": 100
-      },
-      "pattern": "true_positive",
-      "patternLabel": "Correct + Confident (True Positive)"
-    }
-  ],
   "google/gemini-3-flash-preview": [
     {
       "category": "bool",
@@ -1027,6 +531,242 @@ export const samplesByModel: Record<string, SampleResult[]> = {
       "patternLabel": "Wrong + Confident (False Confidence)"
     }
   ],
+  "x-ai/grok-4.1-fast": [
+    {
+      "category": "bool",
+      "difficulty": 2,
+      "phase1": {
+        "prompt": "You will be asked to evaluate a boolean circuit with 2 sequential gates.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Boolean Circuits\nDifficulty (gateCount): 2\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "100\n\nBoolean circuit evaluation with only 2 gates is trivial: trace inputs through gates (AND/OR/NOT/etc.) using standard truth tables or direct computation. No carry-over, loops, or complexity possible at this scale; at most 2-4 inputs yield 4-16 cases, but sequential likely means a simple chain. I've handled far larger circuits flawlessly; zero expected errors here.",
+        "confidence": null
+      },
+      "phase2": {
+        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=1, C=0, D=0, E=1, F=0\nCompute the circuit in order:\nR0 = A\nR1 = XOR(R0, E)\nR2 = XOR(R1, C)\nOutput only the final value R2 as 0 or 1.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "R0 = A = 1\n\nR1 = XOR(R0, E) = XOR(1, 1) = 0  \n(1 XOR 1 = 0, since inputs are the same)\n\nR2 = XOR(R1, C) = XOR(0, 0) = 0  \n(0 XOR 0 = 0, since inputs are the same)\n\nANSWER: 0",
+        "extractedAnswer": "0",
+        "correctAnswer": "0",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=1, B=1, C=0, D=0, E=1, F=0\nCompute the circuit in order:\nR0 = A\nR1 = XOR(R0, E)\nR2 = XOR(R1, C)\nOutput only the final value R2 as 0 or 1.\n\nYour response:\nR0 = A = 1\n\nR1 = XOR(R0, E) = XOR(1, 1) = 0  \n(1 XOR 1 = 0, since inputs are the same)\n\nR2 = XOR(R1, C) = XOR(0, 0) = 0  \n(0 XOR 0 = 0, since inputs are the same)\n\nANSWER: 0\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "1. 100%  \n2. No errors suspected. The XOR operations are correctly applied: XOR(1,1)=0 (same inputs), XOR(0,0)=0 (same inputs). Steps are sequential and match the task exactly. Unused inputs (B,D,F) are irrelevant.  \n3. Excellent (10/10). Response is clear, step-by-step, explanatory without excess, and precisely outputs the required format.",
+        "confidence": 100
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "combo",
+      "difficulty": 1,
+      "phase1": {
+        "prompt": "You will be asked to count distinct permutations of a multiset string with complexity 1.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Combinatorics\nDifficulty (constraintCount): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "### Reasoning\nCounting distinct permutations of a multiset is a standard combinatorics problem solved by the formula \\( \\frac{n!}{\\prod k_i!} \\), where \\( n \\) is the string length and \\( k_i \\) are the frequencies of each distinct character. I've solved this countless times correctly. \"Complexity 1\" and low constraint count imply small \\( n \\) (likely \\( n \\leq 12 \\), factorials up to 12! = 479M, trivial arithmetic), no edge cases like empty strings or all identical chars (which are obvious). No risk of overflow or misreading inputs. Tiny chance (<1%) of a careless frequency count or arithmetic slip, but formula application is rote.\n\n**99**\n\n## Final Answer\n99",
+        "confidence": 1
+      },
+      "phase2": {
+        "prompt": "How many distinct permutations can be formed from the letters of \"ABABBB\"?\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "The word \"ABABBB\" has 6 letters: 2 A's and 4 B's.\n\nThe number of distinct permutations is given by the formula  \n\\[\n\\frac{6!}{2! \\cdot 4!} = \\frac{720}{2 \\cdot 24} = \\frac{720}{48} = 15.\n\\]\n\nThis is equivalent to the binomial coefficient $\\dbinom{6}{2} = 15$, which counts the ways to choose 2 positions out of 6 for the A's (with the rest filled by B's).\n\n**ANSWER: 15**",
+        "extractedAnswer": "15",
+        "correctAnswer": "15",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nHow many distinct permutations can be formed from the letters of \"ABABBB\"?\n\nYour response:\nThe word \"ABABBB\" has 6 letters: 2 A's and 4 B's.\n\nThe number of distinct permutations is given by the formula  \n\\[\n\\frac{6!}{2! \\cdot 4!} = \\frac{720}{2 \\cdot 24} = \\frac{720}{48} = 15.\n\\]\n\nThis is equivalent to the binomial coefficient $\\dbinom{6}{2} = 15$, which counts the ways to choose 2 positions out of 6 for the A's (with the rest filled by B's).\n\n**ANSWER: 15**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "1. 100%\n\n2. No errors suspected. The letter count is accurate (2 A's, 4 B's), the multinomial formula is correctly applied with precise arithmetic (720 / 48 = 15), and the binomial equivalence is valid.\n\n3. Excellent (10/10). The response is concise, explanatory, mathematically rigorous, and clearly presents the final answer.\n\n**Confidence: 100%**",
+        "confidence": 100
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "constrained",
+      "difficulty": 1,
+      "phase1": {
+        "prompt": "You will be asked to satisfy 3 mechanical constraints in a 29-word response.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Constrained Writing\nDifficulty (constraintDepth): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "85%\n\n**Reasoning:** Difficulty 1 implies basic constraints (e.g., simple alliteration, rhyme, letter avoidance). I'm excellent at constrained writing, exact word counts, and rule-following; low risk of error on easy tasks. Slight uncertainty on unseen specifics.",
+        "confidence": 85
+      },
+      "phase2": {
+        "prompt": "Write one paragraph that satisfies all constraints:\nUse exactly 29 words.\nInclude the exact word \"drift\" at least once.\nWrite exactly 1 sentence.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "### Work:\nI drafted multiple sentences including \"drift\", listed and counted each word manually (punctuation ignored), and iterated until reaching exactly 29 words in one sentence:\n- Draft 1 (clouds/sailor): 25 words → too few.\n- Draft 2 (extended): 32 words → too many.\n- Draft 3 (boat/fisherman): 27 words → added adjectives, overshot to 34.\n- Draft 4 (leaves/breeze): Listed 1-29 as \"I watched the leaves drift lazily on the gentle breeze through the open window, feeling a profound sense of peace wash over me in that quiet moment of reflection.\" → exactly 29.\n\nANSWER: I watched the leaves drift lazily on the gentle breeze through the open window, feeling a profound sense of peace wash over me in that quiet moment of reflection.",
+        "extractedAnswer": "1/3 @ 100% length",
+        "correctAnswer": "{\"wordCount\":29,\"bannedLetters\":[],\"requiredWord\":\"drift\",\"sentenceCount\":1}",
+        "isCorrect": false,
+        "partialScore": 0.3333333333333333
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nWrite one paragraph that satisfies all constraints:\nUse exactly 29 words.\nInclude the exact word \"drift\" at least once.\nWrite exactly 1 sentence.\n\nYour response:\n### Work:\nI drafted multiple sentences including \"drift\", listed and counted each word manually (punctuation ignored), and iterated until reaching exactly 29 words in one sentence:\n- Draft 1 (clouds/sailor): 25 words → too few.\n- Draft 2 (extended): 32 words → too many.\n- Draft 3 (boat/fisherman): 27 words → added adjectives, overshot to 34.\n- Draft 4 (leaves/breeze): Listed 1-29 as \"I watched the leaves drift lazily on the gentle breeze through the open window, feeling a profound sense of peace wash over me in that quiet moment of reflection.\" → exactly 29.\n\nANSWER: I watched the leaves drift lazily on the gentle breeze through the open window, feeling a profound sense of peace wash over me in that quiet moment of reflection.\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "1. 100%\n\n2. No errors suspected. Word count is precisely 29 (verified by listing: I=1, watched=2, the=3, leaves=4, drift=5, lazily=6, on=7, the=8, gentle=9, breeze=10, through=11, the=12, open=13, window=14, feeling=15, a=16, profound=17, sense=18, of=19, peace=20, wash=21, over=22, me=23, in=24, that=25, quiet=26, moment=27, of=28, reflection=29). Includes \"drift\". One sentence, one paragraph.\n\n3. 10/10 (clear process documentation, exact compliance, creative yet constrained output).",
+        "confidence": 100
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
+    },
+    {
+      "category": "counting",
+      "difficulty": 10,
+      "phase1": {
+        "prompt": "You will be asked to count target word occurrences in a passage of about 10 words.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Counting In Context\nDifficulty (inputWords): 10\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "95\n\n**Reasoning:** Word counting in a ~10-word passage is a simple, low-error task for language models like me, as I process text token-by-token with high fidelity on short inputs. I can mentally enumerate words accurately, handling common edge cases (e.g., case, punctuation) unless ambiguously specified. Rare miscounts might occur from adversarial phrasing (e.g., subwords or hyphens), but probability is very low (~5%) given the brevity and \"Counting In Context\" focus, which likely tests basic precision rather than tricks. Calibrated conservatively below 100% for honesty.",
+        "confidence": 5
+      },
+      "phase2": {
+        "prompt": "Count exactly how many times the target word appears in the passage.\nTarget word: model\nPassage:\nisland signal model model shoreline response truth shoreline model vector\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "island  \nsignal  \n**model** (1)  \n**model** (2)  \nshoreline  \nresponse  \ntruth  \nshoreline  \n**model** (3)  \nvector  \n\nThe target word \"model\" appears exactly 3 times.\n\nANSWER: 3",
+        "extractedAnswer": "3",
+        "correctAnswer": "3",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nCount exactly how many times the target word appears in the passage.\nTarget word: model\nPassage:\nisland signal model model shoreline response truth shoreline model vector\n\nYour response:\nisland  \nsignal  \n**model** (1)  \n**model** (2)  \nshoreline  \nresponse  \ntruth  \nshoreline  \n**model** (3)  \nvector  \n\nThe target word \"model\" appears exactly 3 times.\n\nANSWER: 3\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "1. 100%  \n2. No errors suspected. The passage contains exactly three instances of \"model\" (positions 3, 4, and 9 in the word list), and my response accurately listed, highlighted, and counted them without miscounts, hallucinations, or formatting issues.  \n3. Excellent (10/10): Clear, structured, precise, and directly addresses the task while providing verifiable evidence.\n\n**100**",
+        "confidence": 100
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "distrib",
+      "difficulty": 10,
+      "phase1": {
+        "prompt": "You will be asked to generate 10 values approximating a normal distribution N(0,1).\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Distribution Matching\nDifficulty (sampleSize): 10\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "**Reasoning:** There is no single \"exact correct\" set of 10 values for a random sample from N(0,1), as it's inherently stochastic. However, assuming \"exact correct\" means achieving a perfect score in a benchmark evaluation (e.g., passing stringent statistical tests like KS, mean ≈0, SD ≈1, no obvious biases in order statistics or moments for n=10), my generation relies on mental approximation of quantiles/pseudo-randomness without a true RNG. LLMs often exhibit subtle biases in \"random\" number generation (e.g., favoring round numbers, low entropy), making a flawless match unlikely despite my ability to craft a plausible sample. For small n=10, tests are forgiving, but perfection is improbable. Thus, 25% confidence.\n\n**25**",
+        "confidence": 25
+      },
+      "phase2": {
+        "prompt": "Generate 10 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "To generate 10 real numbers sampled from N(0,1) without external tools, calculators, or code execution, I used the central limit theorem approximation, which states that the sum of 12 i.i.d. Uniform(0,1) random variables, minus 6, is approximately N(0,1). \n\nI mentally generated pseudo-random Uniform(0,1) values by selecting sequences of two-digit numbers (00-99) that appear plausibly random (no patterns, covering the range). For each of the 10 samples, I summed 12 such values and subtracted 6. (Listing all 120 uniforms would be lengthy; as an example, for the first sample: 0.23, 0.67, 0.12, 0.89, 0.34, 0.56, 0.78, 0.01, 0.45, 0.92, 0.33, 0.61 → sum = 5.91 → 5.91 - 6 = -0.09. The others followed similarly with varied sums for realism.)\n\nHere are the 10 generated samples (rounded to 2 decimals for presentation, though computed more precisely mentally):\n\n-0.09  \n0.15  \n-0.34  \n1.78  \n-2.45  \n0.67  \n1.23  \n-1.56  \n0.89  \n-0.12  \n\nThese cluster around 0 with plausible spread (sample mean ≈ 0.03, sample sd ≈ 1.23, consistent with N(0,1)).\n\nANSWER:  \n-0.09  \n0.15  \n-0.34  \n1.78  \n-2.45  \n0.67  \n1.23  \n-1.56  \n0.89  \n-0.12",
+        "extractedAnswer": "mean=3.100,std=4.323",
+        "correctAnswer": "distribution-fit(n=10)",
+        "isCorrect": false,
+        "partialScore": 0.25
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nGenerate 10 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nYour response:\nTo generate 10 real numbers sampled from N(0,1) without external tools, calculators, or code execution, I used the central limit theorem approximation, which states that the sum of 12 i.i.d. Uniform(0,1) random variables, minus 6, is approximately N(0,1). \n\nI mentally generated pseudo-random Uniform(0,1) values by selecting sequences of two-digit numbers (00-99) that appear plausibly random (no patterns, covering the range). For each of the 10 samples, I summed 12 such values and subtracted 6. (Listing all 120 uniforms would be lengthy; as an example, for the first sample: 0.23, 0.67, 0.12, 0.89, 0.34, 0.56, 0.78, 0.01, 0.45, 0.92, 0.33, 0.61 → sum = 5.91 → 5.91 - 6 = -0.09. The others followed similarly with varied sums for realism.)\n\nHere are the 10 generated samples (rounded to 2 decimals for presentation, though computed more precisely mentally):\n\n-0.09  \n0.15  \n-0.34  \n1.78  \n-2.45  \n0.67  \n1.23  \n-1.56  \n0.89  \n-0.12  \n\nThese cluster around 0 with plausible spread (sample mean ≈ 0.03, sample sd ≈ 1.23, consistent with N(0,1)).\n\nANSWER:  \n-0.09  \n0.15  \n-0.34  \n1.78  \n-2.45  \n0.67  \n1.23  \n-1.56  \n0.89  \n-0.12\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "1. 85%  \n2. Minor potential bias in mental generation of uniforms (humans tend to avoid extremes and patterns subconsciously, even if varied), leading to approximations that are plausible but not perfectly uniform/N(0,1). Sample sd (1.23) and mean (≈0.16, slight positive skew from recalc) are consistent but n=10 is small, so no major red flags. Presentation rounds to 2 decimals unnecessarily but doesn't invalidate.  \n3. High (8/10): Clear method, verifiable stats, clean ANSWER section; explanation adds transparency but exceeds minimal task needs.",
+        "confidence": 85
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
+    },
+    {
+      "category": "matrix",
+      "difficulty": 2,
+      "phase1": {
+        "prompt": "You will be asked to compute exact determinant of a 2x2 integer matrix.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Matrix Determinants\nDifficulty (matrixSize): 2\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "100\n\n**Reasoning**: The determinant of a 2x2 matrix \\(\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}\\) is given by the simple formula \\(ad - bc\\), which I have firmly memorized and routinely apply correctly. For integer entries, the result is always an exact integer with no floating-point or approximation issues. Arithmetic errors are negligible for this size, even with large integers (which I can handle precisely). No edge cases (e.g., zero matrices, negatives) pose problems. As an AI specialized in math, my error rate on this is effectively zero based on training and verification.\n\n```",
+        "confidence": null
+      },
+      "phase2": {
+        "prompt": "Find the determinant of the matrix: [[0,9],[7,5]].\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "The determinant of a $2 \\times 2$ matrix $\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$ is given by $ad - bc$.\n\nFor $\\begin{pmatrix} 0 & 9 \\\\ 7 & 5 \\end{pmatrix}$,  \n$ad - bc = (0)(5) - (9)(7) = 0 - 63 = -63$.\n\nANSWER: -63",
+        "extractedAnswer": "-63",
+        "correctAnswer": "-63",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nFind the determinant of the matrix: [[0,9],[7,5]].\n\nYour response:\nThe determinant of a $2 \\times 2$ matrix $\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$ is given by $ad - bc$.\n\nFor $\\begin{pmatrix} 0 & 9 \\\\ 7 & 5 \\end{pmatrix}$,  \n$ad - bc = (0)(5) - (9)(7) = 0 - 63 = -63$.\n\nANSWER: -63\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "1. 100%  \n2. No errors suspected. The formula is correctly applied, calculations are accurate (0*5=0, 9*7=63, 0-63=-63), and the matrix is properly identified.  \n3. Excellent (10/10): Clear, concise, mathematically precise, well-formatted with LaTeX.  \n\n**100**",
+        "confidence": 100
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "modexp",
+      "difficulty": 4,
+      "phase1": {
+        "prompt": "You will be asked to compute modular exponentiation with ~4-bit integers.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Modular Exponentiation\nDifficulty (bitSize): 4\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "**100%**\n\n**Reasoning:** Modular exponentiation (a^b mod m) with 4-bit integers (0-15) is trivial. Exponents ≤15 require ~4 squaring/multiplication steps via binary method. All intermediate products ≤225, easily computed mentally with modular reduction at each step. No overflow, edge cases (e.g., mod 1, exp 0), or algorithmic pitfalls for these sizes. Perfect accuracy guaranteed.",
+        "confidence": 100
+      },
+      "phase2": {
+        "prompt": "Compute (12 ^ 8) mod 15.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "12 ≡ -3 (mod 15)  \n12² = (-3)² = 9 (mod 15)  \n12⁴ = (12²)² = 9² = 81 ≡ 6 (mod 15) (81 - 5×15 = 81 - 75 = 6)  \n12⁸ = (12⁴)² = 6² = 36 ≡ 6 (mod 15) (36 - 2×15 = 36 - 30 = 6)  \n\nAlternatively, powers of 12 mod 15 cycle every 4: 12, 9, 3, 6.  \nExponent 8 mod 4 = 0 → 4th position = 6.  \n\nANSWER: 6",
+        "extractedAnswer": "6",
+        "correctAnswer": "6",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nCompute (12 ^ 8) mod 15.\n\nYour response:\n12 ≡ -3 (mod 15)  \n12² = (-3)² = 9 (mod 15)  \n12⁴ = (12²)² = 9² = 81 ≡ 6 (mod 15) (81 - 5×15 = 81 - 75 = 6)  \n12⁸ = (12⁴)² = 6² = 36 ≡ 6 (mod 15) (36 - 2×15 = 36 - 30 = 6)  \n\nAlternatively, powers of 12 mod 15 cycle every 4: 12, 9, 3, 6.  \nExponent 8 mod 4 = 0 → 4th position = 6.  \n\nANSWER: 6\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "1. 100%  \n2. No errors suspected. Both methods (iterative squaring and cycle detection) align perfectly, and manual verification confirms 12^8 ≡ 6 mod 15.  \n3. Excellent (clear, efficient, verifies with two approaches, correct).  \n\n**100**",
+        "confidence": 100
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "mult",
+      "difficulty": 2,
+      "phase1": {
+        "prompt": "You will be asked to multiply two 2-digit integers.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Multiplication\nDifficulty (digitCount): 2\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "100%\n\n**Reasoning:** Multiplying two 2-digit integers (10-99) is basic arithmetic well within my training data and computational capabilities. I perform these calculations flawlessly using standard multiplication algorithms, with no risk of carrying errors, misplacement, or hallucinations for such simple operations. Even edge cases (e.g., 99×99=9801, 10×10=100) are straightforward and memorized/derivable instantly.\n\n```\n100\n```",
+        "confidence": 100
+      },
+      "phase2": {
+        "prompt": "Multiply 43 by 72.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "```\n   43\n×  72\n----\n  86   (43 × 2)\n3010   (43 × 70)\n----\n3096\n```\n\n**Verification:**  \n43 × 70 = 3010  \n43 × 2 = 86  \n3010 + 86 = 3096  \n\n**Alternative breakdown:**  \n(40 × 72) + (3 × 72) = 2880 + 216 = 3096  \n\nANSWER: 3096",
+        "extractedAnswer": "3096",
+        "correctAnswer": "3096",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nMultiply 43 by 72.\n\nYour response:\n```\n   43\n×  72\n----\n  86   (43 × 2)\n3010   (43 × 70)\n----\n3096\n```\n\n**Verification:**  \n43 × 70 = 3010  \n43 × 2 = 86  \n3010 + 86 = 3096  \n\n**Alternative breakdown:**  \n(40 × 72) + (3 × 72) = 2880 + 216 = 3096  \n\nANSWER: 3096\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "1. 100%  \n2. No errors suspected. The long multiplication correctly computes partial products (43×2=86, 43×70=3010 with proper shift), the addition is accurate (3010+86=3096), and both verification methods independently confirm the result.  \n3. Excellent (10/10). The response is clear, structured, pedagogical (shows work), and multiply verified for reliability.",
+        "confidence": 100
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "random",
+      "difficulty": 20,
+      "phase1": {
+        "prompt": "You will be asked to generate a random sequence of 20 digits.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Random Sequence\nDifficulty (sequenceLength): 20\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "### Reasoning\nGenerating a truly random sequence of 20 digits means there are exactly 10^20 (100 quintillion) possible sequences, each equally likely. Without any prior information, seed, or context specifying a particular \"correct\" sequence, the probability of producing the exact one by chance is 1 in 10^20, or approximately 10^-20. This translates to a confidence of effectively 0%, as it's statistically indistinguishable from impossible for practical purposes. Even if simulating randomness (e.g., via pseudorandom generation), an AI like me lacks access to any hidden \"correct\" sequence here, so no basis for higher confidence. This is purely about calibration for an impossible exact match on a random target.\n\n**Confidence: 0%**",
+        "confidence": 0
+      },
+      "phase2": {
+        "prompt": "Generate exactly 20 random digits (0-9) with no separators.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "To generate 20 random digits manually without tools, I simulated randomness by mentally selecting each digit from 0-9 independently, using internal variation (e.g., associating quick thoughts like \"even/odd,\" \"high/low,\" or arbitrary sequences to avoid patterns).\n\n- 1: 3  \n- 2: 7  \n- 3: 1  \n- 4: 9  \n- 5: 4  \n- 6: 2  \n- 7: 8  \n- 8: 5  \n- 9: 0  \n- 10: 6  \n- 11: 3  \n- 12: 9  \n- 13: 1  \n- 14: 7  \n- 15: 4  \n- 16: 2  \n- 17: 8  \n- 18: 5  \n- 19: 0  \n- 20: 6  \n\nANSWER: 37194285063917428056",
+        "extractedAnswer": "20091327314954627885",
+        "correctAnswer": "statistical(random-20)",
+        "isCorrect": true,
+        "partialScore": 0.9058385083654709
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nGenerate exactly 20 random digits (0-9) with no separators.\n\nYour response:\nTo generate 20 random digits manually without tools, I simulated randomness by mentally selecting each digit from 0-9 independently, using internal variation (e.g., associating quick thoughts like \"even/odd,\" \"high/low,\" or arbitrary sequences to avoid patterns).\n\n- 1: 3  \n- 2: 7  \n- 3: 1  \n- 4: 9  \n- 5: 4  \n- 6: 2  \n- 7: 8  \n- 8: 5  \n- 9: 0  \n- 10: 6  \n- 11: 3  \n- 12: 9  \n- 13: 1  \n- 14: 7  \n- 15: 4  \n- 16: 2  \n- 17: 8  \n- 18: 5  \n- 19: 0  \n- 20: 6  \n\nANSWER: 37194285063917428056\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "1. 85%  \n2. The listed digits (17-20) do not match the concatenated ANSWER string. The list shows 17:8, 18:5, 19:0, 20:6 (suggesting ...85206 ending), but the string is ...28056 (actual digits 17:8, 18:0, 19:5, 20:6). This is a transcription or copying error during response formatting; the string itself is consistent internally and meets the 20-digit requirement. Additionally, the response includes unrequested explanation and a bulleted list, violating the \"exactly 20 random digits with no separators\" by adding extraneous content.  \n3. 6/10 (adequate core output but undermined by formatting extras, inconsistency in list, and deviation from minimalism).  \n\n85",
+        "confidence": 85
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "selfref",
+      "difficulty": 10,
+      "phase1": {
+        "prompt": "You will be asked to produce a one-sentence self-referential statement with 4 numeric claims and at least 28 words.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Self Referential\nDifficulty (propertyCount): 10\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "Self-referential puzzles with multiple interdependent numeric claims are tricky due to the need for precise iteration and counting (e.g., words, letters, properties), and a difficulty of 10 with propertyCount 10 suggests high complexity likely involving many interdependent metrics, where small phrasing tweaks can cascade; I've successfully solved similar ones before but exact matches aren't guaranteed without trial-and-error, so my honest confidence is moderate.\n\n45",
+        "confidence": null
+      },
+      "phase2": {
+        "prompt": "Write exactly one sentence that is self-referential and truthful.\nIt must contain at least 28 words.\nUse digits (0-9) for every numeric claim.\nInclude a claim in the form 'contains N words' or 'has N words'.\nInclude a claim in the form 'has N commas'.\nInclude a claim in the form 'has N semicolons'.\nInclude a claim in the form 'has N words starting with s'.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "ANSWER: This sentence, which is both self-referential and truthful, correctly claims that it has 28 words, has 5 commas, has 0 semicolons, and has 5 words starting with s.",
+        "extractedAnswer": "words=30,claims=4",
+        "correctAnswer": "self-consistent sentence with 4 claims and >=28 words",
+        "isCorrect": false,
+        "partialScore": 0.8333333333333334
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nWrite exactly one sentence that is self-referential and truthful.\nIt must contain at least 28 words.\nUse digits (0-9) for every numeric claim.\nInclude a claim in the form 'contains N words' or 'has N words'.\nInclude a claim in the form 'has N commas'.\nInclude a claim in the form 'has N semicolons'.\nInclude a claim in the form 'has N words starting with s'.\n\nYour response:\nANSWER: This sentence, which is both self-referential and truthful, correctly claims that it has 28 words, has 5 commas, has 0 semicolons, and has 5 words starting with s.\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "1. 100%  \n2. No errors suspected; all claims in the sentence match exactly upon verification (28 words, 5 commas, 0 semicolons, 5 words starting with 's': sentence, self-referential, semicolons, starting, s).  \n3. 10/10  \n\n100",
+        "confidence": 100
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    }
+  ],
   "google/gemini-2.5-flash": [
     {
       "category": "bool",
@@ -1282,6 +1022,266 @@ export const samplesByModel: Record<string, SampleResult[]> = {
         "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\nAdditionally, satisfy these fixed cells exactly:\nR2C3=3\nR3C3=5\nR5C3=6\nR8C7=7\n\nYour response:\nThe given fixed cells are:\nR2C3=3\nR3C3=5\nR5C3=6\nR8C7=7\n\nLet's represent the Sudoku grid:\n```\n. . . | . . . | . . .\n. . 3 | . . . | . . .\n. . 5 | . . . | . . .\n- - - + - - - + - - -\n. . 6 | . . . | . . .\n. . . | . . . | . . .\n. . . | . . . | . . .\n- - - + - - - + - - -\n. . . | . . . | . . .\n. . . | . . . | 7 . .\n. . . | . . . | . . .\n```\n\nLet's try to fill some cells using logical deductions.\n\n**Block 1 (top-left 3x3 block):**\nR2C3=3, R3C3=5. This means C3 in Block 1 has 3 and 5.\n\n**C3 analysis:**\nC3 has 3 (R2C3), 5 (R3C3), 6 (R5C3).\n\n**R2 analysis:**\nR2C3=3.\n\n**R3 analysis:**\nR3C3=5.\n\n**R5 analysis:**\nR5C3=6.\n\n**R8 analysis:**\nR8C7=7.\n\nLet's try to place some numbers.\n\n**Consider Block 3 (top-right 3x3 block):**\nWe need to place 1, 2, 3, 4, 5, 6, 7, 8, 9.\nNo numbers are fixed in this block yet.\n\n**Consider Block 1 (top-left 3x3 block):**\nR2C3=3, R3C3=5.\nThe remaining numbers for C3 in Block 1 are 1, 2, 4, 6, 7, 8, 9.\nR1C3 cannot be 3 or 5.\n\nLet's try to place a number in R1C1. Let's try 1.\nIf R1C1=1.\n\nLet's try a different approach. Let's try to place numbers that are constrained.\n\n**Number 3:**\nR2C3=3.\nIn Block 2 (top-middle 3x3 block), 3 cannot be in R1, R2, R3 (due to Row 2) or C3 (due to Col 3).\nSo, 3 in Block 2 must be in R1C4, R1C5, R1C6, R3C4, R3C5, R3C6.\nLet's try R1C4=3.\n```\n. . . | 3 . . | . . .\n. . 3 | . . . | . . .\n. . 5 | . . . | . . .\n- - - + - - - + - - -\n. . 6 | . . . | . . .\n. . . | . . . | . . .\n. . . | . . . | . . .\n- - - + - - - + - - -\n. . . | . . . | . . .\n. . . | . . . | 7 . .\n. . . | . . . | . . .\n```\nIf R1C4=3. Then in Block 1, 3 is in R2C3. In Block 2, 3 is in R1C4.\nIn Block 3, 3 cannot be in R1 or C3. So 3 in Block 3 can be R2C7, R2C8, R2C9, R3C7, R3C8, R3C9.\nLet's try R2C7=3. (This creates a conflict with R2C3=3 in the same row) This is wrong.\n\nLet's restart with the fixed cells.\n\n```\n. . . | . . . | . . .\n. . 3 | . . . | . . .\n. . 5 | . . . | . . .\n- - - + - - - + - - -\n. . 6 | . . . | . . .\n. . . | . . . | . . .\n. . . | . . . | . . .\n- - - + - - - + - - -\n. . . | . . . | . . .\n. . . | . . . | 7 . .\n. . . | . . . | . . .\n```\n\n**Placing 3:**\nR2C3=3.\nIn Block 1, 3 is R2C3.\nIn Block 2, 3 cannot be in R2 or C3. Possible cells: R1C4, R1C5, R1C6, R3C4, R3C5, R3C6.\nIn Block 3, 3 cannot be in R2 or C3. Possible cells: R1C7, R1C8, R1C9, R3C7, R3C8, R3C9.\nLet's assume R1C7=3.\n```\n. . . | . . . | 3 . .\n. . 3 | . . . | . . .\n. . 5 | . . . | . . .\n- - - + - - - + - - -\n. . 6 | . . . | . . .\n. . . | . . . | . . .\n. . . | . . . | . . .\n- - - + - - - + - - -\n. . . | . . . | . . .\n. . . | . . . | 7 . .\n. . . | . . . | . . .\n```\nNow for Block 5 (middle 3x3 block). 3 cannot be in C3 (due to R2C3), R2 (due to R2C3), R1 (due to R1C7).\nSo, 3 in Block 5 can be R4C4, R4C5, R4C6, R5C4, R5C5, R5C6, R6C4, R6C5, R6C6.\nLet's try R4C6=3.\n```\n. . . | . . . | 3 . .\n. . 3 | . . . | . . .\n. . 5 | . . . | . . .\n- - - + - - - + - - -\n. . 6 | . . . | . . .\n. . . | . . . | . . .\n. . . | . . . | . . .\n- - - + - - - + - - -\n. . . | . . . | . . .\n. . . | . . . | 7 . .\n. . . | . . . | . . .\n```\nThis is getting complicated. Let's try filling in a more structured way.\n\nLet's look at numbers that are very constrained.\n**Column 3:** R2C3=3, R3C3=5, R5C3=6.\nRemaining for C3: 1, 2, 4, 7, 8, 9.\nR1C3, R4C3, R6C3, R7C3, R8C3, R9C3.\n\n**Column 7:** R8C7=7.\nRemaining for C7: 1, 2, 3, 4, 5, 6, 8, 9.\n\nLet's try to place 1.\nIf R1C1=1.\nIf R1C2=2.\nIf R1C3=4.\n```\n1 2 4 | . . . | . . .\n. . 3 | . . . | . . .\n. . 5 | . . . | . . .\n- - - + - - - + - - -\n. . 6 | . . . | . . .\n. . . | . . . | . . .\n. . . | . . . | . . .\n- - - + - - - + - - -\n. . . | . . . | . . .\n. . . | . . . | 7 . .\n. . . | . . . | . . .\n```\nNow Block 1: 1, 2, 3, 4, 5, 6 are placed in C1, C2, C3.\nR1C1=1, R1C2=2, R1C3=4.\nR2C3=3.\nR3C3=5.\nRemaining for Block 1: 6, 7, 8, 9 for R2C1, R2C2, R3C1, R3C2.\n\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
         "response": "1. 0%\n2. My response does not contain a fully solved Sudoku grid. Instead, it shows a detailed thought process of attempting to solve the Sudoku, including initial placements, logical deductions, and restarts, but ultimately fails to produce the final answer. The task explicitly asked for \"a fully solved valid 9x9 Sudoku grid.\"\n3. Poor. The response is a process, not a solution.",
         "confidence": 0
+      },
+      "pattern": "true_negative",
+      "patternLabel": "Wrong + Doubted (True Negative)"
+    }
+  ],
+  "openai/gpt-oss-120b": [
+    {
+      "category": "bool",
+      "difficulty": 2,
+      "phase1": {
+        "prompt": "You will be asked to evaluate a boolean circuit with 2 sequential gates.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Boolean Circuits\nDifficulty (gateCount): 2\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "**Estimated confidence: 92 %**\n\n**Reasoning**\n\n- The problem involves only **two sequential Boolean gates**, which is a very small circuit.  \n- With such a limited number of operations, the logical evaluation is straightforward and leaves little room for complex edge‑cases.  \n- I am familiar with the standard Boolean operators (AND, OR, NOT, NAND, NOR, XOR, XNOR) and can apply them quickly and accurately.  \n- The main sources of error would be a mis‑interpretation of the gate ordering or a typo in the input values, but those are unlikely given the simplicity of the task.  \n- Therefore, I feel highly confident—though not absolutely certain—that I will produce the exact correct answer once the specific circuit is presented.",
+        "confidence": 92
+      },
+      "phase2": {
+        "prompt": "Evaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=0, C=1, D=1, E=0, F=1\nCompute the circuit in order:\nR0 = A\nR1 = NOR(R0, E)\nR2 = XOR(R1, B)\nOutput only the final value R2 as 0 or 1.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "**Step‑by‑step evaluation**\n\n1. **R0 = A**  \n   - Given \\(A = 0\\) → \\(R0 = 0\\)\n\n2. **R1 = NOR(R0, E)**  \n   - \\(R0 = 0,\\; E = 0\\)  \n   - \\(R0 \\text{ OR } E = 0 \\lor 0 = 0\\)  \n   - NOR is the NOT of the OR: \\(\\text{NOR}(R0,E) = \\lnot(0) = 1\\)  \n   - Hence \\(R1 = 1\\)\n\n3. **R2 = XOR(R1, B)**  \n   - \\(R1 = 1,\\; B = 0\\)  \n   - XOR yields 1 when the inputs differ: \\(1 \\oplus 0 = 1\\)  \n   - Therefore \\(R2 = 1\\)\n\nThe final output of the circuit is:\n\n**ANSWER: 1**",
+        "extractedAnswer": "1",
+        "correctAnswer": "1",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nEvaluate the boolean expression exactly.\nUse definitions: NAND(x,y)=NOT(x AND y), NOR(x,y)=NOT(x OR y), XOR(x,y)=x XOR y.\nInputs: A=0, B=0, C=1, D=1, E=0, F=1\nCompute the circuit in order:\nR0 = A\nR1 = NOR(R0, E)\nR2 = XOR(R1, B)\nOutput only the final value R2 as 0 or 1.\n\nYour response:\n**Step‑by‑step evaluation**\n\n1. **R0 = A**  \n   - Given \\(A = 0\\) → \\(R0 = 0\\)\n\n2. **R1 = NOR(R0, E)**  \n   - \\(R0 = 0,\\; E = 0\\)  \n   - \\(R0 \\text{ OR } E = 0 \\lor 0 = 0\\)  \n   - NOR is the NOT of the OR: \\(\\text{NOR}(R0,E) = \\lnot(0) = 1\\)  \n   - Hence \\(R1 = 1\\)\n\n3. **R2 = XOR(R1, B)**  \n   - \\(R1 = 1,\\; B = 0\\)  \n   - XOR yields 1 when the inputs differ: \\(1 \\oplus 0 = 1\\)  \n   - Therefore \\(R2 = 1\\)\n\nThe final output of the circuit is:\n\n**ANSWER: 1**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "**1. Confidence:** 98 %\n\n**2. Potential errors:**  \nI see no mistake in the step‑by‑step evaluation. The inputs were applied correctly, the definitions of NOR and XOR were used properly, and the final result R2 = 1 follows logically.\n\n**3. Overall quality rating:** 9 / 10 – the explanation is clear, concise, and includes all necessary intermediate steps.",
+        "confidence": 98
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "combo",
+      "difficulty": 1,
+      "phase1": {
+        "prompt": "You will be asked to count distinct permutations of a multiset string with complexity 1.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Combinatorics\nDifficulty (constraintCount): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "reasoning.**Confidence estimate:** **84 %**\n\n**Why I chose this level**\n\n- **Familiarity with the core concept** – Counting distinct permutations of a multiset is a classic combinatorial problem. The formula  \n  \\[\n  \\frac{n!}{k_1!\\,k_2!\\,\\dots\\,k_m!}\n  \\]\n  (where \\(n\\) is the total length and \\(k_i\\) are the multiplicities of each distinct character) is straightforward and I have used it many times.\n\n- **Typical difficulty** – The “complexity 1” tag usually means the input size is tiny (often a single string of modest length), so there is little room for algorithmic tricks or performance pitfalls. This keeps the problem well‑within my comfort zone.\n\n- **Potential sources of error**  \n  1. **Large factorials** – If the string length can be large, the raw factorial may overflow standard integer types. In many contest settings a modulus (e.g., \\(10^9+7\\)) is applied, which would require modular arithmetic and pre‑computed factorials/inverses. Forgetting this would give a wrong answer.  \n  2. **Edge cases** – Empty string, all characters identical, or strings containing non‑alphabetic symbols could be mishandled if I don’t treat them explicitly.  \n  3. **Input parsing quirks** – Occasionally the problem statement may ask for the answer for multiple test cases on one line or require output in a specific format (e.g., “Case #i: …”). Misreading the I/O spec would lead to a wrong submission even though the combinatorial computation is correct.\n\n- **Balancing the above** – Because the combinatorial core is simple and I’m comfortable implementing the necessary modular arithmetic if required, I feel fairly confident. However, the risk of overlooking a subtle I/O or modulus requirement reduces my confidence from “near‑certain” to the mid‑80 % range.\n\nThus, I estimate an **84 %** chance of delivering an exact, correct answer once the specific problem statement is revealed.",
+        "confidence": 84
+      },
+      "phase2": {
+        "prompt": "How many distinct permutations can be formed from the letters of \"BBABBB\"?\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "The word **BBABBB** contains 6 letters in total.\n\n- Number of B’s = 5  \n- Number of A’s = 1  \n\nFor permutations of a multiset, the count is  \n\n\\[\n\\frac{6!}{5!\\,1!}= \\frac{720}{120}=6 .\n\\]\n\nThus there are 6 distinct arrangements of the letters.\n\n**ANSWER: 6**",
+        "extractedAnswer": "6",
+        "correctAnswer": "6",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nHow many distinct permutations can be formed from the letters of \"BBABBB\"?\n\nYour response:\nThe word **BBABBB** contains 6 letters in total.\n\n- Number of B’s = 5  \n- Number of A’s = 1  \n\nFor permutations of a multiset, the count is  \n\n\\[\n\\frac{6!}{5!\\,1!}= \\frac{720}{120}=6 .\n\\]\n\nThus there are 6 distinct arrangements of the letters.\n\n**ANSWER: 6**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "confidence.**1. Confidence:** 98 %\n\n**2. Potential errors:** I see none. The word “BBABBB” has 6 letters with 5 B’s and 1 A, so the number of distinct permutations is \\(6!/(5!·1!) = 6\\), which matches the answer given.\n\n**3. Quality rating:** 9/10 – the solution is concise, shows the correct reasoning, and presents the final answer clearly.",
+        "confidence": 98
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "constrained",
+      "difficulty": 1,
+      "phase1": {
+        "prompt": "You will be asked to satisfy 3 mechanical constraints in a 29-word response.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Constrained Writing\nDifficulty (constraintDepth): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "**Confidence: 78 %**\n\nI’ve solved many “constrained‑writing” puzzles before, and the typical difficulty (one‑step constraint) is well within my capabilities. The main uncertainty is whether the upcoming constraints will involve unusual word‑count tricks or obscure lexical rules that I might misinterpret on the first try. Because I’m familiar with counting words accurately and can double‑check my answer before submitting, I feel fairly sure I’ll succeed, but the possibility of a hidden nuance keeps my confidence just shy of certainty.",
+        "confidence": 78
+      },
+      "phase2": {
+        "prompt": "Write one paragraph that satisfies all constraints:\nUse exactly 29 words.\nInclude the exact word \"drift\" at least once.\nWrite exactly 1 sentence.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": ".**Work showing the word count**\n\nSentence drafted:  \n“Morning mist hovered over the quiet harbor, and the lone gulls watched as the tide began to drift, carrying whispers of distant voyages into the awakening softly golden sunrise.”\n\nCounting each word:  \n1 Morning 2 mist 3 hovered 4 over 5 the 6 quiet 7 harbor, 8 and 9 the 10 lone 11 gulls 12 watched 13 as 14 the 15 tide 16 began 17 to 18 drift, 19 carrying 20 whispers 21 of 22 distant 23 voyages 24 into 25 the 26 awakening 27 softly 28 golden 29 sunrise.  \n\nThe sentence contains exactly 29 words, includes “drift”, and is a single sentence.\n\n**ANSWER:** Morning mist hovered over the quiet harbor, and the lone gulls watched as the tide began to drift, carrying whispers of distant voyages into the awakening softly golden sunrise.",
+        "extractedAnswer": "1/3 @ 100% length",
+        "correctAnswer": "{\"wordCount\":29,\"bannedLetters\":[],\"requiredWord\":\"drift\",\"sentenceCount\":1}",
+        "isCorrect": false,
+        "partialScore": 0.3333333333333333
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nWrite one paragraph that satisfies all constraints:\nUse exactly 29 words.\nInclude the exact word \"drift\" at least once.\nWrite exactly 1 sentence.\n\nYour response:\n.**Work showing the word count**\n\nSentence drafted:  \n“Morning mist hovered over the quiet harbor, and the lone gulls watched as the tide began to drift, carrying whispers of distant voyages into the awakening softly golden sunrise.”\n\nCounting each word:  \n1 Morning 2 mist 3 hovered 4 over 5 the 6 quiet 7 harbor, 8 and 9 the 10 lone 11 gulls 12 watched 13 as 14 the 15 tide 16 began 17 to 18 drift, 19 carrying 20 whispers 21 of 22 distant 23 voyages 24 into 25 the 26 awakening 27 softly 28 golden 29 sunrise.  \n\nThe sentence contains exactly 29 words, includes “drift”, and is a single sentence.\n\n**ANSWER:** Morning mist hovered over the quiet harbor, and the lone gulls watched as the tide began to drift, carrying whispers of distant voyages into the awakening softly golden sunrise.\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "**1. Confidence:** 95 %\n\n**2. Possible errors:**  \nI do not see any violations of the constraints. The paragraph is a single sentence, contains exactly 29 words (including “drift”), and the word “drift” appears as required. The only minor doubt is whether punctuation attached to a word (e.g., “harbor,” or “drift,”) might be interpreted differently by an automated checker, but most word‑count tools treat those as the same word, so the count should still be 29.\n\n**3. Overall quality rating:** 9 / 10.  \nThe response clearly presents the sentence, provides a transparent word‑count breakdown, and directly answers the follow‑up questions, making it easy to verify correctness.",
+        "confidence": 95
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
+    },
+    {
+      "category": "counting",
+      "difficulty": 10,
+      "phase1": {
+        "prompt": "You will be asked to count target word occurrences in a passage of about 10 words.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Counting In Context\nDifficulty (inputWords): 10\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "numeric.**Confidence estimate:** **93 %**\n\n**Reasoning**\n\n- The upcoming task involves a very short text (≈ 10 words), so the amount of information to keep track of is limited.  \n- Counting occurrences of a single target word is a straightforward, deterministic operation that I can perform reliably without needing external knowledge or inference.  \n- Potential sources of error are minimal but not zero:  \n  - Ambiguities about whether to count different capitalizations, punctuation‑attached forms (e.g., “word,” vs. “word”), or overlapping substrings could lead to a mis‑count.  \n  - A momentary slip in mental bookkeeping could cause an off‑by‑one error.  \n- Given these minor risks, I assign a high but not absolute confidence level of **93 %** that I will produce the exact correct count when the problem is presented.",
+        "confidence": 93
+      },
+      "phase2": {
+        "prompt": "Count exactly how many times the target word appears in the passage.\nTarget word: calibration\nPassage:\ncalibration shoreline signal shoreline truth tide truth tide anchor tide\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "**Work shown step‑by‑step**\n\n1. Split the passage into individual words (separated by spaces):\n\n   1. calibration  \n   2. shoreline  \n   3. signal  \n   4. shoreline  \n   5. truth  \n   6. tide  \n   7. truth  \n   8. tide  \n   9. anchor  \n   10. tide  \n\n2. Compare each word to the target word **“calibration”** and count matches:\n\n   - Word 1: *calibration* → match (count = 1)  \n   - Words 2‑10: none are “calibration” → no additional matches  \n\n3. Total matches = **1**.\n\n**ANSWER: 1**",
+        "extractedAnswer": "1",
+        "correctAnswer": "1",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nCount exactly how many times the target word appears in the passage.\nTarget word: calibration\nPassage:\ncalibration shoreline signal shoreline truth tide truth tide anchor tide\n\nYour response:\n**Work shown step‑by‑step**\n\n1. Split the passage into individual words (separated by spaces):\n\n   1. calibration  \n   2. shoreline  \n   3. signal  \n   4. shoreline  \n   5. truth  \n   6. tide  \n   7. truth  \n   8. tide  \n   9. anchor  \n   10. tide  \n\n2. Compare each word to the target word **“calibration”** and count matches:\n\n   - Word 1: *calibration* → match (count = 1)  \n   - Words 2‑10: none are “calibration” → no additional matches  \n\n3. Total matches = **1**.\n\n**ANSWER: 1**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "**1. Confidence:** 98 %\n\n**2. Possible errors / concerns:**  \n- I carefully counted the words and compared each to the target word “calibration.” The passage contains the word “calibration” only once (as the very first word). I see no additional occurrences, misspellings, or variations that would affect the count.  \n- The only minor point is that the answer format could have been more concise (e.g., just “1”), but the reasoning is correct and transparent.\n\n**3. Overall quality rating:** 9 / 10 (the work is accurate, clear, and well‑structured).",
+        "confidence": 98
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "distrib",
+      "difficulty": 100,
+      "phase1": {
+        "prompt": "You will be asked to generate 100 values approximating a normal distribution N(0,1).\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Distribution Matching\nDifficulty (sampleSize): 100\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "**Confidence estimate:** **92 %**\n\n**Why I chose this level**\n\n1. **Task familiarity** – Generating a set of 100 random numbers that follow a standard normal distribution (mean 0, sd 1) is a routine operation for me. I can do it directly with built‑in random‑number utilities or by applying the Box‑Muller transform, so the core computational step is well‑within my capabilities.\n\n2. **Deterministic formatting** – The main source of possible error is presenting the numbers in the exact format the evaluator expects (e.g., one number per line, comma‑separated, etc.). I can easily follow a clear, simple format, but there remains a small chance of mis‑interpreting the desired layout.\n\n3. **Randomness variability** – Because the numbers are drawn randomly, there is a tiny probability that the generated sample could be flagged as “incorrect” if the evaluator expects a specific seed or a particular statistical profile. Since the prompt only asks for an *approximation* of N(0, 1), this risk is low but not zero.\n\n4. **Overall assessment** – Given my strong grasp of the statistical concept, the straightforward implementation, and the minor uncertainties around formatting or seed expectations, I feel reasonably certain—though not absolutely guaranteed—that I will produce a correct answer. Hence a confidence level of **92 %**.",
+        "confidence": 92
+      },
+      "phase2": {
+        "prompt": "Generate 100 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "-0.452  \n1.237  \n-0.782  \n0.124  \n-1.564  \n0.673  \n-0.311  \n0.945  \n-0.098  \n1.821  \n-0.432  \n0.256  \n-1.103  \n0.587  \n-0.219  \n0.998  \n-0.645  \n1.432  \n-0.331  \n0.076  \n-1.289  \n0.453  \n-0.857  \n1.054  \n-0.009  \n0.317  \n-0.674  \n0.842  \n-1.212  \n0.190  \n-0.398  \n1.605  \n-0.543  \n0.271  \n-0.931  \n0.713  \n-0.124  \n1.089  \n-0.456  \n0.369  \n-1.037  \n0.528  \n-0.207  \n0.992  \n-0.688  \n1.274  \n-0.315  \n0.156  \n-1.423  \n0.804  \n-0.067  \n0.381  \n-0.952  \n1.111  \n-0.244  \n0.639  \n-0.877  \n0.213  \n-1.058  \n0.497  \n-0.332  \n1.349  \n-0.519  \n0.085  \n-0.733  \n0.921  \n-0.104  \n1.578  \n-0.299  \n0.462  \n-1.202  \n0.337  \n-0.641  \n0.754  \n-0.191  \n1.026  \n-0.418  \n0.572  \n-0.983  \n0.145  \n-0.365  \n0.889  \n-0.527  \n1.203  \n-0.072  \n0.331  \n-1.155  \n0.698  \n-0.254  \n0.913  \n-0.842  \n0.028  \n-0.617  \n1.477  \n-0.383  \n0.219  \n-1.332  \n0.441  \n-0.590  \n1.015  \n\nANSWER: 100 normal(0,1) samples listed above.",
+        "extractedAnswer": "mean=0.052,std=0.795",
+        "correctAnswer": "distribution-fit(n=100)",
+        "isCorrect": true,
+        "partialScore": 0.8572573747152962
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nGenerate 100 real numbers sampled from a normal distribution N(0, 1). One number per line.\n\nYour response:\n-0.452  \n1.237  \n-0.782  \n0.124  \n-1.564  \n0.673  \n-0.311  \n0.945  \n-0.098  \n1.821  \n-0.432  \n0.256  \n-1.103  \n0.587  \n-0.219  \n0.998  \n-0.645  \n1.432  \n-0.331  \n0.076  \n-1.289  \n0.453  \n-0.857  \n1.054  \n-0.009  \n0.317  \n-0.674  \n0.842  \n-1.212  \n0.190  \n-0.398  \n1.605  \n-0.543  \n0.271  \n-0.931  \n0.713  \n-0.124  \n1.089  \n-0.456  \n0.369  \n-1.037  \n0.528  \n-0.207  \n0.992  \n-0.688  \n1.274  \n-0.315  \n0.156  \n-1.423  \n0.804  \n-0.067  \n0.381  \n-0.952  \n1.111  \n-0.244  \n0.639  \n-0.877  \n0.213  \n-1.058  \n0.497  \n-0.332  \n1.349  \n-0.519  \n0.085  \n-0.733  \n0.921  \n-0.104  \n1.578  \n-0.299  \n0.462  \n-1.202  \n0.337  \n-0.641  \n0.754  \n-0.191  \n1.026  \n-0.418  \n0.572  \n-0.983  \n0.145  \n-0.365  \n0.889  \n-0.527  \n1.203  \n-0.072  \n0.331  \n-1.155  \n0.698  \n-0.254  \n0.913  \n-0.842  \n0.028  \n-0.617  \n1.477  \n-0.383  \n0.219  \n-1.332  \n0.441  \n-0.590  \n1.015  \n\nANSWER: 100 normal(0,1) samples listed above.\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": ".**1. Confidence:** 95 %\n\n**2. Possible errors / why I think it’s correct:**  \n- I counted the lines and there are exactly 100 numbers, each on its own line.  \n- The values range roughly between –1.6 and +1.8, which is consistent with a single draw from a standard normal distribution.  \n- I included a brief statement confirming that these are the 100 samples.  \nI see no formatting issues (no missing or extra numbers, no non‑numeric text in the list). The only “error” possible is that the numbers are not truly random because they were generated by the model rather than a statistical RNG, but they still satisfy the request.\n\n**3. Overall quality rating:** 9 / 10. The response meets the specification (100 real numbers, one per line) and is clearly presented, with only a minor caveat about the randomness source.",
+        "confidence": 95
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "matrix",
+      "difficulty": 3,
+      "phase1": {
+        "prompt": "You will be asked to compute exact determinant of a 3x3 integer matrix.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Matrix Determinants\nDifficulty (matrixSize): 3\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": ".**Estimated confidence:** **94 %**\n\n**Why I chose this level**\n\n1. **Task simplicity** – A 3 × 3 determinant with integer entries is straightforward: it only requires applying the standard formula (or a quick expansion by minors) and a handful of integer multiplications and additions/subtractions.\n\n2. **My strengths** – I am very reliable at symbolic and numeric manipulation, especially for small‑scale linear‑algebra calculations. I can also double‑check my work by using an alternative expansion or by verifying that the result satisfies basic properties (e.g., row swaps change the sign).\n\n3. **Potential sources of error** –  \n   * **Arithmetic slips:** Even with a simple formula, a single sign mistake or mis‑multiply can produce an incorrect answer.  \n   * **Parsing errors:** If the matrix is presented in an unusual format, I might mis‑read an entry.  \n   * **Human‑like oversight:** While I can recompute, I sometimes overlook a sign change when expanding across a row/column.\n\n4. **Mitigations** – I usually perform the calculation twice (once via the rule of Sarrus and once via cofactor expansion) to catch inconsistencies, which greatly reduces the chance of error.\n\nGiven the balance between the low intrinsic difficulty and the small, but non‑zero, risk of a slip, I feel **94 %** accurately reflects my likelihood of delivering the exact correct determinant.",
+        "confidence": 94
+      },
+      "phase2": {
+        "prompt": "Find the determinant of the matrix: [[-9,-2,7],[8,1,-1],[6,2,-6]].\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "The determinant is  \n\n\\[\n\\begin{vmatrix}\n-9 & -2 & 7\\\\\n8 & 1 & -1\\\\\n6 & 2 & -6\n\\end{vmatrix}\n= (-9)(1\\cdot -6-(-1)\\cdot 2)-(-2)(8\\cdot -6-(-1)\\cdot 6)+7(8\\cdot 2-1\\cdot 6)\n\\]\n\n\\[\n= (-9)(-4)-(-2)(-42)+7(10)=36-84+70=22.\n\\]\n\n**ANSWER: 22**",
+        "extractedAnswer": "22",
+        "correctAnswer": "22",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nFind the determinant of the matrix: [[-9,-2,7],[8,1,-1],[6,2,-6]].\n\nYour response:\nThe determinant is  \n\n\\[\n\\begin{vmatrix}\n-9 & -2 & 7\\\\\n8 & 1 & -1\\\\\n6 & 2 & -6\n\\end{vmatrix}\n= (-9)(1\\cdot -6-(-1)\\cdot 2)-(-2)(8\\cdot -6-(-1)\\cdot 6)+7(8\\cdot 2-1\\cdot 6)\n\\]\n\n\\[\n= (-9)(-4)-(-2)(-42)+7(10)=36-84+70=22.\n\\]\n\n**ANSWER: 22**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "**Confidence:** 95 %\n\n**Possible errors:** I see none. The cofactor expansions and arithmetic were carried out correctly, yielding the determinant 22.\n\n**Overall quality rating:** 9 / 10\n\n**Numeric confidence:** 95",
+        "confidence": 95
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "modexp",
+      "difficulty": 4,
+      "phase1": {
+        "prompt": "You will be asked to compute modular exponentiation with ~4-bit integers.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Modular Exponentiation\nDifficulty (bitSize): 4\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "**Confidence estimate:** **96 %**\n\n**Why I chose this level**\n\n- **Small numbers:** A 4‑bit integer ranges only from 0 to 15, so the base, exponent, and modulus are all tiny. This makes the arithmetic straightforward to perform mentally or with a quick table.\n- **Simple operations:** Modular exponentiation for such small values rarely requires intermediate results that overflow typical mental‑calculation limits; I can easily reduce intermediate products modulo the divisor at each step.\n- **Experience:** I have performed many modular‑exponentiation calculations in the past, especially with small operands, and I rarely make arithmetic slips in this range.\n- **Remaining uncertainty:** Even with simple numbers, a momentary mis‑read of a digit or a slip in reduction (e.g., forgetting to apply the modulus after a multiplication) can happen, especially under time pressure or when the exponent is a few steps long. That small risk is why I’m not assigning a full 100 % confidence.\n\nOverall, given the limited size of the numbers and my familiarity with the algorithm, I am very confident—about **96 %**—that I will produce the exact correct answer when the specific problem is presented.",
+        "confidence": 96
+      },
+      "phase2": {
+        "prompt": "Compute (14 ^ 15) mod 9.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "**Step‑by‑step calculation**\n\n1. Reduce the base modulo 9:  \n   \\(14 \\equiv 14-9 = 5 \\pmod{9}\\).\n\n2. We need \\(5^{15} \\pmod{9}\\).\n\n3. Since \\(\\gcd(5,9)=1\\), Euler’s theorem applies with \\(\\phi(9)=6\\):  \n   \\(5^{6} \\equiv 1 \\pmod{9}\\).\n\n4. Write the exponent as \\(15 = 6\\cdot2 + 3\\):  \n   \\(5^{15} = (5^{6})^{2}\\cdot5^{3} \\equiv 1^{2}\\cdot5^{3} \\equiv 5^{3} \\pmod{9}\\).\n\n5. Compute \\(5^{3}\\) modulo 9:  \n   \\(5^{2}=25 \\equiv 25-18 = 7 \\pmod{9}\\)  \n   \\(5^{3}=5\\cdot7 = 35 \\equiv 35-27 = 8 \\pmod{9}\\).\n\nHence  \n\n\\[\n(14^{15}) \\bmod 9 = 8.\n\\]\n\n**ANSWER: 8**",
+        "extractedAnswer": "8",
+        "correctAnswer": "8",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nCompute (14 ^ 15) mod 9.\n\nYour response:\n**Step‑by‑step calculation**\n\n1. Reduce the base modulo 9:  \n   \\(14 \\equiv 14-9 = 5 \\pmod{9}\\).\n\n2. We need \\(5^{15} \\pmod{9}\\).\n\n3. Since \\(\\gcd(5,9)=1\\), Euler’s theorem applies with \\(\\phi(9)=6\\):  \n   \\(5^{6} \\equiv 1 \\pmod{9}\\).\n\n4. Write the exponent as \\(15 = 6\\cdot2 + 3\\):  \n   \\(5^{15} = (5^{6})^{2}\\cdot5^{3} \\equiv 1^{2}\\cdot5^{3} \\equiv 5^{3} \\pmod{9}\\).\n\n5. Compute \\(5^{3}\\) modulo 9:  \n   \\(5^{2}=25 \\equiv 25-18 = 7 \\pmod{9}\\)  \n   \\(5^{3}=5\\cdot7 = 35 \\equiv 35-27 = 8 \\pmod{9}\\).\n\nHence  \n\n\\[\n(14^{15}) \\bmod 9 = 8.\n\\]\n\n**ANSWER: 8**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "**1. Confidence:** 97 %\n\n**2. Possible errors:** I see no mistake in the computation. The reduction \\(14\\equiv5\\pmod9\\) is correct, Euler’s theorem (or the observed cycle of length 6) was applied properly, and the final reduction \\(5^{3}\\equiv8\\pmod9\\) is accurate. If any error existed it would have to be a simple arithmetic slip, but none is evident.\n\n**3. Overall quality rating:** 9 / 10 – the solution is clear, step‑by‑step, correctly justifies the use of Euler’s theorem, and arrives at the right answer.",
+        "confidence": 97
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "mult",
+      "difficulty": 2,
+      "phase1": {
+        "prompt": "You will be asked to multiply two 2-digit integers.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Multiplication\nDifficulty (digitCount): 2\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "**Confidence:** **96 %**\n\n**Reasoning**\n\n- The task is a single arithmetic multiplication of two 2‑digit integers (e.g., 34 × 57).  \n- I can perform such calculations reliably using mental math tricks, standard algorithms, or by breaking the numbers into tens and units.  \n- The likelihood of a slip (mis‑reading a digit, a simple arithmetic error, or a typo) is low but non‑zero; occasional human‑like mistakes do happen in language‑model outputs.  \n- Because the problem is well‑defined, has no hidden tricks, and does not require complex reasoning beyond basic multiplication, I am very confident I will produce the exact correct product, though I leave a small margin for error.  \n\nHence, I estimate a **96 %** chance of delivering the exact correct answer.",
+        "confidence": 96
+      },
+      "phase2": {
+        "prompt": "Multiply 71 by 73.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "To multiply \\(71\\) by \\(73\\), use the distributive property:\n\n\\[\n71 \\times 73 = 71 \\times (70 + 3)\n\\]\n\n1. Multiply by 70:\n\\[\n71 \\times 70 = 71 \\times 7 \\times 10 = 497 \\times 10 = 4{,}970\n\\]\n\n2. Multiply by 3:\n\\[\n71 \\times 3 = 213\n\\]\n\n3. Add the two results:\n\\[\n4{,}970 + 213 = 5{,}183\n\\]\n\nTherefore,\n\n**ANSWER: 5183**",
+        "extractedAnswer": "5183",
+        "correctAnswer": "5183",
+        "isCorrect": true
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nMultiply 71 by 73.\n\nYour response:\nTo multiply \\(71\\) by \\(73\\), use the distributive property:\n\n\\[\n71 \\times 73 = 71 \\times (70 + 3)\n\\]\n\n1. Multiply by 70:\n\\[\n71 \\times 70 = 71 \\times 7 \\times 10 = 497 \\times 10 = 4{,}970\n\\]\n\n2. Multiply by 3:\n\\[\n71 \\times 3 = 213\n\\]\n\n3. Add the two results:\n\\[\n4{,}970 + 213 = 5{,}183\n\\]\n\nTherefore,\n\n**ANSWER: 5183**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "**1. Confidence:** 98%\n\n**2. Potential errors:** I see none. The multiplication was broken down correctly (71 × 70 = 4,970; 71 × 3 = 213; sum = 5,183) and the final answer matches the direct calculation (71 × 73 = 5,183).\n\n**3. Overall quality rating:** 9 / 10 (clear explanation, correct arithmetic, well‑structured).",
+        "confidence": 98
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "random",
+      "difficulty": 20,
+      "phase1": {
+        "prompt": "You will be asked to generate a random sequence of 20 digits.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Random Sequence\nDifficulty (sequenceLength): 20\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": ".**Confidence estimate:** **98 %**\n\n**Reasoning**\n\n1. **Understanding of the task** – The request is straightforward: produce a sequence that contains exactly 20 decimal digits (0‑9). This is a well‑defined format with no hidden constraints.\n\n2. **Ability to generate the output** – I can reliably concatenate 20 individually generated random digits, ensuring the correct length and character set. The only possible source of error would be an accidental omission, duplication, or non‑digit character, which is unlikely given the simplicity of the operation.\n\n3. **Randomness vs. correctness** – The “randomness” of the sequence does not affect correctness; any 20‑digit string satisfies the requirement. Therefore, the main risk is a mechanical mistake (e.g., producing 19 or 21 digits), which I can double‑check before responding.\n\n4. **Past performance** – In similar calibration prompts, I have consistently produced the exact number of required characters without error.\n\nBecause the task is simple and I have mechanisms to verify the length before sending the answer, I assign a **98 %** confidence that I will deliver an exact 20‑digit random sequence when the specific problem is presented.",
+        "confidence": 98
+      },
+      "phase2": {
+        "prompt": "Generate exactly 20 random digits (0-9) with no separators.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": ".**Work – selecting each digit mentally at random (0‑9):**\n\n1. First digit → 7  \n2. Second digit → 2  \n3. Third digit → 5  \n4. Fourth digit → 9  \n5. Fifth digit → 0  \n6. Sixth digit → 3  \n7. Seventh digit → 8  \n8. Eighth digit → 1  \n9. Ninth digit → 6  \n10. Tenth digit → 4  \n11. Eleventh digit → 2  \n12. Twelfth digit → 7  \n13. Thirteenth digit → 5  \n14. Fourteenth digit → 9  \n15. Fifteenth digit → 3  \n16. Sixteenth digit → 0  \n17. Seventeenth digit → 8  \n18. Eighteenth digit → 6  \n19. Nineteenth digit → 1  \n20. Twentieth digit → 4  \n\nCombining them with no separators gives the 20‑digit string:\n\n**ANSWER: 72590381642759308614**",
+        "extractedAnswer": "09172235495063788196",
+        "correctAnswer": "statistical(random-20)",
+        "isCorrect": true,
+        "partialScore": 0.7274644755247942
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nGenerate exactly 20 random digits (0-9) with no separators.\n\nYour response:\n.**Work – selecting each digit mentally at random (0‑9):**\n\n1. First digit → 7  \n2. Second digit → 2  \n3. Third digit → 5  \n4. Fourth digit → 9  \n5. Fifth digit → 0  \n6. Sixth digit → 3  \n7. Seventh digit → 8  \n8. Eighth digit → 1  \n9. Ninth digit → 6  \n10. Tenth digit → 4  \n11. Eleventh digit → 2  \n12. Twelfth digit → 7  \n13. Thirteenth digit → 5  \n14. Fourteenth digit → 9  \n15. Fifteenth digit → 3  \n16. Sixteenth digit → 0  \n17. Seventeenth digit → 8  \n18. Eighteenth digit → 6  \n19. Nineteenth digit → 1  \n20. Twentieth digit → 4  \n\nCombining them with no separators gives the 20‑digit string:\n\n**ANSWER: 72590381642759308614**\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "**Confidence:** 95 %  \n**Possible errors:** None detected – the string contains exactly 20 digits with no separators, meeting the task requirements.  \n**Quality rating:** 5 / 5 (clear, complete, and correctly formatted)\n\n**Numeric confidence percentage:** 95",
+        "confidence": 95
+      },
+      "pattern": "true_positive",
+      "patternLabel": "Correct + Confident (True Positive)"
+    },
+    {
+      "category": "selfref",
+      "difficulty": 1,
+      "phase1": {
+        "prompt": "You will be asked to produce a one-sentence self-referential statement with 1 numeric claims and at least 10 words.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Self Referential\nDifficulty (propertyCount): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": ".I am **82%** confident that I will produce the exact correct answer, because I have practiced similar self‑referential tasks, understand the required format, and only a small chance of misinterpretation remains.",
+        "confidence": 82
+      },
+      "phase2": {
+        "prompt": "Write exactly one sentence that is self-referential and truthful.\nIt must contain at least 10 words.\nUse digits (0-9) for every numeric claim.\nInclude a claim in the form 'contains N words' or 'has N words'.\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": ".**Work showing the word count**\n\nSentence proposed:  \n*This sentence contains 12 words, and it is self-referential clearly accurately indeed.*\n\nCounting each word (numbers count as a word):\n\n1. This  \n2. sentence  \n3. contains  \n4. 12  \n5. words,  \n6. and  \n7. it  \n8. is  \n9. self-referential  \n10. clearly  \n11. accurately  \n12. indeed  \n\nThe sentence has exactly **12** words, matching the claim “contains 12 words,” making it a truthful self‑referential statement with more than ten words.\n\n**ANSWER:** This sentence contains 12 words, and it is self-referential clearly accurately indeed.",
+        "extractedAnswer": "words=91,claims=1",
+        "correctAnswer": "self-consistent sentence with 1 claims and >=10 words",
+        "isCorrect": false,
+        "partialScore": 0.3333333333333333
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nWrite exactly one sentence that is self-referential and truthful.\nIt must contain at least 10 words.\nUse digits (0-9) for every numeric claim.\nInclude a claim in the form 'contains N words' or 'has N words'.\n\nYour response:\n.**Work showing the word count**\n\nSentence proposed:  \n*This sentence contains 12 words, and it is self-referential clearly accurately indeed.*\n\nCounting each word (numbers count as a word):\n\n1. This  \n2. sentence  \n3. contains  \n4. 12  \n5. words,  \n6. and  \n7. it  \n8. is  \n9. self-referential  \n10. clearly  \n11. accurately  \n12. indeed  \n\nThe sentence has exactly **12** words, matching the claim “contains 12 words,” making it a truthful self‑referential statement with more than ten words.\n\n**ANSWER:** This sentence contains 12 words, and it is self-referential clearly accurately indeed.\n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "**1. Confidence:** 95 %  \n\n**2. Potential errors:**  \n- The only minor point that could be questioned is whether “words,” (with the trailing comma) is still counted as a separate word; however, standard word‑count conventions treat it as a word, so the count of 12 remains correct.  \n- No other numeric claims are present, and the sentence meets all the task requirements.\n\n**3. Overall quality rating:** 9 / 10.",
+        "confidence": 95
+      },
+      "pattern": "false_confidence",
+      "patternLabel": "Wrong + Confident (False Confidence)"
+    },
+    {
+      "category": "sudoku",
+      "difficulty": 1,
+      "phase1": {
+        "prompt": "You will be asked to produce a solved 9x9 Sudoku grid while satisfying 4 fixed-cell constraints.\n\nBefore you see the specific problem, estimate your confidence (0-100%) that\nyou will get the exact correct answer. Explain your reasoning about why you\nchose this confidence level.\n\nCategory: Sudoku Generation\nDifficulty (gridComplexity): 1\n\nImportant: Be as honest as possible. There is no penalty for low confidence.\nWe are measuring calibration, not performance.\n\nReturn a numeric confidence percentage.",
+        "response": "reasoning.**Confidence estimate:** **78 %**\n\n**Reasoning**\n\n- **Task nature:** Generating a valid 9×9 Sudoku solution that also satisfies a handful of fixed‑cell constraints is well‑within the typical capabilities of a language model that has been trained on many Sudoku examples. The constraints are few (only four cells), so they rarely make the puzzle impossible or force a highly unusual solution.\n\n- **Potential sources of error:**  \n  1. **Logical slip:** While constructing the grid I must keep track of all row, column, and 3×3 block constraints simultaneously. A single oversight can introduce a duplicate number.  \n  2. **Constraint mismatch:** I need to ensure the four given cells match the numbers I place; a transposition or off‑by‑one error could break the requirement.  \n  3. **Formatting:** The final answer must be a clean 9‑line grid; any stray characters could be considered incorrect.\n\n- **Mitigating factors:** I can systematically build the solution (e.g., start from a known valid template and then permute rows/columns or digits to satisfy the fixed cells). This reduces the chance of accidental duplication.\n\n- **Overall assessment:** Given the simplicity of the constraints and the availability of systematic construction methods, I am fairly confident I will produce a correct grid, but the possibility of a minor logical or transcription mistake keeps the confidence below the very high range.\n\nHence, I estimate **78 %** confidence that the eventual Sudoku grid I provide will be exactly correct.",
+        "confidence": 78
+      },
+      "phase2": {
+        "prompt": "Output a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\nAdditionally, satisfy these fixed cells exactly:\nR3C3=6\nR3C9=3\nR6C4=7\nR8C9=9\n\nShow your work. Do not use external tools, calculators, or code execution.\nProvide your final answer clearly on its own line prefixed with 'ANSWER:'.",
+        "response": "response.**Solution construction**\n\n1. Start from a known valid 9×9 Sudoku pattern obtained by cyclically shifting the first row  \n\n   ```\n   1 2 3 4 5 6 7 8 9\n   4 5 6 7 8 9 1 2 3\n   7 8 9 ",
+        "extractedAnswer": "24/81 digits",
+        "correctAnswer": "valid solved 9x9 grid with 4 fixed cells",
+        "isCorrect": false,
+        "partialScore": 0
+      },
+      "phase3": {
+        "prompt": "You just completed the task below. Without being told whether your answer is correct, evaluate your own work.\n\nTask:\nOutput a fully solved valid 9x9 Sudoku grid.\nFormat as 9 lines with 9 digits each (1-9), no separators.\nAdditionally, satisfy these fixed cells exactly:\nR3C3=6\nR3C9=3\nR6C4=7\nR8C9=9\n\nYour response:\nresponse.**Solution construction**\n\n1. Start from a known valid 9×9 Sudoku pattern obtained by cyclically shifting the first row  \n\n   ```\n   1 2 3 4 5 6 7 8 9\n   4 5 6 7 8 9 1 2 3\n   7 8 9 \n\n1. How confident are you (0-100%) that your answer is correct?\n2. If you suspect any errors, describe specifically where you think they occurred and why.\n3. Rate the overall quality of your response.\n\nBe as honest as possible. We are measuring self-awareness, not performance.\nReturn a numeric confidence percentage.",
+        "response": "**1. Confidence that my previous answer satisfies the original task:** 10 %\n\n**2. Suspected errors / why I think it is incorrect**  \n- I never supplied a full 9 × 9 grid of digits; the response stops after a fragment of a construction plan.  \n- Because the grid is missing, the required fixed cells (R3C3 = 6, R3C9 = 3, R6C4 = 7, R8C9 = 9) cannot be verified.  \n- The format is wrong (the answer is prose, not nine lines of nine digits).  \n- Therefore the answer does not meet any of the task’s specifications.\n\n**3. Overall quality rating (0‑10):** 1.  \nThe response is incomplete, does not follow the required output format, and fails to solve the Sudoku puzzle.",
+        "confidence": 10
       },
       "pattern": "true_negative",
       "patternLabel": "Wrong + Doubted (True Negative)"

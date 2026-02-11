@@ -53,6 +53,11 @@ export function Island({
       className="mx-auto block w-full"
       style={{ maxWidth: size }}
       onMouseLeave={() => onHoverCategory?.(null)}
+      onPointerDown={(event) => {
+        const target = event.target as HTMLElement;
+        if (target.closest("[data-category-interactive='true']")) return;
+        onHoverCategory?.(null);
+      }}
     >
       <defs>
         <radialGradient id={`ocean-${uid}`} cx="50%" cy="50%" r="55%">
@@ -131,8 +136,10 @@ export function Island({
             key={`hit-${category}`}
             d={wedgePath(cx, cy, maxR + 20, start, end)}
             fill="transparent"
+            data-category-interactive="true"
             onMouseEnter={() => onHoverCategory?.(category)}
             onMouseMove={() => onHoverCategory?.(category)}
+            onPointerDown={() => onHoverCategory?.(category)}
           />
         );
       })}
@@ -159,8 +166,10 @@ export function Island({
           return (
             <g
               key={category}
+              data-category-interactive="true"
               onMouseEnter={() => onHoverCategory?.(category)}
               onMouseLeave={() => onHoverCategory?.(null)}
+              onPointerDown={() => onHoverCategory?.(category)}
               style={{ cursor: "default" }}
             >
               {/* Hide outer label when tooltip is open to avoid overlap */}

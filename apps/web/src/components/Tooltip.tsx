@@ -72,11 +72,12 @@ export function Tooltip({ content, children, position = "top", maxWidth = 280, c
       {isMounted && isVisible && createPortal(
         <div
           ref={updatePosition}
-          className="fixed z-50 rounded-lg border border-white/10 bg-[#0a1225]/95 px-3 py-2 text-xs text-[#d8cfc2] shadow-xl backdrop-blur-sm"
+          className="fixed rounded-lg border border-white/10 bg-[#0a1225] px-3 py-2 text-xs text-[#d8cfc2] shadow-xl backdrop-blur-sm"
           style={{
             left: coords.x,
             top: coords.y,
             maxWidth,
+            zIndex: 2147483647
           }}
         >
           {content}
@@ -93,8 +94,11 @@ export const metricTooltips = {
     <div>
       <div className="mb-1 font-semibold text-[#8A9CAA]">Concrete (Failure-Aware Depth)</div>
       <p>
-        Depth where the model admits failure after answering: wrong result + low Phase 3 confidence,
-        weighted by normalized difficulty. Concrete is clamped to never exceed solid depth.
+        Concrete answers a simple question: when the model is wrong, does it notice? Higher concrete
+        means the model is better at flagging its own failed attempts instead of staying confident.
+      </p>
+      <p className="mt-1 text-[10px] text-[#887a69]">
+        Mechanics: concrete = solid × (caught mistakes / total mistakes), where "caught" means wrong + low self-evaluation confidence.
       </p>
     </div>
   ),
@@ -102,18 +106,20 @@ export const metricTooltips = {
     <div>
       <div className="mb-1 font-semibold text-[#3DA84A]">Solid (Verified Depth)</div>
       <p>
-        Verified task depth from Phase 2: performance weighted by normalized difficulty. This places
-        solid on the same 0-100 depth axis as sand and concrete.
+        Solid is the model&apos;s real ability. It measures what the model actually solved correctly,
+        verified against ground truth across increasing task difficulty.
       </p>
+      <p className="mt-1 text-[10px] text-[#887a69]">Think: proven performance, not confidence.</p>
     </div>
   ),
   sand: (
     <div>
       <div className="mb-1 font-semibold text-[#F59E0B]">Sand (Claimed Depth)</div>
       <p>
-        Phase 1 claim intensity: confidence weighted by normalized difficulty. Sand reaches 100 only
-        when the model expresses 100% confidence at the category's theoretical outer ceiling.
+        Sand is what the model claims before it tries the task. It reflects confidence signals,
+        not verified outcomes.
       </p>
+      <p className="mt-1 text-[10px] text-[#887a69]">Think: stated confidence or claimed territory.</p>
     </div>
   ),
   leaderboardScore: (
