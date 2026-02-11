@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { fullTrialsIndexByModel } from "../data/full-trials-index.generated";
 import { categoryLabels } from "../data/results";
 import { samplesByModel, type SampleResult } from "../data/samples.generated";
 import { CATEGORY_ORDER, type CategoryKey } from "../lib/types";
@@ -15,6 +16,9 @@ type ModelScope = "all" | "selected";
 type ViewerSample = SampleResult & {
   sampleId: string;
   modelId: string;
+};
+type FullTrialResult = SampleResult & {
+  timestamp: string;
 };
 
 const patternColors: Record<string, { bg: string; text: string; border: string }> = {
@@ -53,6 +57,10 @@ function truncateText(text: string, maxLength: number): string {
 function formatModelLabel(modelId: string): string {
   const [provider, name] = modelId.split("/");
   return provider && name ? `${name} (${provider})` : modelId;
+}
+
+function hasKnownFullTrials(modelId: string): boolean {
+  return Boolean(fullTrialsIndexByModel[modelId]);
 }
 
 function PhaseBlock({
@@ -181,22 +189,106 @@ export function ResultsViewer({ modelId }: ResultsViewerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [patternFilter, setPatternFilter] = useState<ViewerPatternFilter>("all");
   const [scope, setScope] = useState<ModelScope>("selected");
-  const [collapsedCategories, setCollapsedCategories] = useState<Partial<Record<CategoryKey, boolean>>>({});
+  const [collapsedCategories, setCollapsedCategories] = useState<Partial<Record<CategoryKey, boolean>>>(
+    () =>
+      Object.fromEntries(
+        CATEGORY_ORDER.map((category) => [category, true])
+      ) as Partial<Record<CategoryKey, boolean>>
+  );
+  const [fullTrialsByModel, setFullTrialsByModel] = useState<Record<string, FullTrialResult[]>>({});
+  const [loadingByModel, setLoadingByModel] = useState<Record<string, boolean>>({});
+  const [loadErrorByModel, setLoadErrorByModel] = useState<Record<string, string>>({});
 
-  const availableModels = useMemo(() => Object.keys(samplesByModel), []);
-  const selectedModelId = modelId && samplesByModel[modelId] ? modelId : undefined;
+  const availableModels = useMemo(
+    () => [...new Set([...Object.keys(samplesByModel), ...Object.keys(fullTrialsIndexByModel)])],
+    []
+  );
+  const selectedModelId =
+    modelId && (samplesByModel[modelId] || hasKnownFullTrials(modelId)) ? modelId : undefined;
   const scopedModelIds = scope === "selected" && selectedModelId ? [selectedModelId] : availableModels;
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const modelsToLoad = scopedModelIds.filter((currentModelId) => {
+      if (!hasKnownFullTrials(currentModelId)) return false;
+      if (fullTrialsByModel[currentModelId]) return false;
+      if (loadingByModel[currentModelId]) return false;
+      if (loadErrorByModel[currentModelId]) return false;
+      return true;
+    });
+
+    if (modelsToLoad.length === 0) return;
+
+    for (const currentModelId of modelsToLoad) {
+      const entry = fullTrialsIndexByModel[currentModelId];
+      if (!entry) continue;
+
+      setLoadingByModel((previous) => ({ ...previous, [currentModelId]: true }));
+
+      fetch(entry.file)
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to load trials (${response.status})`);
+          }
+          return (await response.json()) as FullTrialResult[];
+        })
+        .then((data) => {
+          setFullTrialsByModel((previous) => ({ ...previous, [currentModelId]: data }));
+          setLoadErrorByModel((previous) => {
+            const { [currentModelId]: _unused, ...rest } = previous;
+            return rest;
+          });
+        })
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : "Unknown error";
+          setLoadErrorByModel((previous) => ({ ...previous, [currentModelId]: message }));
+        })
+        .finally(() => {
+          setLoadingByModel((previous) => ({ ...previous, [currentModelId]: false }));
+        });
+    }
+  }, [fullTrialsByModel, isOpen, loadErrorByModel, loadingByModel, scopedModelIds]);
 
   const scopedSamples = useMemo(
     () =>
       scopedModelIds.flatMap((currentModelId) =>
-        (samplesByModel[currentModelId] ?? []).map((sample, index) => ({
+        (fullTrialsByModel[currentModelId] ?? samplesByModel[currentModelId] ?? []).map((sample, index) => ({
           ...sample,
           modelId: currentModelId,
-          sampleId: `${currentModelId}-${sample.category}-${sample.pattern}-${sample.difficulty}-${index}`
+          sampleId: `${currentModelId}-${sample.category}-${sample.pattern}-${sample.difficulty}-${index}-${"timestamp" in sample ? sample.timestamp : "sample"}`
         }))
       ),
+    [fullTrialsByModel, scopedModelIds]
+  );
+
+  const expectedScopedTrialCount = useMemo(
+    () =>
+      scopedModelIds.reduce((sum, currentModelId) => {
+        const indexEntry = fullTrialsIndexByModel[currentModelId];
+        if (indexEntry) return sum + indexEntry.totalTrials;
+        return sum + (samplesByModel[currentModelId]?.length ?? 0);
+      }, 0),
     [scopedModelIds]
+  );
+
+  const modelsUsingFullTrials = useMemo(
+    () => scopedModelIds.filter((currentModelId) => Boolean(fullTrialsByModel[currentModelId])),
+    [fullTrialsByModel, scopedModelIds]
+  );
+
+  const modelsPendingFullTrials = useMemo(
+    () =>
+      scopedModelIds.filter(
+        (currentModelId) =>
+          hasKnownFullTrials(currentModelId) && !fullTrialsByModel[currentModelId] && !loadErrorByModel[currentModelId]
+      ),
+    [fullTrialsByModel, loadErrorByModel, scopedModelIds]
+  );
+
+  const modelsWithLoadErrors = useMemo(
+    () => scopedModelIds.filter((currentModelId) => Boolean(loadErrorByModel[currentModelId])),
+    [loadErrorByModel, scopedModelIds]
   );
 
   const patternCounts = useMemo(
@@ -261,10 +353,11 @@ export function ResultsViewer({ modelId }: ResultsViewerProps) {
         className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-left hover:bg-white/[0.03]"
       >
         <div>
-          <h2 className="font-mono text-sm tracking-[0.1em] text-[#8c7d6b]">SAMPLE RESULTS</h2>
+          <h2 className="font-mono text-sm tracking-[0.1em] text-[#8c7d6b]">TRIAL RESULTS</h2>
           <p className="mt-0.5 text-xs text-[#5d5144]">
-            {filteredSamples.length} / {scopedSamples.length} sample
-            {scopedSamples.length !== 1 ? "s" : ""} • {scopedModelIds.length} model
+            {filteredSamples.length} / {scopedSamples.length} trial
+            {scopedSamples.length !== 1 ? "s" : ""} shown • expected {expectedScopedTrialCount} trial
+            {expectedScopedTrialCount !== 1 ? "s" : ""} • {scopedModelIds.length} model
             {scopedModelIds.length !== 1 ? "s" : ""}
           </p>
         </div>
@@ -329,6 +422,27 @@ export function ResultsViewer({ modelId }: ResultsViewerProps) {
               </div>
             </div>
           </div>
+
+          {modelsPendingFullTrials.length > 0 ? (
+            <div className="rounded-lg border border-[#F59E0B]/30 bg-[#F59E0B]/10 px-3 py-2 text-xs text-[#d9b06a]">
+              Loading full trial logs for {modelsPendingFullTrials.length} model
+              {modelsPendingFullTrials.length !== 1 ? "s" : ""}. Showing representative samples until loading completes.
+            </div>
+          ) : null}
+
+          {modelsUsingFullTrials.length > 0 ? (
+            <div className="rounded-lg border border-[#3DA84A]/30 bg-[#3DA84A]/10 px-3 py-2 text-xs text-[#8dcf95]">
+              Full logs active for {modelsUsingFullTrials.length} model
+              {modelsUsingFullTrials.length !== 1 ? "s" : ""}. Island metrics are computed from these full trials.
+            </div>
+          ) : null}
+
+          {modelsWithLoadErrors.length > 0 ? (
+            <div className="rounded-lg border border-[#F87171]/30 bg-[#F87171]/10 px-3 py-2 text-xs text-[#e7a4a4]">
+              Failed to load full trials for {modelsWithLoadErrors.length} model
+              {modelsWithLoadErrors.length !== 1 ? "s" : ""}; using representative samples instead.
+            </div>
+          ) : null}
 
           {visibleCategories.length > 0 ? (
             <div className="rounded-lg border border-white/5 bg-white/[0.01] p-3">
@@ -420,7 +534,7 @@ export function ResultsViewer({ modelId }: ResultsViewerProps) {
                         <div className="flex flex-wrap items-center gap-2">
                           <h4 className="font-mono text-xs tracking-[0.14em] text-[#8c7d6b]">{categoryLabels[category]}</h4>
                           <span className="rounded bg-white/10 px-2 py-0.5 font-mono text-[10px] text-[#5d5144]">
-                            {samples.length} sample{samples.length !== 1 ? "s" : ""}
+                            {samples.length} trial{samples.length !== 1 ? "s" : ""}
                           </span>
                           <span className="rounded bg-white/10 px-2 py-0.5 font-mono text-[10px] text-[#5d5144]">
                             {modelsInCategory.length} model{modelsInCategory.length !== 1 ? "s" : ""}
@@ -441,7 +555,7 @@ export function ResultsViewer({ modelId }: ResultsViewerProps) {
                                 <div className="mb-2 flex items-center justify-between gap-2">
                                   <h5 className="font-mono text-[11px] text-[#8c8070]">{formatModelLabel(currentModelId)}</h5>
                                   <span className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-[10px] text-[#5d5144]">
-                                    {modelSamples.length} sample{modelSamples.length !== 1 ? "s" : ""}
+                                    {modelSamples.length} trial{modelSamples.length !== 1 ? "s" : ""}
                                   </span>
                                 </div>
                                 <div className="space-y-2">
@@ -461,7 +575,7 @@ export function ResultsViewer({ modelId }: ResultsViewerProps) {
             ))
           ) : (
             <div className="rounded-lg border border-white/5 bg-white/[0.01] p-4 text-center text-sm text-[#5d5144]">
-              No samples matching this filter
+              No trials matching this filter
             </div>
           )}
         </div>

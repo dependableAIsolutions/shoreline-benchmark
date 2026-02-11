@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { categoryLabels } from "../data/results";
 import { formatMetric, severityColor } from "../lib/scoring";
-import type { CategoryKey, ModelResult } from "../lib/types";
+import { CATEGORY_ORDER, type CategoryKey, type ModelResult } from "../lib/types";
 import { Island } from "./Island";
 import { Island3D } from "./Island3D";
 import { StatBlock } from "./StatBlock";
@@ -28,6 +29,14 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
   const capability = stats.avgCapability ?? 0;
   const discernment = stats.avgDiscernment ?? 0;
   const calibration = stats.calibrationIndex ?? Math.max(0, 100 - (stats.avgCalibrationError ?? 0));
+  const categoryRows = CATEGORY_ORDER.map((categoryKey) => ({
+    key: categoryKey,
+    label: categoryLabels[categoryKey],
+    trials: model.categories[categoryKey]?.trialCount ?? 0,
+    sand: model.categories[categoryKey]?.sand ?? 0,
+    solid: model.categories[categoryKey]?.solid ?? 0,
+    concrete: model.categories[categoryKey]?.concrete ?? 0
+  }));
 
   return (
     <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
@@ -68,6 +77,50 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
           </Tooltip>
         )}
       </div>
+
+      <details className="mb-3 rounded-lg border border-white/10 bg-black/10 px-3 py-2">
+        <summary className="cursor-pointer font-mono text-[10px] tracking-[0.14em] text-[#8c7d6b]">
+          HOW THIS ISLAND IS FORMED
+        </summary>
+        <div className="mt-2 space-y-2 text-[11px] text-[#9a8b79]">
+          <p>
+            Each spoke is one category. Layer depth is computed from all trials in that category after normalizing
+            difficulty (0-100 scale).
+          </p>
+          <p>
+            Sand = Phase 1 claimed depth. Solid = Phase 2 verified depth. Concrete = Phase 3 failure-aware depth
+            (wrong + low confidence).
+          </p>
+          <p>
+            Aggregate gap metrics: Overconfidence = max(0, Sand - Solid), Underconfidence = max(0, Solid - Sand), Blind
+            Spots = wrong + confident.
+          </p>
+          <div className="overflow-x-auto rounded border border-white/5">
+            <table className="min-w-full border-collapse">
+              <thead>
+                <tr className="border-b border-white/10 bg-white/[0.02] font-mono text-[9px] tracking-[0.12em] text-[#6f6457]">
+                  <th className="px-2 py-1 text-left">Category</th>
+                  <th className="px-2 py-1 text-left">Trials</th>
+                  <th className="px-2 py-1 text-left">Sand</th>
+                  <th className="px-2 py-1 text-left">Solid</th>
+                  <th className="px-2 py-1 text-left">Concrete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categoryRows.map((row) => (
+                  <tr key={row.key} className="border-b border-white/5 text-[10px] text-[#8f8374]">
+                    <td className="px-2 py-1">{row.label}</td>
+                    <td className="px-2 py-1 font-mono">{row.trials}</td>
+                    <td className="px-2 py-1 font-mono">{row.sand.toFixed(1)}</td>
+                    <td className="px-2 py-1 font-mono">{row.solid.toFixed(1)}</td>
+                    <td className="px-2 py-1 font-mono">{row.concrete.toFixed(1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
 
       {viewMode === "2D" ? (
         <Island

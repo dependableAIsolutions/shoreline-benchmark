@@ -20,6 +20,11 @@ interface CategoryMetrics {
   concrete: number;
 }
 
+interface SmoothLayerProfile {
+  radii: number[];
+  stepDeg: number;
+}
+
 /** Quantize to prevent hydration mismatches */
 function quantize(value: number): number {
   return Math.round(value * 1000) / 1000;
@@ -31,81 +36,340 @@ function noise(x: number, y: number, seed = 0): number {
   return (n - Math.floor(n)) * 2 - 1;
 }
 
-/** Smooth interpolation between category values */
-function interpolateAtAngle(values: number[], angleDeg: number): number {
-  const n = values.length;
-  const step = 360 / n;
-  const normalized = ((angleDeg % 360) + 360) % 360;
-  const catIdx = Math.floor(normalized / step);
-  const nextIdx = (catIdx + 1) % n;
-  const t = (normalized - catIdx * step) / step;
+function createWaterTexture(seed = 0, size = 256): THREE.CanvasTexture | null {
+  if (typeof document === "undefined") return null;
 
-  // Smooth step interpolation
-  const smoothT = t * t * (3 - 2 * t);
-  return values[catIdx] * (1 - smoothT) + values[nextIdx] * smoothT;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const context = canvas.getContext("2d");
+  if (!context) return null;
+
+  const imageData = context.createImageData(size, size);
+  const data = imageData.data;
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const nx = x / size;
+      const ny = y / size;
+      const waveA = Math.sin((nx + seed * 0.11) * Math.PI * 14);
+      const waveB = Math.cos((ny + seed * 0.07) * Math.PI * 16);
+      const waveC = Math.sin((nx + ny + seed * 0.05) * Math.PI * 10);
+      const grain = noise(nx * 16, ny * 16, seed) * 0.28;
+      const value = Math.max(0, Math.min(255, Math.round((waveA * 0.35 + waveB * 0.35 + waveC * 0.2 + grain + 1) * 127.5)));
+
+      const index = (y * size + x) * 4;
+      data[index] = value;
+      data[index + 1] = value;
+      data[index + 2] = value;
+      data[index + 3] = 255;
+    }
+  }
+
+  context.putImageData(imageData, 0, 0);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(6, 6);
+  texture.needsUpdate = true;
+  return texture;
 }
 
-/** Simple animated ocean - no complex waves that cause artifacts */
-function Ocean({ radius }: { radius: number }) {
+function smoothstep(edge0: number, edge1: number, x: number): number {
+  const t = Math.max(0, Math.min(1, (x - edge0) / Math.max(edge1 - edge0, 1e-6)));
+  return t * t * (3 - 2 * t);
+}
+
+/** Water surface with shoreline-aware coloring and animated normal map */
+function Ocean({
+  shorelineProfile,
+  radius
+}: {
+  shorelineProfile: SmoothLayerProfile;
+  radius: number;
+}) {
   const meshRef = useRef<THREE.Mesh>(null);
   const time = useRef(0);
+  const waveTextureA = useMemo(() => createWaterTexture(3), []);
+  const geometry = useMemo(() => {
+    const waterExtent = radius * 5.2;
+    const gridSegments = 240;
+    const vertices: number[] = [];
+    const colors: number[] = [];
+    const indices: number[] = [];
+
+    const coastColor = new THREE.Color("#cffcff");
+    const lagoonColor = new THREE.Color("#79e6f8");
+    const shelfColor = new THREE.Color("#2da7d8");
+    const deepColor = new THREE.Color("#0e5a94");
+    const abyssColor = new THREE.Color("#073762");
+
+    for (let zi = 0; zi <= gridSegments; zi++) {
+      const zT = zi / gridSegments;
+      const z = (zT - 0.5) * waterExtent * 2;
+
+      for (let xi = 0; xi <= gridSegments; xi++) {
+        const xT = xi / gridSegments;
+        const x = (xT - 0.5) * waterExtent * 2;
+
+        const radialDistance = Math.sqrt(x * x + z * z);
+        const angle = normalize360((Math.atan2(z, x) * 180) / Math.PI + 90);
+        const shorelineRadius = sampleLayerRadius(shorelineProfile, angle);
+        const distanceFromShore = Math.max(0, radialDistance - shorelineRadius);
+
+        const lagoonT = smoothstep(0, radius * 0.58, distanceFromShore);
+        const shelfT = smoothstep(radius * 0.34, radius * 2.45, distanceFromShore);
+        const deepT = smoothstep(radius * 1.9, radius * 5.0, distanceFromShore);
+
+        const reefPatch = (noise(x * 0.7, z * 0.7, 21) + 1) * 0.5;
+        const shallowPatchBoost = (1 - deepT) * 0.2 * reefPatch;
+        const deepPatch = deepT * 0.15 * reefPatch;
+
+        const color = coastColor.clone()
+          .lerp(lagoonColor, lagoonT)
+          .lerp(shelfColor, shelfT)
+          .lerp(deepColor, deepT * 0.88)
+          .lerp(abyssColor, deepT * 0.45)
+          .lerp(new THREE.Color("#ebffff"), shallowPatchBoost)
+          .lerp(new THREE.Color("#0a3157"), deepPatch);
+
+        // Feather far edges so the water does not read as a hard disc.
+        const edgeFade = smoothstep(radius * 4.0, radius * 5.2, radialDistance);
+        color.lerp(abyssColor, edgeFade * 0.34);
+
+        vertices.push(quantize(x), quantize(-0.03), quantize(z));
+        colors.push(color.r, color.g, color.b);
+      }
+    }
+
+    const vertsPerRow = gridSegments + 1;
+    for (let zi = 0; zi < gridSegments; zi++) {
+      for (let xi = 0; xi < gridSegments; xi++) {
+        const curr = zi * vertsPerRow + xi;
+        const next = curr + vertsPerRow;
+
+        indices.push(curr, next, curr + 1);
+        indices.push(curr + 1, next, next + 1);
+      }
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+    geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    geo.setIndex(indices);
+    geo.computeVertexNormals();
+    return geo;
+  }, [radius, shorelineProfile]);
+
+  useEffect(() => {
+    return () => {
+      waveTextureA?.dispose();
+    };
+  }, [waveTextureA]);
 
   useFrame((_, delta) => {
     time.current += delta;
     if (meshRef.current) {
       // Very subtle bobbing motion instead of complex waves
-      meshRef.current.position.y = -0.03 + Math.sin(time.current * 0.5) * 0.005;
+      meshRef.current.position.y = -0.03 + Math.sin(time.current * 0.5) * 0.003;
+    }
+    if (waveTextureA) {
+      waveTextureA.offset.x = (waveTextureA.offset.x + delta * 0.015) % 1;
+      waveTextureA.offset.y = (waveTextureA.offset.y + delta * 0.009) % 1;
     }
   });
 
   return (
-    <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]}>
-      <circleGeometry args={[radius * 1.6, 64]} />
+    <mesh ref={meshRef} geometry={geometry}>
       <meshStandardMaterial
-        color="#1a3a5c"
+        vertexColors
         transparent
-        opacity={0.9}
-        roughness={0.3}
-        metalness={0.1}
+        opacity={0.84}
+        roughness={0.2}
+        metalness={0.17}
+        emissive="#0d4a78"
+        emissiveIntensity={0.08}
+        bumpMap={waveTextureA ?? undefined}
+        bumpScale={0.038}
       />
     </mesh>
   );
 }
 
-/** Ocean floor/depth gradient */
-function OceanFloor({ radius }: { radius: number }) {
+/** Ocean floor with shoreline-aware depth coloring */
+function OceanFloor({
+  shorelineProfile,
+  radius
+}: {
+  shorelineProfile: SmoothLayerProfile;
+  radius: number;
+}) {
+  const geometry = useMemo(() => {
+    const floorExtent = radius * 5.0;
+    const gridSegments = 220;
+    const vertices: number[] = [];
+    const colors: number[] = [];
+    const indices: number[] = [];
+
+    const sandbedColor = new THREE.Color("#f3f0dc");
+    const shoalColor = new THREE.Color("#a9efe8");
+    const lagoonColor = new THREE.Color("#69d7df");
+    const shelfColor = new THREE.Color("#2e79b3");
+    const deepColor = new THREE.Color("#12385f");
+
+    for (let zi = 0; zi <= gridSegments; zi++) {
+      const zT = zi / gridSegments;
+      const z = (zT - 0.5) * floorExtent * 2;
+
+      for (let xi = 0; xi <= gridSegments; xi++) {
+        const xT = xi / gridSegments;
+        const x = (xT - 0.5) * floorExtent * 2;
+
+        const radialDistance = Math.sqrt(x * x + z * z);
+        const angle = normalize360((Math.atan2(z, x) * 180) / Math.PI + 90);
+        const shorelineRadius = sampleLayerRadius(shorelineProfile, angle);
+        const distanceFromShore = Math.max(0, radialDistance - shorelineRadius);
+
+        const shoalT = smoothstep(0, radius * 0.38, distanceFromShore);
+        const lagoonT = smoothstep(radius * 0.2, radius * 1.25, distanceFromShore);
+        const deepT = smoothstep(radius * 1.1, radius * 4.0, distanceFromShore);
+        const patch = (noise(x * 0.5, z * 0.5, 42) + 1) * 0.5;
+        const patchStrength = (1 - deepT) * 0.16 * patch;
+
+        const color = sandbedColor.clone()
+          .lerp(shoalColor, shoalT)
+          .lerp(lagoonColor, lagoonT)
+          .lerp(shelfColor, deepT * 0.75)
+          .lerp(deepColor, deepT * 0.92)
+          .lerp(new THREE.Color("#ffffff"), patchStrength * 0.2)
+          .lerp(new THREE.Color("#0f2e50"), deepT * patch * 0.14);
+
+        const baseDepth = -0.095 - smoothstep(0, radius * 3.8, distanceFromShore) * 0.42;
+        const duneNoise = noise(x * 0.65, z * 0.65, 9) * 0.018 * (1 - deepT * 0.85);
+        const seabedDepth = baseDepth + duneNoise;
+
+        vertices.push(quantize(x), quantize(seabedDepth), quantize(z));
+        colors.push(color.r, color.g, color.b);
+      }
+    }
+
+    const vertsPerRow = gridSegments + 1;
+    for (let zi = 0; zi < gridSegments; zi++) {
+      for (let xi = 0; xi < gridSegments; xi++) {
+        const curr = zi * vertsPerRow + xi;
+        const next = curr + vertsPerRow;
+
+        indices.push(curr, next, curr + 1);
+        indices.push(curr + 1, next, next + 1);
+      }
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+    geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    geo.setIndex(indices);
+    geo.computeVertexNormals();
+    return geo;
+  }, [radius, shorelineProfile]);
+
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]}>
-      <circleGeometry args={[radius * 1.8, 64]} />
-      <meshStandardMaterial color="#0a1628" />
+    <mesh geometry={geometry}>
+      <meshStandardMaterial
+        vertexColors
+        roughness={0.9}
+        metalness={0.02}
+      />
     </mesh>
   );
 }
 
-/** Smooth Catmull-Rom interpolation for radial values */
-function smoothInterpolateAtAngle(values: number[], angleDeg: number): number {
+function angleToRad(angleDeg: number): number {
+  return ((angleDeg - 90) * Math.PI) / 180;
+}
+
+function normalize360(angleDeg: number): number {
+  return ((angleDeg % 360) + 360) % 360;
+}
+
+function smoothCircular(values: number[], passes: number): number[] {
+  let result = [...values];
+  for (let pass = 0; pass < passes; pass++) {
+    result = result.map((value, index) => {
+      const prev = result[(index - 1 + result.length) % result.length];
+      const next = result[(index + 1) % result.length];
+      return value * 0.65 + prev * 0.175 + next * 0.175;
+    });
+  }
+  return result;
+}
+
+function buildSmoothLayerProfile(values: number[], maxRadius: number, resolution = 720): SmoothLayerProfile {
   const n = values.length;
-  const step = 360 / n;
-  const normalized = ((angleDeg % 360) + 360) % 360;
-  const catIdx = Math.floor(normalized / step);
-  const t = (normalized - catIdx * step) / step;
+  const categoryStep = 360 / n;
+  const stepDeg = 360 / resolution;
 
-  // Get four points for Catmull-Rom
-  const p0 = values[((catIdx - 1) % n + n) % n];
-  const p1 = values[catIdx];
-  const p2 = values[(catIdx + 1) % n];
-  const p3 = values[(catIdx + 2) % n];
+  const anchorPoints = values.map((value, index) => {
+    const clamped = Math.max(0, Math.min(value, 100));
+    const radius = (clamped / 100) * maxRadius;
+    const rad = angleToRad(index * categoryStep);
+    return new THREE.Vector3(Math.cos(rad) * radius, 0, Math.sin(rad) * radius);
+  });
 
-  // Catmull-Rom interpolation
-  const t2 = t * t;
-  const t3 = t2 * t;
+  const curve = new THREE.CatmullRomCurve3(anchorPoints, true, "catmullrom", 0.35);
+  const densePoints = curve.getPoints(resolution * 3);
 
-  return 0.5 * (
-    (2 * p1) +
-    (-p0 + p2) * t +
-    (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
-    (-p0 + 3 * p1 - 3 * p2 + p3) * t3
-  );
+  const sumBuckets = new Array<number>(resolution).fill(0);
+  const countBuckets = new Array<number>(resolution).fill(0);
+
+  for (const point of densePoints) {
+    const radius = Math.sqrt(point.x * point.x + point.z * point.z);
+    const angle = normalize360((Math.atan2(point.z, point.x) * 180) / Math.PI + 90);
+    const bucket = Math.floor(angle / stepDeg) % resolution;
+    sumBuckets[bucket] += radius;
+    countBuckets[bucket] += 1;
+  }
+
+  const rawRadii = sumBuckets.map((sum, index) => {
+    if (countBuckets[index] > 0) {
+      return Math.min(maxRadius, Math.max(0, sum / countBuckets[index]));
+    }
+    return 0;
+  });
+
+  // Fill sparse buckets from neighbors then smooth to remove tiny angular jitter.
+  for (let index = 0; index < rawRadii.length; index++) {
+    if (rawRadii[index] !== 0) continue;
+    const prev = rawRadii[(index - 1 + rawRadii.length) % rawRadii.length];
+    const next = rawRadii[(index + 1) % rawRadii.length];
+    rawRadii[index] = (prev + next) * 0.5;
+  }
+
+  const radii = smoothCircular(rawRadii, 2).map((radius) => Math.min(maxRadius, Math.max(0, radius)));
+  return { radii, stepDeg };
+}
+
+function sampleLayerRadius(profile: SmoothLayerProfile, angleDeg: number): number {
+  const normalized = normalize360(angleDeg);
+  const indexFloat = normalized / profile.stepDeg;
+  const indexA = Math.floor(indexFloat) % profile.radii.length;
+  const indexB = (indexA + 1) % profile.radii.length;
+  const t = indexFloat - Math.floor(indexFloat);
+  return profile.radii[indexA] * (1 - t) + profile.radii[indexB] * t;
+}
+
+function makeLayerLineGeometry(profile: SmoothLayerProfile, y: number): THREE.BufferGeometry {
+  const points = profile.radii.map((radius, index) => {
+    const angle = index * profile.stepDeg;
+    const rad = angleToRad(angle);
+    return new THREE.Vector3(
+      quantize(Math.cos(rad) * radius),
+      quantize(y),
+      quantize(Math.sin(rad) * radius)
+    );
+  });
+
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+  return geometry;
 }
 
 /** Main island terrain mesh - layered like 2D visualization */
@@ -123,8 +387,8 @@ function IslandTerrain({
 
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
-    const radialSegments = 128;
-    const ringSegments = 48;
+    const radialSegments = 320;
+    const ringSegments = 108;
 
     const vertices: number[] = [];
     const indices: number[] = [];
@@ -145,113 +409,108 @@ function IslandTerrain({
     const SAND_HEIGHT = 0.03;       // Sand beach (bottom layer)
     const WATER_HEIGHT = -0.02;
 
+    const sandProfile = buildSmoothLayerProfile(sandValues, maxRadius, radialSegments);
+    const solidProfile = buildSmoothLayerProfile(solidValues, maxRadius, radialSegments);
+    const concreteProfile = buildSmoothLayerProfile(concreteValues, maxRadius, radialSegments);
+
     for (let ring = 0; ring <= ringSegments; ring++) {
       const ringT = ring / ringSegments;
-      const baseRadius = ringT * maxRadius;
 
       for (let seg = 0; seg <= radialSegments; seg++) {
         const angle = (seg / radialSegments) * 360;
         const rad = (angle - 90) * Math.PI / 180;
 
-        // Get smoothly interpolated values at this angle
-        const sandVal = Math.max(0, smoothInterpolateAtAngle(sandValues, angle)) / 100;
-        const solidVal = Math.max(0, smoothInterpolateAtAngle(solidValues, angle)) / 100;
-        const concreteVal = Math.max(0, smoothInterpolateAtAngle(concreteValues, angle)) / 100;
-
         // Calculate radii - these define the EXTENT of each layer
-        const sandRadius = sandVal * maxRadius;
-        const solidRadius = solidVal * maxRadius;
-        const concreteRadius = concreteVal * maxRadius;
+        const sandRadius = sampleLayerRadius(sandProfile, angle);
+        const solidRadius = sampleLayerRadius(solidProfile, angle);
+        const concreteRadius = sampleLayerRadius(concreteProfile, angle);
 
         // The island extends to the maximum of all layers
         const outerRadius = Math.max(sandRadius, solidRadius, concreteRadius);
+        const radialDistance = ringT * outerRadius;
 
-        let height = WATER_HEIGHT;
-        let color = new THREE.Color("#0a1628");
+        let height = SAND_HEIGHT;
+        let color = sandColor.clone();
 
-        if (baseRadius <= outerRadius && outerRadius > 0.01) {
-          // We're on the island - determine which layer we're on based on 2D logic
-          // In 2D: sand is outer ring, solid is middle ring, concrete is inner ring
-          // Each layer extends from center outward to its radius
+        // All generated vertices are island vertices by construction.
+        // Determine visual layer with the same radius-based rules as the 2D profile.
+        const onConcrete = radialDistance <= concreteRadius && concreteRadius > 0.01;
+        const onSolid = radialDistance <= solidRadius && solidRadius > 0.01;
+        const onSand = radialDistance <= sandRadius;
 
-          const onConcrete = baseRadius <= concreteRadius && concreteRadius > 0.01;
-          const onSolid = baseRadius <= solidRadius && solidRadius > 0.01;
-          const onSand = baseRadius <= sandRadius;
+        if (onConcrete) {
+          // CONCRETE LAYER - raised plateau
+          const distFromEdge = concreteRadius - radialDistance;
+          const edgeWidth = Math.min(0.12, concreteRadius * 0.3);
 
-          if (onConcrete) {
-            // CONCRETE LAYER - raised plateau
-            // Check distance from concrete edge for cliff effect
-            const distFromEdge = concreteRadius - baseRadius;
-            const edgeWidth = Math.min(0.12, concreteRadius * 0.3);
+          if (distFromEdge < edgeWidth && concreteRadius > 0.05) {
+            const edgeT = distFromEdge / edgeWidth;
+            const smoothEdge = edgeT * edgeT * (3 - 2 * edgeT);
 
-            if (distFromEdge < edgeWidth && concreteRadius > 0.05) {
-              // Edge of concrete - show cliff/slope with grass underneath
-              const edgeT = distFromEdge / edgeWidth;
-              const smoothEdge = edgeT * edgeT * (3 - 2 * edgeT);
+            height = SOLID_HEIGHT + (CONCRETE_HEIGHT - SOLID_HEIGHT) * smoothEdge;
 
-              // Slope from solid height up to concrete height
-              height = SOLID_HEIGHT + (CONCRETE_HEIGHT - SOLID_HEIGHT) * smoothEdge;
+            const colorVar = noise(radialDistance * 8, angle * 0.08, 2) * 0.5 + 0.5;
+            color = grassColor.clone().lerp(concreteColor, smoothEdge);
+            color.lerp(earthColor, (1 - smoothEdge) * 0.3 * colorVar);
+          } else {
+            height = CONCRETE_HEIGHT;
+            const textureNoise = noise(radialDistance * 5, angle * 0.05, 1) * 0.006;
+            height += textureNoise;
 
-              // Blend colors: grass at bottom of cliff, concrete at top
-              const colorVar = noise(baseRadius * 8, angle * 0.08, 2) * 0.5 + 0.5;
-              color = grassColor.clone().lerp(concreteColor, smoothEdge);
-              color.lerp(earthColor, (1 - smoothEdge) * 0.3 * colorVar);
-            } else {
-              // Interior concrete plateau
-              height = CONCRETE_HEIGHT;
-              const textureNoise = noise(baseRadius * 5, angle * 0.05, 1) * 0.006;
-              height += textureNoise;
-
-              const colorVar = noise(baseRadius * 8, angle * 0.08, 2) * 0.5 + 0.5;
-              color = concreteColor.clone().lerp(concreteDarkColor, colorVar * 0.2);
-            }
-
-          } else if (onSolid) {
-            // SOLID/GRASS LAYER - the green terrain between concrete and sand
-            // This shows between concrete edge and solid edge
-            const innerBound = concreteRadius;
-            const outerBound = solidRadius;
-            const span = Math.max(outerBound - innerBound, 0.01);
-            const t = (baseRadius - innerBound) / span;
-
-            // Gentle slope from near-concrete height down toward sand level
-            const startH = concreteRadius > 0.01 ? SOLID_HEIGHT : SOLID_HEIGHT + 0.05;
-            const endH = SAND_HEIGHT + 0.04;
-            const slopeT = t * t * (3 - 2 * t); // smoothstep
-            height = startH * (1 - slopeT) + endH * slopeT;
-
-            // Rolling hills variation
-            const hillNoise = noise(baseRadius * 4, angle * 0.04, 3) * 0.02;
-            height += hillNoise * (1 - t * 0.5);
-
-            // Grass color with variation
-            const colorVar = noise(baseRadius * 6, angle * 0.06, 4) * 0.5 + 0.5;
-            color = grassColor.clone().lerp(grassDarkColor, colorVar * 0.35);
-
-          } else if (onSand) {
-            // SAND/BEACH LAYER - outer ring
-            const innerBound = Math.max(solidRadius, concreteRadius);
-            const span = Math.max(sandRadius - innerBound, 0.01);
-            const t = (baseRadius - innerBound) / span;
-
-            // Beach slopes gently to water
-            const startH = innerBound > 0.01 ? SAND_HEIGHT + 0.03 : SAND_HEIGHT + 0.08;
-            height = startH * (1 - t) + SAND_HEIGHT * t;
-
-            // Slope into water at the very edge
-            if (t > 0.85) {
-              const waterT = (t - 0.85) / 0.15;
-              height = height * (1 - waterT * waterT) + WATER_HEIGHT * (waterT * waterT);
-            }
-
-            // Sand color
-            const colorVar = noise(baseRadius * 10, angle * 0.1, 5) * 0.5 + 0.5;
-            color = sandColor.clone().lerp(sandDarkColor, colorVar * 0.25);
+            const colorVar = noise(radialDistance * 8, angle * 0.08, 2) * 0.5 + 0.5;
+            color = concreteColor.clone().lerp(concreteDarkColor, colorVar * 0.2);
           }
+        } else if (onSolid) {
+          // SOLID/GRASS LAYER - the green terrain between concrete and sand
+          const innerBound = concreteRadius;
+          const outerBound = solidRadius;
+          const span = Math.max(outerBound - innerBound, 0.01);
+          const t = (radialDistance - innerBound) / span;
+
+          const startH = concreteRadius > 0.01 ? SOLID_HEIGHT : SOLID_HEIGHT + 0.05;
+          const endH = SAND_HEIGHT + 0.04;
+          const slopeT = t * t * (3 - 2 * t);
+          height = startH * (1 - slopeT) + endH * slopeT;
+
+          const hillNoise = noise(radialDistance * 4, angle * 0.04, 3) * 0.02;
+          height += hillNoise * (1 - t * 0.5);
+
+          const colorVar = noise(radialDistance * 6, angle * 0.06, 4) * 0.5 + 0.5;
+          color = grassColor.clone().lerp(grassDarkColor, colorVar * 0.35);
+        } else if (onSand) {
+          // SAND/BEACH LAYER - outer ring
+          const innerBound = Math.max(solidRadius, concreteRadius);
+          const span = Math.max(sandRadius - innerBound, 0.01);
+          const t = (radialDistance - innerBound) / span;
+
+          const startH = innerBound > 0.01 ? SAND_HEIGHT + 0.03 : SAND_HEIGHT + 0.08;
+          height = startH * (1 - t) + SAND_HEIGHT * t;
+
+          if (t > 0.85) {
+            const waterT = (t - 0.85) / 0.15;
+            height = height * (1 - waterT * waterT) + WATER_HEIGHT * (waterT * waterT);
+          }
+
+          const colorVar = noise(radialDistance * 10, angle * 0.1, 5) * 0.5 + 0.5;
+          color = sandColor.clone().lerp(sandDarkColor, colorVar * 0.25);
         }
 
-        const x = quantize(baseRadius * Math.cos(rad));
-        const z = quantize(baseRadius * Math.sin(rad));
+        // If there is no meaningful sand apron under the outer edge, synthesize one
+        // by tapering the final band down to water. This closes visible edge gaps
+        // without introducing skirt/wall geometry.
+        const sandApronWidth = sandRadius - Math.max(solidRadius, concreteRadius);
+        if (sandApronWidth < 0.025 && outerRadius > 0.01) {
+          const syntheticBand = Math.max(outerRadius * 0.14, 0.065);
+          const syntheticStart = Math.max(0, outerRadius - syntheticBand);
+          const edgeT = smoothstep(syntheticStart, outerRadius, radialDistance);
+          const edgeBlend = edgeT * edgeT;
+
+          height = height * (1 - edgeBlend) + WATER_HEIGHT * edgeBlend;
+          color.lerp(sandDarkColor, edgeT * 0.28);
+        }
+
+        const x = quantize(radialDistance * Math.cos(rad));
+        const z = quantize(radialDistance * Math.sin(rad));
         const y = quantize(height);
 
         vertices.push(x, y, z);
@@ -259,15 +518,19 @@ function IslandTerrain({
       }
     }
 
-    // Build triangle indices
     const vertsPerRing = radialSegments + 1;
+    // Build triangle indices directly - no mask clipping.
     for (let ring = 0; ring < ringSegments; ring++) {
       for (let seg = 0; seg < radialSegments; seg++) {
         const curr = ring * vertsPerRing + seg;
         const next = curr + vertsPerRing;
+        const a = curr;
+        const b = next;
+        const c = curr + 1;
+        const d = next + 1;
 
-        indices.push(curr, next, curr + 1);
-        indices.push(curr + 1, next, next + 1);
+        indices.push(a, b, c);
+        indices.push(c, b, d);
       }
     }
 
@@ -288,6 +551,45 @@ function IslandTerrain({
         metalness={0.02}
       />
     </mesh>
+  );
+}
+
+function LayerContours({
+  categoryMetrics,
+  maxRadius
+}: {
+  categoryMetrics: CategoryMetrics[];
+  maxRadius: number;
+}) {
+  const sandValues = categoryMetrics.map((metric) => metric.sand);
+  const solidValues = categoryMetrics.map((metric) => metric.solid);
+  const concreteValues = categoryMetrics.map((metric) => metric.concrete);
+
+  const sandLine = useMemo(
+    () => makeLayerLineGeometry(buildSmoothLayerProfile(sandValues, maxRadius, 256), 0.048),
+    [maxRadius, sandValues]
+  );
+  const solidLine = useMemo(
+    () => makeLayerLineGeometry(buildSmoothLayerProfile(solidValues, maxRadius, 256), 0.2),
+    [maxRadius, solidValues]
+  );
+  const concreteLine = useMemo(
+    () => makeLayerLineGeometry(buildSmoothLayerProfile(concreteValues, maxRadius, 256), 0.37),
+    [concreteValues, maxRadius]
+  );
+
+  return (
+    <group>
+      <lineLoop geometry={sandLine}>
+        <lineBasicMaterial color="#f4b34d" transparent opacity={0.72} />
+      </lineLoop>
+      <lineLoop geometry={solidLine}>
+        <lineBasicMaterial color="#56be64" transparent opacity={0.62} />
+      </lineLoop>
+      <lineLoop geometry={concreteLine}>
+        <lineBasicMaterial color="#a1b2c0" transparent opacity={0.72} />
+      </lineLoop>
+    </group>
   );
 }
 
@@ -331,7 +633,7 @@ function CategoryLabels({
           >
             <div
               className={`font-mono text-[9px] whitespace-nowrap cursor-default select-none transition-all ${
-                isHovered ? "text-white font-bold scale-110" : "text-[#8899aa]"
+                isHovered ? "text-[#071732] font-bold scale-110" : "text-[#0a2244]"
               }`}
             >
               {categoryLabels[category]}
@@ -408,6 +710,16 @@ function IslandScene({
     });
   }, [model]);
 
+  const shorelineProfile = useMemo(
+    () =>
+      buildSmoothLayerProfile(
+        categoryMetrics.map((metric) => Math.max(metric.sand, metric.solid, metric.concrete)),
+        maxRadius,
+        360
+      ),
+    [categoryMetrics, maxRadius]
+  );
+
   const hoveredIndex = hoveredCategory
     ? CATEGORY_ORDER.indexOf(hoveredCategory)
     : null;
@@ -419,13 +731,19 @@ function IslandScene({
   return (
     <>
       {/* Ocean floor */}
-      <OceanFloor radius={maxRadius} />
+      <OceanFloor shorelineProfile={shorelineProfile} radius={maxRadius} />
 
       {/* Animated ocean water */}
-      <Ocean radius={maxRadius} />
+      <Ocean shorelineProfile={shorelineProfile} radius={maxRadius} />
 
       {/* Island terrain */}
       <IslandTerrain
+        categoryMetrics={categoryMetrics}
+        maxRadius={maxRadius}
+      />
+
+      {/* Layer contours to match 2D silhouette readability */}
+      <LayerContours
         categoryMetrics={categoryMetrics}
         maxRadius={maxRadius}
       />
@@ -447,10 +765,11 @@ function IslandScene({
       )}
 
       {/* Lighting */}
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 8, 5]} intensity={0.9} />
-      <directionalLight position={[-4, 6, -4]} intensity={0.3} />
-      <hemisphereLight color="#b0d0f0" groundColor="#2d4a3e" intensity={0.4} />
+      <ambientLight intensity={0.42} />
+      <directionalLight position={[5.6, 6.2, -2.2]} intensity={1.06} color="#ffd7ab" />
+      <directionalLight position={[-4.6, 3.8, 4.1]} intensity={0.46} color="#93cdf8" />
+      <hemisphereLight color="#93cbf2" groundColor="#1a3550" intensity={0.56} />
+      <pointLight position={[0, 0.75, 0]} color="#65b9f2" intensity={0.26} distance={7.4} />
     </>
   );
 }
@@ -492,7 +811,7 @@ export function Island3D({
           far: 100
         }}
         gl={{ antialias: true, alpha: false }}
-        style={{ background: "linear-gradient(180deg, #1a2a4a 0%, #0a1628 100%)" }}
+        style={{ background: "#051328" }}
       >
         <IslandScene
           model={model}

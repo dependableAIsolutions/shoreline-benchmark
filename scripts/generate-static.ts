@@ -23,6 +23,16 @@ interface SampleResult {
   patternLabel: string;
 }
 
+interface FullTrialResult extends SampleResult {
+  timestamp: string;
+}
+
+interface FullTrialsIndexEntry {
+  file: string;
+  totalTrials: number;
+  representativeSamples: number;
+}
+
 function classifyPattern(trial: RawTrial): { pattern: SampleResult["pattern"]; patternLabel: string } {
   const isCorrect = trial.phase2.isCorrect || (trial.phase2.partialScore !== undefined && trial.phase2.partialScore >= 0.7);
   const p3Confidence = trial.phase3.confidence ?? 50;
@@ -48,7 +58,7 @@ function isValidTrial(trial: RawTrial): boolean {
   );
 }
 
-function createSample(trial: RawTrial, pattern: SampleResult["pattern"], patternLabel: string): SampleResult {
+function createTrialResult(trial: RawTrial, pattern: SampleResult["pattern"], patternLabel: string): FullTrialResult {
   return {
     category: trial.category,
     difficulty: trial.difficulty,
@@ -71,12 +81,45 @@ function createSample(trial: RawTrial, pattern: SampleResult["pattern"], pattern
       confidence: trial.phase3.confidence
     },
     pattern,
-    patternLabel
+    patternLabel,
+    timestamp: trial.timestamp
   };
 }
 
-async function extractSampleResponses(rawResponsesPath: string): Promise<SampleResult[]> {
+function toSampleResult(trial: FullTrialResult): SampleResult {
+  return {
+    category: trial.category,
+    difficulty: trial.difficulty,
+    phase1: trial.phase1,
+    phase2: trial.phase2,
+    phase3: trial.phase3,
+    pattern: trial.pattern,
+    patternLabel: trial.patternLabel
+  };
+}
+
+function toRepresentativeSamples(trials: FullTrialResult[]): SampleResult[] {
   const categorySamples = new Map<string, SampleResult>();
+
+  for (const trial of trials) {
+    // Keep sample view clean for quick scanning.
+    if (!isValidTrial(trial)) continue;
+
+    // One sample per category, prefer true_positive if available
+    if (!categorySamples.has(trial.category)) {
+      categorySamples.set(trial.category, toSampleResult(trial));
+    } else if (trial.pattern === "true_positive" && categorySamples.get(trial.category)?.pattern !== "true_positive") {
+      categorySamples.set(trial.category, toSampleResult(trial));
+    }
+  }
+
+  return [...categorySamples.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([, sample]) => sample);
+}
+
+async function extractFullTrialResponses(rawResponsesPath: string): Promise<FullTrialResult[]> {
+  const allTrials: FullTrialResult[] = [];
 
   try {
     const rl = createInterface({
@@ -87,28 +130,21 @@ async function extractSampleResponses(rawResponsesPath: string): Promise<SampleR
     for await (const line of rl) {
       if (!line.trim()) continue;
       const trial = JSON.parse(line) as RawTrial;
-
-      // Skip trials with empty responses (timeouts, failures)
-      if (!isValidTrial(trial)) continue;
-
       const { pattern, patternLabel } = classifyPattern(trial);
-
-      // One sample per category, prefer true_positive if available
-      if (!categorySamples.has(trial.category)) {
-        categorySamples.set(trial.category, createSample(trial, pattern, patternLabel));
-      } else if (pattern === "true_positive" && categorySamples.get(trial.category)?.pattern !== "true_positive") {
-        // Upgrade to true_positive if we had a different pattern
-        categorySamples.set(trial.category, createSample(trial, pattern, patternLabel));
-      }
+      allTrials.push(createTrialResult(trial, pattern, patternLabel));
     }
   } catch {
     // File might not exist
   }
 
-  // Return samples sorted by category
-  return [...categorySamples.entries()]
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([, sample]) => sample);
+  return allTrials;
+}
+
+function modelIdToFileStem(modelId: string): string {
+  return modelId
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function parseArg(name: string): string | undefined {
@@ -177,23 +213,26 @@ async function findRunFiles(inputDir: string): Promise<RunInfo[]> {
 async function main(): Promise<void> {
   const input = parseArg("input") ?? path.join(process.cwd(), "results");
   const output = parseArg("output") ?? path.join(process.cwd(), "apps", "web", "src", "data");
+  const publicOutput =
+    parseArg("publicOutput") ?? path.join(process.cwd(), "apps", "web", "public", "data", "full-trials");
 
   const runInfos = await findRunFiles(input);
-  const results: Array<{ result: ModelResult; samples: SampleResult[]; runDir: string }> = [];
+  const results: Array<{ result: ModelResult; samples: SampleResult[]; fullTrials: FullTrialResult[]; runDir: string }> = [];
 
   for (const { scoreFile, rawResponsesFile } of runInfos) {
     const content = await readFile(scoreFile, "utf8");
     const result = JSON.parse(content) as ModelResult;
-    const samples = await extractSampleResponses(rawResponsesFile);
-    results.push({ result, samples, runDir: path.dirname(scoreFile) });
+    const fullTrials = await extractFullTrialResponses(rawResponsesFile);
+    const samples = toRepresentativeSamples(fullTrials);
+    results.push({ result, samples, fullTrials, runDir: path.dirname(scoreFile) });
   }
 
   // Keep only the latest run per model
-  const latestByModel = new Map<string, { result: ModelResult; samples: SampleResult[]; runDir: string }>();
-  for (const { result, samples, runDir } of results) {
+  const latestByModel = new Map<string, { result: ModelResult; samples: SampleResult[]; fullTrials: FullTrialResult[]; runDir: string }>();
+  for (const { result, samples, fullTrials, runDir } of results) {
     const existing = latestByModel.get(result.modelId);
     if (!existing || isBetterRun({ result, samples }, existing)) {
-      latestByModel.set(result.modelId, { result, samples, runDir });
+      latestByModel.set(result.modelId, { result, samples, fullTrials, runDir });
     }
   }
 
@@ -207,6 +246,7 @@ async function main(): Promise<void> {
   }
 
   await mkdir(output, { recursive: true });
+  await mkdir(publicOutput, { recursive: true });
 
   // Write results
   const jsonPath = path.join(output, "results.generated.json");
@@ -236,6 +276,33 @@ export const samplesByModel: Record<string, SampleResult[]> = ${JSON.stringify(s
   await writeFile(samplesPath, samplesContent);
   await writeFile(samplesJson, JSON.stringify(samplesByModel, null, 2));
 
+  const fullTrialsIndexByModel: Record<string, FullTrialsIndexEntry> = {};
+  for (const { result, samples, fullTrials } of latest) {
+    const fileStem = modelIdToFileStem(result.modelId);
+    const fileName = `${fileStem}.json`;
+    const filePath = path.join(publicOutput, fileName);
+    await writeFile(filePath, JSON.stringify(fullTrials, null, 2));
+    fullTrialsIndexByModel[result.modelId] = {
+      file: `/data/full-trials/${fileName}`,
+      totalTrials: fullTrials.length,
+      representativeSamples: samples.length
+    };
+  }
+
+  const fullIndexTsPath = path.join(output, "full-trials-index.generated.ts");
+  const fullIndexJsonPath = path.join(output, "full-trials-index.generated.json");
+  const fullIndexContent = `export interface FullTrialsIndexEntry {
+  file: string;
+  totalTrials: number;
+  representativeSamples: number;
+}
+
+export const fullTrialsIndexByModel: Record<string, FullTrialsIndexEntry> = ${JSON.stringify(fullTrialsIndexByModel, null, 2)};
+`;
+
+  await writeFile(fullIndexTsPath, fullIndexContent);
+  await writeFile(fullIndexJsonPath, JSON.stringify(fullTrialsIndexByModel, null, 2));
+
   for (const selected of latest) {
     const coverage = categoriesWithTrials(selected.result);
     console.log(
@@ -246,6 +313,8 @@ export const samplesByModel: Record<string, SampleResult[]> = ${JSON.stringify(s
   console.log(`Wrote ${latestResults.length} model result(s) to ${jsonPath}`);
   console.log(`Wrote ${tsPath}`);
   console.log(`Wrote sample responses for ${Object.keys(samplesByModel).length} model(s) to ${samplesPath}`);
+  console.log(`Wrote full trial index to ${fullIndexTsPath}`);
+  console.log(`Wrote full trial files to ${publicOutput}`);
 }
 
 main().catch((error) => {
