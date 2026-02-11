@@ -184,4 +184,19 @@ export const metricTooltips = {
       <p className="mt-1 text-[10px] text-[#887a69]">Formula: 100 - avg calibration error</p>
     </div>
   ),
+  invalidConfidence: (
+    <div>
+      <div className="mb-1 font-semibold text-[#F87171]">Invalid Confidence Rate</div>
+      <p>
+        Percentage of trials where confidence extraction failed. This happens when the model
+        times out, returns empty responses, or doesn't include a parseable confidence value
+        in Phase 1 (prediction) or Phase 3 (self-evaluation).
+      </p>
+      <p className="mt-1.5">
+        A high invalid rate typically indicates API issues (timeouts, rate limits) or that
+        the model doesn't follow the confidence format instructions. These trials are excluded
+        from calibration calculations.
+      </p>
+    </div>
+  ),
 };

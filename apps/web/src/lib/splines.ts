@@ -37,8 +37,8 @@ export function polygonPath(points: Point[]): string {
 }
 
 /**
- * Monotone-preserving radial spline path.
- * Uses quadratic Bezier curves with control points constrained to prevent overshoot.
+ * Smooth radial spline path using cubic Bezier curves with Catmull-Rom-derived control points.
+ * Creates smooth, flowing curves while preserving the overall shape defined by the data points.
  * Uses raw metric values (0-100) without artificial capping/expansion so geometry
  * directly reflects benchmark scores.
  *
@@ -62,22 +62,42 @@ export function monotoneRadialPath(
   const getRadius = (i: number) => radii[((i % n) + n) % n];
   const getPoint = (i: number, r: number) => polarToXY(cx, cy, i * step, r);
 
-  let path = "";
+  // Generate smooth control points using Catmull-Rom tangents
+  const tension = 0.35; // Lower = smoother curves, higher = tighter to data points
+  const controlPoints: Array<{ cp1: Point; cp2: Point }> = [];
+
   for (let i = 0; i < n; i++) {
+    const r0 = getRadius(i - 1);
     const r1 = getRadius(i);
     const r2 = getRadius(i + 1);
+    const r3 = getRadius(i + 2);
+
+    const p0 = getPoint(i - 1, r0);
     const p1 = getPoint(i, r1);
     const p2 = getPoint(i + 1, r2);
+    const p3 = getPoint(i + 2, r3);
 
-    // Control point at midpoint angle, slightly smoothed but never expanded past neighbors.
-    const midAngle = (i + 0.5) * step;
-    const avgR = (r1 + r2) / 2;
-    const maxR = Math.max(r1, r2);
-    const controlR = Math.min(avgR * 1.02, maxR);
-    const cp = polarToXY(cx, cy, midAngle, controlR);
+    // Calculate control points using Catmull-Rom tangents
+    const cp1x = p1.x + (p2.x - p0.x) * tension;
+    const cp1y = p1.y + (p2.y - p0.y) * tension;
+    const cp2x = p2.x - (p3.x - p1.x) * tension;
+    const cp2y = p2.y - (p3.y - p1.y) * tension;
+
+    controlPoints.push({
+      cp1: { x: quantize(cp1x), y: quantize(cp1y) },
+      cp2: { x: quantize(cp2x), y: quantize(cp2y) }
+    });
+  }
+
+  // Build path with cubic Bezier curves
+  let path = "";
+  for (let i = 0; i < n; i++) {
+    const p1 = getPoint(i, getRadius(i));
+    const p2 = getPoint(i + 1, getRadius(i + 1));
+    const { cp1, cp2 } = controlPoints[i];
 
     if (i === 0) path += `M ${p1.x},${p1.y} `;
-    path += `Q ${cp.x},${cp.y} ${p2.x},${p2.y} `;
+    path += `C ${cp1.x},${cp1.y} ${cp2.x},${cp2.y} ${p2.x},${p2.y} `;
   }
 
   return `${path}Z`;

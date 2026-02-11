@@ -82,7 +82,33 @@ function OceanFloor({ radius }: { radius: number }) {
   );
 }
 
-/** Main island terrain mesh */
+/** Smooth Catmull-Rom interpolation for radial values */
+function smoothInterpolateAtAngle(values: number[], angleDeg: number): number {
+  const n = values.length;
+  const step = 360 / n;
+  const normalized = ((angleDeg % 360) + 360) % 360;
+  const catIdx = Math.floor(normalized / step);
+  const t = (normalized - catIdx * step) / step;
+
+  // Get four points for Catmull-Rom
+  const p0 = values[((catIdx - 1) % n + n) % n];
+  const p1 = values[catIdx];
+  const p2 = values[(catIdx + 1) % n];
+  const p3 = values[(catIdx + 2) % n];
+
+  // Catmull-Rom interpolation
+  const t2 = t * t;
+  const t3 = t2 * t;
+
+  return 0.5 * (
+    (2 * p1) +
+    (-p0 + p2) * t +
+    (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+    (-p0 + 3 * p1 - 3 * p2 + p3) * t3
+  );
+}
+
+/** Main island terrain mesh - layered like 2D visualization */
 function IslandTerrain({
   categoryMetrics,
   maxRadius
@@ -97,27 +123,27 @@ function IslandTerrain({
 
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
-    const radialSegments = 72;
-    const ringSegments = 32;
+    const radialSegments = 128;
+    const ringSegments = 48;
 
     const vertices: number[] = [];
     const indices: number[] = [];
     const colors: number[] = [];
 
-    // Colors
+    // Colors - matching 2D visualization
     const sandColor = new THREE.Color("#d4a574");
-    const sandDarkColor = new THREE.Color("#b8956a");
-    const grassColor = new THREE.Color("#4a7c4e");
-    const grassDarkColor = new THREE.Color("#3d6840");
-    const concreteColor = new THREE.Color("#8899aa");
-    const concreteDarkColor = new THREE.Color("#6b7a8a");
+    const sandDarkColor = new THREE.Color("#c49564");
+    const grassColor = new THREE.Color("#3da84a"); // Match 2D solid green
+    const grassDarkColor = new THREE.Color("#2d8838");
+    const concreteColor = new THREE.Color("#8A9CAA"); // Match 2D concrete
+    const concreteDarkColor = new THREE.Color("#6a7a8a");
+    const earthColor = new THREE.Color("#5a4534");
 
-    // Height constants - concrete plateau is FLAT
-    const CONCRETE_HEIGHT = 0.35;  // Flat plateau height
-    const SOLID_MAX_HEIGHT = 0.30; // Where solid meets concrete
-    const SOLID_MIN_HEIGHT = 0.08; // Where solid meets sand
-    const SAND_HEIGHT = 0.03;      // Beach level
-    const WATER_HEIGHT = -0.02;    // Below water
+    // Height constants - layered structure
+    const CONCRETE_HEIGHT = 0.35;   // Concrete plateau (top layer)
+    const SOLID_HEIGHT = 0.18;      // Solid/grass terrain (middle layer)
+    const SAND_HEIGHT = 0.03;       // Sand beach (bottom layer)
+    const WATER_HEIGHT = -0.02;
 
     for (let ring = 0; ring <= ringSegments; ring++) {
       const ringT = ring / ringSegments;
@@ -127,81 +153,103 @@ function IslandTerrain({
         const angle = (seg / radialSegments) * 360;
         const rad = (angle - 90) * Math.PI / 180;
 
-        // Get interpolated values at this angle
-        const sandVal = interpolateAtAngle(sandValues, angle) / 100;
-        const solidVal = interpolateAtAngle(solidValues, angle) / 100;
-        const concreteVal = interpolateAtAngle(concreteValues, angle) / 100;
+        // Get smoothly interpolated values at this angle
+        const sandVal = Math.max(0, smoothInterpolateAtAngle(sandValues, angle)) / 100;
+        const solidVal = Math.max(0, smoothInterpolateAtAngle(solidValues, angle)) / 100;
+        const concreteVal = Math.max(0, smoothInterpolateAtAngle(concreteValues, angle)) / 100;
 
-        // Use raw radial extents from scores. This preserves cliff/valley topology:
-        // solid may extend beyond sand when observed capability exceeds claimed territory.
+        // Calculate radii - these define the EXTENT of each layer
         const sandRadius = sandVal * maxRadius;
         const solidRadius = solidVal * maxRadius;
         const concreteRadius = concreteVal * maxRadius;
+
+        // The island extends to the maximum of all layers
         const outerRadius = Math.max(sandRadius, solidRadius, concreteRadius);
 
         let height = WATER_HEIGHT;
         let color = new THREE.Color("#0a1628");
 
         if (baseRadius <= outerRadius && outerRadius > 0.01) {
-          // We're on the island
+          // We're on the island - determine which layer we're on based on 2D logic
+          // In 2D: sand is outer ring, solid is middle ring, concrete is inner ring
+          // Each layer extends from center outward to its radius
 
-          if (baseRadius <= concreteRadius && concreteRadius > 0.01) {
-            // CONCRETE ZONE - flat plateau
-            height = CONCRETE_HEIGHT;
+          const onConcrete = baseRadius <= concreteRadius && concreteRadius > 0.01;
+          const onSolid = baseRadius <= solidRadius && solidRadius > 0.01;
+          const onSand = baseRadius <= sandRadius;
 
-            // Very subtle texture variation, but keep it FLAT
-            const textureNoise = noise(baseRadius * 5, angle * 0.05, 1) * 0.01;
-            height += textureNoise;
+          if (onConcrete) {
+            // CONCRETE LAYER - raised plateau
+            // Check distance from concrete edge for cliff effect
+            const distFromEdge = concreteRadius - baseRadius;
+            const edgeWidth = Math.min(0.12, concreteRadius * 0.3);
 
-            // Slight color variation
-            const colorVar = noise(baseRadius * 8, angle * 0.08, 2) * 0.5 + 0.5;
-            color = concreteColor.clone().lerp(concreteDarkColor, colorVar * 0.3);
+            if (distFromEdge < edgeWidth && concreteRadius > 0.05) {
+              // Edge of concrete - show cliff/slope with grass underneath
+              const edgeT = distFromEdge / edgeWidth;
+              const smoothEdge = edgeT * edgeT * (3 - 2 * edgeT);
 
-          } else if (baseRadius <= solidRadius && solidRadius > 0.01) {
-            // SOLID ZONE - sloped terrain from plateau to beach
-            const solidT = (baseRadius - concreteRadius) / Math.max(solidRadius - concreteRadius, 0.01);
+              // Slope from solid height up to concrete height
+              height = SOLID_HEIGHT + (CONCRETE_HEIGHT - SOLID_HEIGHT) * smoothEdge;
 
-            // Smooth slope from concrete plateau down to sand level
-            // Use ease-out curve for natural slope
-            const slopeT = 1 - Math.pow(1 - solidT, 2);
-            height = CONCRETE_HEIGHT * (1 - slopeT) + SOLID_MIN_HEIGHT * slopeT;
+              // Blend colors: grass at bottom of cliff, concrete at top
+              const colorVar = noise(baseRadius * 8, angle * 0.08, 2) * 0.5 + 0.5;
+              color = grassColor.clone().lerp(concreteColor, smoothEdge);
+              color.lerp(earthColor, (1 - smoothEdge) * 0.3 * colorVar);
+            } else {
+              // Interior concrete plateau
+              height = CONCRETE_HEIGHT;
+              const textureNoise = noise(baseRadius * 5, angle * 0.05, 1) * 0.006;
+              height += textureNoise;
 
-            // Gentle rolling hills variation
-            const hillNoise = noise(baseRadius * 4, angle * 0.04, 3) * 0.02;
-            height += hillNoise * (1 - solidT); // Less variation near beach
-
-            // Color variation for grass
-            const colorVar = noise(baseRadius * 6, angle * 0.06, 4) * 0.5 + 0.5;
-            color = grassColor.clone().lerp(grassDarkColor, colorVar * 0.4);
-
-          } else if (baseRadius <= sandRadius && sandRadius > 0.01) {
-            // SAND ZONE - low beach
-            const beachT = (baseRadius - solidRadius) / Math.max(sandRadius - solidRadius, 0.01);
-
-            // Gentle slope from grass to water
-            const slopeT = beachT * beachT; // ease-in for gradual water entry
-            height = SOLID_MIN_HEIGHT * (1 - beachT) + SAND_HEIGHT * beachT;
-
-            // At the very edge, slope into water
-            if (beachT > 0.8) {
-              const waterT = (beachT - 0.8) / 0.2;
-              height = height * (1 - waterT) + WATER_HEIGHT * waterT;
+              const colorVar = noise(baseRadius * 8, angle * 0.08, 2) * 0.5 + 0.5;
+              color = concreteColor.clone().lerp(concreteDarkColor, colorVar * 0.2);
             }
 
-            // Sand color variation
+          } else if (onSolid) {
+            // SOLID/GRASS LAYER - the green terrain between concrete and sand
+            // This shows between concrete edge and solid edge
+            const innerBound = concreteRadius;
+            const outerBound = solidRadius;
+            const span = Math.max(outerBound - innerBound, 0.01);
+            const t = (baseRadius - innerBound) / span;
+
+            // Gentle slope from near-concrete height down toward sand level
+            const startH = concreteRadius > 0.01 ? SOLID_HEIGHT : SOLID_HEIGHT + 0.05;
+            const endH = SAND_HEIGHT + 0.04;
+            const slopeT = t * t * (3 - 2 * t); // smoothstep
+            height = startH * (1 - slopeT) + endH * slopeT;
+
+            // Rolling hills variation
+            const hillNoise = noise(baseRadius * 4, angle * 0.04, 3) * 0.02;
+            height += hillNoise * (1 - t * 0.5);
+
+            // Grass color with variation
+            const colorVar = noise(baseRadius * 6, angle * 0.06, 4) * 0.5 + 0.5;
+            color = grassColor.clone().lerp(grassDarkColor, colorVar * 0.35);
+
+          } else if (onSand) {
+            // SAND/BEACH LAYER - outer ring
+            const innerBound = Math.max(solidRadius, concreteRadius);
+            const span = Math.max(sandRadius - innerBound, 0.01);
+            const t = (baseRadius - innerBound) / span;
+
+            // Beach slopes gently to water
+            const startH = innerBound > 0.01 ? SAND_HEIGHT + 0.03 : SAND_HEIGHT + 0.08;
+            height = startH * (1 - t) + SAND_HEIGHT * t;
+
+            // Slope into water at the very edge
+            if (t > 0.85) {
+              const waterT = (t - 0.85) / 0.15;
+              height = height * (1 - waterT * waterT) + WATER_HEIGHT * (waterT * waterT);
+            }
+
+            // Sand color
             const colorVar = noise(baseRadius * 10, angle * 0.1, 5) * 0.5 + 0.5;
-            color = sandColor.clone().lerp(sandDarkColor, colorVar * 0.3);
-          } else {
-            // Outer cliff/rock when observed capability extends beyond claimed sand.
-            // Keep low-detail terrain with solid coloring to visualize "cliff" profiles.
-            const outerT = (baseRadius - solidRadius) / Math.max(outerRadius - solidRadius, 0.01);
-            height = SOLID_MIN_HEIGHT * (1 - outerT) + SAND_HEIGHT * outerT;
-            const colorVar = noise(baseRadius * 6, angle * 0.06, 6) * 0.5 + 0.5;
-            color = grassColor.clone().lerp(grassDarkColor, colorVar * 0.4);
+            color = sandColor.clone().lerp(sandDarkColor, colorVar * 0.25);
           }
         }
 
-        // Apply coordinates
         const x = quantize(baseRadius * Math.cos(rad));
         const z = quantize(baseRadius * Math.sin(rad));
         const y = quantize(height);
@@ -236,8 +284,8 @@ function IslandTerrain({
       <meshStandardMaterial
         vertexColors
         side={THREE.DoubleSide}
-        roughness={0.85}
-        metalness={0.05}
+        roughness={0.75}
+        metalness={0.02}
       />
     </mesh>
   );
@@ -423,7 +471,7 @@ export function Island3D({
     return (
       <div
         style={{ width: "100%", maxWidth: size, height: size }}
-        className="bg-[#0a1628] rounded-lg flex items-center justify-center"
+        className="mx-auto flex items-center justify-center rounded-lg bg-[#0a1628]"
       >
         <span className="text-[#4a6a8a] font-mono text-sm">Loading 3D view...</span>
       </div>
@@ -433,7 +481,7 @@ export function Island3D({
   return (
     <div
       style={{ width: "100%", maxWidth: size, height: size }}
-      className="rounded-lg overflow-hidden"
+      className="mx-auto overflow-hidden rounded-lg"
       onMouseLeave={() => onHoverCategory?.(null)}
     >
       <Canvas

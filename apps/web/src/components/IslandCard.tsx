@@ -61,9 +61,11 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
         <span className="rounded border border-white/10 px-2 py-0.5">{totalTrials} trials</span>
         {isLowSampleRun && <span className="rounded border border-[#F59E0B]/40 px-2 py-0.5 text-[#F59E0B]">quick run</span>}
         {model.metadata.invalidTrials > 0 && (
-          <span className="rounded border border-[#F87171]/40 px-2 py-0.5 text-[#F87171]">
-            {invalidRate.toFixed(1)}% invalid confidence
-          </span>
+          <Tooltip content={metricTooltips.invalidConfidence} position="bottom" maxWidth={320}>
+            <span className="rounded border border-[#F87171]/40 px-2 py-0.5 text-[#F87171]">
+              {invalidRate.toFixed(1)}% invalid confidence
+            </span>
+          </Tooltip>
         )}
       </div>
 

@@ -50,7 +50,7 @@ export function Island({
   return (
     <svg
       viewBox={`0 0 ${size} ${size}`}
-      className="w-full"
+      className="mx-auto block w-full"
       style={{ maxWidth: size }}
       onMouseLeave={() => onHoverCategory?.(null)}
     >

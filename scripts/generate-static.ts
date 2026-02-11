@@ -40,12 +40,43 @@ function classifyPattern(trial: RawTrial): { pattern: SampleResult["pattern"]; p
   }
 }
 
+function isValidTrial(trial: RawTrial): boolean {
+  // Filter out trials with empty responses (timeouts, failures)
+  return Boolean(
+    trial.phase1.response?.trim() &&
+    trial.phase2.response?.trim()
+  );
+}
+
+function createSample(trial: RawTrial, pattern: SampleResult["pattern"], patternLabel: string): SampleResult {
+  return {
+    category: trial.category,
+    difficulty: trial.difficulty,
+    phase1: {
+      prompt: trial.phase1.prompt,
+      response: trial.phase1.response,
+      confidence: trial.phase1.confidence
+    },
+    phase2: {
+      prompt: trial.phase2.prompt,
+      response: trial.phase2.response,
+      extractedAnswer: trial.phase2.extractedAnswer,
+      correctAnswer: trial.phase2.correctAnswer,
+      isCorrect: trial.phase2.isCorrect,
+      partialScore: trial.phase2.partialScore
+    },
+    phase3: {
+      prompt: trial.phase3.prompt,
+      response: trial.phase3.response,
+      confidence: trial.phase3.confidence
+    },
+    pattern,
+    patternLabel
+  };
+}
+
 async function extractSampleResponses(rawResponsesPath: string): Promise<SampleResult[]> {
-  const samples: SampleResult[] = [];
-  const seenCategories = new Set<string>();
-  const seenCategoryPatterns = new Set<string>();
-  const patternCounts = { true_positive: 0, true_negative: 0, false_confidence: 0, blind_spot: 0 };
-  const maxPerPattern = 3;
+  const categorySamples = new Map<string, SampleResult>();
 
   try {
     const rl = createInterface({
@@ -56,73 +87,28 @@ async function extractSampleResponses(rawResponsesPath: string): Promise<SampleR
     for await (const line of rl) {
       if (!line.trim()) continue;
       const trial = JSON.parse(line) as RawTrial;
+
+      // Skip trials with empty responses (timeouts, failures)
+      if (!isValidTrial(trial)) continue;
+
       const { pattern, patternLabel } = classifyPattern(trial);
 
-      if (!seenCategories.has(trial.category)) {
-        seenCategories.add(trial.category);
-        samples.push({
-          category: trial.category,
-          difficulty: trial.difficulty,
-          phase1: {
-            prompt: trial.phase1.prompt,
-            response: trial.phase1.response,
-            confidence: trial.phase1.confidence
-          },
-          phase2: {
-            prompt: trial.phase2.prompt,
-            response: trial.phase2.response,
-            extractedAnswer: trial.phase2.extractedAnswer,
-            correctAnswer: trial.phase2.correctAnswer,
-            isCorrect: trial.phase2.isCorrect,
-            partialScore: trial.phase2.partialScore
-          },
-          phase3: {
-            prompt: trial.phase3.prompt,
-            response: trial.phase3.response,
-            confidence: trial.phase3.confidence
-          },
-          pattern,
-          patternLabel
-        });
-      }
-
-      // Collect diverse samples: one per category, plus interesting patterns
-      const categoryKey = `${trial.category}-${pattern}`;
-      if (!seenCategoryPatterns.has(categoryKey) && patternCounts[pattern] < maxPerPattern) {
-        seenCategoryPatterns.add(categoryKey);
-        patternCounts[pattern]++;
-        // Strip extra fields from phase data
-        samples.push({
-          category: trial.category,
-          difficulty: trial.difficulty,
-          phase1: {
-            prompt: trial.phase1.prompt,
-            response: trial.phase1.response,
-            confidence: trial.phase1.confidence
-          },
-          phase2: {
-            prompt: trial.phase2.prompt,
-            response: trial.phase2.response,
-            extractedAnswer: trial.phase2.extractedAnswer,
-            correctAnswer: trial.phase2.correctAnswer,
-            isCorrect: trial.phase2.isCorrect,
-            partialScore: trial.phase2.partialScore
-          },
-          phase3: {
-            prompt: trial.phase3.prompt,
-            response: trial.phase3.response,
-            confidence: trial.phase3.confidence
-          },
-          pattern,
-          patternLabel
-        });
+      // One sample per category, prefer true_positive if available
+      if (!categorySamples.has(trial.category)) {
+        categorySamples.set(trial.category, createSample(trial, pattern, patternLabel));
+      } else if (pattern === "true_positive" && categorySamples.get(trial.category)?.pattern !== "true_positive") {
+        // Upgrade to true_positive if we had a different pattern
+        categorySamples.set(trial.category, createSample(trial, pattern, patternLabel));
       }
     }
   } catch {
     // File might not exist
   }
 
-  return samples;
+  // Return samples sorted by category
+  return [...categorySamples.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([, sample]) => sample);
 }
 
 function parseArg(name: string): string | undefined {
