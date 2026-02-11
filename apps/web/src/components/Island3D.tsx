@@ -10,6 +10,8 @@ import { CATEGORY_ORDER, type CategoryKey, type ModelResult } from "../lib/types
 interface Island3DProps {
   model: ModelResult;
   size?: number;
+  width?: number;
+  height?: number;
   hoveredCategory: CategoryKey | null;
   onHoverCategory?: (category: CategoryKey | null) => void;
 }
@@ -775,10 +777,14 @@ function IslandScene({
 export function Island3D({
   model,
   size = 480,
+  width,
+  height,
   hoveredCategory,
   onHoverCategory
 }: Island3DProps) {
   const [mounted, setMounted] = useState(false);
+  const containerWidth = width ?? size;
+  const containerHeight = height ?? size;
 
   useEffect(() => {
     setMounted(true);
@@ -787,7 +793,7 @@ export function Island3D({
   if (!mounted) {
     return (
       <div
-        style={{ width: "100%", maxWidth: size, height: size }}
+        style={{ width: "100%", maxWidth: containerWidth, height: containerHeight }}
         className="mx-auto flex items-center justify-center rounded-lg bg-[#0a1628]"
       >
         <span className="text-[#4a6a8a] font-mono text-sm">Loading 3D view...</span>
@@ -797,7 +803,7 @@ export function Island3D({
 
   return (
     <div
-      style={{ width: "100%", maxWidth: size, height: size }}
+      style={{ width: "100%", maxWidth: containerWidth, height: containerHeight }}
       className="mx-auto overflow-hidden rounded-lg"
       onMouseLeave={() => onHoverCategory?.(null)}
     >

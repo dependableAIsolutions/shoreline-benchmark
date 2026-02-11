@@ -132,7 +132,8 @@ export function IslandCard({ model, hoveredCategory, onHoverCategory, compact = 
       ) : (
         <Island3D
           model={model}
-          size={compact ? 420 : 520}
+          width={compact ? 420 : 960}
+          height={compact ? 420 : 540}
           hoveredCategory={hoveredCategory}
           onHoverCategory={onHoverCategory}
         />
