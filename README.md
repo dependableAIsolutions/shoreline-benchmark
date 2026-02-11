@@ -63,6 +63,7 @@ Common keys:
 - `OPENROUTER_TIMEOUT_MS` (default: `120000`)
 - `OPENROUTER_INPUT_COST_PER_MILLION` (optional fallback when API cost is absent)
 - `OPENROUTER_OUTPUT_COST_PER_MILLION` (optional fallback when API cost is absent)
+- `NEXT_PUBLIC_SITE_URL` (optional; sets canonical/OG base URL, default: `https://shoreline-714c6.web.app`)
 - `LOCAL_MODEL_API_URL` (default: `http://localhost:5555/api/v1/chat`)
 - `LOCAL_MODEL_TIMEOUT_MS`
 - `LOCAL_MODEL_SYSTEM_PROMPT`
