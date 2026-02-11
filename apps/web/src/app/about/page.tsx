@@ -1,8 +1,34 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+const shorelineConceptArt = [
+  {
+    id: "home",
+    srcSmall: "/images/shoreline-image-home-960.webp",
+    srcLarge: "/images/shoreline-image-home-1536.webp",
+    alt: "Painterly shoreline concept showing two layered islands at sunrise with reflective ocean water."
+  },
+  {
+    id: "depth",
+    srcSmall: "/images/shoreline-image-960.webp",
+    srcLarge: "/images/shoreline-image-1536.webp",
+    alt: "Dark blue conceptual island scene labeled capability depth, calibration, and failure awareness."
+  }
+] as const;
 
 export default function AboutPage() {
+  const [activeArtIndex, setActiveArtIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveArtIndex((current) => (current + 1) % shorelineConceptArt.length);
+    }, 7000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   return (
     <main className="mx-auto max-w-[900px] px-5 py-8 text-[#E8E0D4]">
       <header className="mb-8">
@@ -20,6 +46,35 @@ export default function AboutPage() {
           Understanding the metacognitive benchmark
         </p>
       </header>
+
+      <section className="mb-10 overflow-hidden rounded-2xl border border-white/10 bg-black/20">
+        <div className="relative aspect-[3/2] w-full md:aspect-[16/9]">
+          {shorelineConceptArt.map((art, index) => (
+            <picture
+              key={art.id}
+              className={`absolute inset-0 h-full w-full transition-opacity duration-[1800ms] ${
+                activeArtIndex === index ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <source
+                type="image/webp"
+                srcSet={`${art.srcSmall} 960w, ${art.srcLarge} 1536w`}
+                sizes="(max-width: 900px) 100vw, 900px"
+              />
+              <img
+                src={art.srcLarge}
+                alt={art.alt}
+                width={1536}
+                height={1024}
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
+            </picture>
+          ))}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#070f1f]/30 via-transparent to-transparent" />
+        </div>
+      </section>
 
       <article className="space-y-10">
         {/* What is Shoreline */}
