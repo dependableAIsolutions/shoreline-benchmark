@@ -117,9 +117,9 @@ function Ocean({
         const shorelineRadius = sampleLayerRadius(shorelineProfile, angle);
         const distanceFromShore = Math.max(0, radialDistance - shorelineRadius);
 
-        const lagoonT = smoothstep(0, radius * 0.58, distanceFromShore);
-        const shelfT = smoothstep(radius * 0.34, radius * 2.45, distanceFromShore);
-        const deepT = smoothstep(radius * 1.9, radius * 5.0, distanceFromShore);
+        const lagoonT = smoothstep(0, radius * 0.34, distanceFromShore);
+        const shelfT = smoothstep(radius * 0.14, radius * 1.35, distanceFromShore);
+        const deepT = smoothstep(radius * 0.85, radius * 2.8, distanceFromShore);
 
         const reefPatch = (noise(x * 0.7, z * 0.7, 21) + 1) * 0.5;
         const shallowPatchBoost = (1 - deepT) * 0.2 * reefPatch;
@@ -128,14 +128,14 @@ function Ocean({
         const color = coastColor.clone()
           .lerp(lagoonColor, lagoonT)
           .lerp(shelfColor, shelfT)
-          .lerp(deepColor, deepT * 0.88)
-          .lerp(abyssColor, deepT * 0.45)
+          .lerp(deepColor, deepT * 0.94)
+          .lerp(abyssColor, deepT * 0.58)
           .lerp(new THREE.Color("#ebffff"), shallowPatchBoost)
           .lerp(new THREE.Color("#0a3157"), deepPatch);
 
         // Feather far edges so the water does not read as a hard disc.
-        const edgeFade = smoothstep(radius * 4.0, radius * 5.2, radialDistance);
-        color.lerp(abyssColor, edgeFade * 0.34);
+        const edgeFade = smoothstep(radius * 3.2, radius * 5.2, radialDistance);
+        color.lerp(abyssColor, edgeFade * 0.38);
 
         vertices.push(quantize(x), quantize(-0.03), quantize(z));
         colors.push(color.r, color.g, color.b);
@@ -481,15 +481,13 @@ function IslandTerrain({
           // SAND/BEACH LAYER - outer ring
           const innerBound = Math.max(solidRadius, concreteRadius);
           const span = Math.max(sandRadius - innerBound, 0.01);
-          const t = (radialDistance - innerBound) / span;
+          const t = Math.max(0, Math.min(1, (radialDistance - innerBound) / span));
 
-          const startH = innerBound > 0.01 ? SAND_HEIGHT + 0.03 : SAND_HEIGHT + 0.08;
-          height = startH * (1 - t) + SAND_HEIGHT * t;
-
-          if (t > 0.85) {
-            const waterT = (t - 0.85) / 0.15;
-            height = height * (1 - waterT * waterT) + WATER_HEIGHT * (waterT * waterT);
-          }
+          const upperBeach = innerBound > 0.01 ? SAND_HEIGHT + 0.032 : SAND_HEIGHT + 0.085;
+          const beachFlattenT = smoothstep(0, 0.42, t);
+          const beachHeight = upperBeach * (1 - beachFlattenT) + (SAND_HEIGHT + 0.008) * beachFlattenT;
+          const shorelineT = smoothstep(0.42, 1, t);
+          height = beachHeight * (1 - shorelineT) + WATER_HEIGHT * shorelineT;
 
           const colorVar = noise(radialDistance * 10, angle * 0.1, 5) * 0.5 + 0.5;
           color = sandColor.clone().lerp(sandDarkColor, colorVar * 0.25);
@@ -503,7 +501,7 @@ function IslandTerrain({
           const syntheticBand = Math.max(outerRadius * 0.14, 0.065);
           const syntheticStart = Math.max(0, outerRadius - syntheticBand);
           const edgeT = smoothstep(syntheticStart, outerRadius, radialDistance);
-          const edgeBlend = edgeT * edgeT;
+          const edgeBlend = edgeT;
 
           height = height * (1 - edgeBlend) + WATER_HEIGHT * edgeBlend;
           color.lerp(sandDarkColor, edgeT * 0.28);
