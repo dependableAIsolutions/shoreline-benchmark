@@ -11,8 +11,24 @@ import type { CategoryKey } from "../lib/types";
 
 type Mode = "single" | "compare" | "leaderboard";
 
-function byConcreteDesc() {
-  return [...modelResults].sort((a, b) => b.aggregate.avgConcrete - a.aggregate.avgConcrete);
+function leaderboardScore(result: (typeof modelResults)[number]): number {
+  // Rank by verified capability first, while still rewarding failure-awareness.
+  return result.aggregate.avgSolid * 0.75 + result.aggregate.avgConcrete * 0.25;
+}
+
+function byLeaderboardScoreDesc() {
+  return [...modelResults].sort((left, right) => {
+    const delta = leaderboardScore(right) - leaderboardScore(left);
+    if (Math.abs(delta) > 1e-6) return delta;
+
+    const solidDelta = right.aggregate.avgSolid - left.aggregate.avgSolid;
+    if (Math.abs(solidDelta) > 1e-6) return solidDelta;
+
+    const concreteDelta = right.aggregate.avgConcrete - left.aggregate.avgConcrete;
+    if (Math.abs(concreteDelta) > 1e-6) return concreteDelta;
+
+    return left.aggregate.totalGap - right.aggregate.totalGap;
+  });
 }
 
 function hasNumber(value: unknown): value is number {
@@ -74,7 +90,7 @@ export default function HomePage() {
     [modelBId]
   );
 
-  const ranked = useMemo(() => byConcreteDesc(), []);
+  const ranked = useMemo(() => byLeaderboardScoreDesc(), []);
 
   return (
     <main className="mx-auto max-w-[1120px] px-5 py-8 text-[#E8E0D4]">
@@ -175,7 +191,7 @@ export default function HomePage() {
       {mode === "leaderboard" ? (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <h2 className="font-mono text-sm tracking-[0.16em] text-[#8c7d6b]">LEADERBOARD (by Concrete)</h2>
+            <h2 className="font-mono text-sm tracking-[0.16em] text-[#8c7d6b]">LEADERBOARD (75% Solid + 25% Concrete)</h2>
             <button
               type="button"
               onClick={() => setShowTelemetry((value) => !value)}
@@ -200,6 +216,7 @@ export default function HomePage() {
                 <tr className="border-b border-white/10 text-left font-mono text-[11px] tracking-[0.14em] text-[#5d5144]">
                   <th className="px-2 py-2">Rank</th>
                   <th className="px-2 py-2">Model</th>
+                  <th className="px-2 py-2">Score</th>
                   <th className="px-2 py-2">Concrete</th>
                   <th className="px-2 py-2">Solid</th>
                   <th className="px-2 py-2">Sand</th>
@@ -221,6 +238,7 @@ export default function HomePage() {
                   <tr key={result.modelId} className="border-b border-white/5 text-[#d8cfc2]">
                     <td className="px-2 py-2 font-mono">#{index + 1}</td>
                     <td className="px-2 py-2 font-semibold">{result.modelDisplayName}</td>
+                    <td className="px-2 py-2 font-semibold text-[#7ab8ad]">{leaderboardScore(result).toFixed(1)}</td>
                     <td className="px-2 py-2">{result.aggregate.avgConcrete.toFixed(1)}</td>
                     <td className="px-2 py-2">{result.aggregate.avgSolid.toFixed(1)}</td>
                     <td className="px-2 py-2">{result.aggregate.avgSand.toFixed(1)}</td>
