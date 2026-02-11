@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Footer } from "../components/Footer";
 
@@ -8,6 +8,11 @@ const SEO_TITLE = "Shoreline | Metacognitive Benchmark for AI Models";
 const SEO_DESCRIPTION =
   "Shoreline benchmarks AI model capability and self-awareness across sand (claimed), solid (verified), and concrete (failure-aware) depth so teams can compare trustworthiness, calibration, and risk.";
 
+export const viewport: Viewport = {
+  themeColor: "#051328",
+  colorScheme: "dark"
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -16,6 +21,16 @@ export const metadata: Metadata = {
   },
   description: SEO_DESCRIPTION,
   applicationName: "Shoreline",
+  manifest: "/site.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" }
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: ["/favicon.ico"]
+  },
   alternates: {
     canonical: "/"
   },
