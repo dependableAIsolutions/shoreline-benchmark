@@ -1,0 +1,33 @@
+# Shoreline — Metacognitive AI Benchmark
+
+> Built by Dependable AI Solutions (https://dependableaisolutions.com)
+
+## What Shoreline Is
+
+Shoreline is a metacognitive benchmark that measures how well AI models understand their own capabilities and limitations. Unlike traditional benchmarks that only test task performance, Shoreline evaluates the layer above: does the model know what it knows?
+
+## What Shoreline Measures
+
+Shoreline evaluates AI models across three core dimensions:
+
+- **Capability assessment** — Can the model accurately gauge which tasks it can and cannot perform?
+- **Self-knowledge (failure awareness)** — Does the model recognize when it is likely to be wrong, hallucinate, or produce unreliable output?
+- **Confidence calibration** — When the model says it is 90% confident, is it correct 90% of the time?
+
+These dimensions combine into a unified metacognitive score that reflects how trustworthy and self-aware a model's outputs are.
+
+## Who Shoreline Is For
+
+- **AI researchers** studying metacognition, calibration, and alignment
+- **Model developers** who need to benchmark self-awareness alongside raw performance
+- **AI safety teams** evaluating whether models can reliably flag their own uncertainty
+- **Enterprise AI teams** selecting models for high-stakes deployment where overconfidence is costly
+
+## How It Works
+
+Shoreline presents models with a structured set of tasks designed to probe self-assessment accuracy. It then compares the model's stated confidence against actual correctness to produce calibration curves, failure-detection rates, and composite metacognitive scores.
+
+## Links
+
+- Shoreline benchmark: https://shoreline.dependableaisolutions.com
+- Dependable AI Solutions: https://dependableaisolutions.com
