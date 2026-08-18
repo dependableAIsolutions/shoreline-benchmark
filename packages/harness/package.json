@@ -17,6 +17,6 @@
     "@shoreline/shared": "workspace:*"
   },
   "devDependencies": {
-    "vitest": "^3.0.0"
+    "vitest": "^3.2.7"
   }
 }
