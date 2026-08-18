@@ -25,12 +25,12 @@ export function Footer() {
             DAIS Home
           </a>
           <a
-            href="https://foundation.dependableaisolutions.com/"
+            href="https://services.findbusiness.ai"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#7c6f5e] transition-colors duration-200 hover:text-[#7ab8ad]"
           >
-            Foundation
+            FindBusiness Services
           </a>
         </nav>
       </div>
