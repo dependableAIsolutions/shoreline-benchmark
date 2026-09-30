@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { TrialResult } from "@shoreline/shared";
-import { computeCategoryScore } from "./calibration";
+import { computeAggregateScores, computeCategoryScore } from "./calibration";
 
 function makeTrial(
   difficulty: number,
@@ -102,6 +102,23 @@ describe("computeCategoryScore - shared depth axis", () => {
 });
 
 describe("computeCategoryScore - metacognition rates", () => {
+  it("excludes trials with unparseable confidence from benchmark scores", () => {
+    const validTrial = makeTrial(2, 80, true, 80);
+    const invalidTrial = makeTrial(50, 80, true, 80);
+    invalidTrial.phase1.confidence = null;
+    invalidTrial.phase3.confidence = null;
+
+    const score = computeCategoryScore("mult", [validTrial, invalidTrial], 26);
+    const validOnlyScore = computeCategoryScore("mult", [validTrial], 26);
+
+    expect(score.solid).toBe(validOnlyScore.solid);
+    expect(score.concrete).toBe(validOnlyScore.concrete);
+    expect(score.discernment).toBe(validOnlyScore.discernment);
+    expect(score.calibrationError).toBe(validOnlyScore.calibrationError);
+    expect(score.trialCount).toBe(1);
+    expect(computeAggregateScores([score])).toEqual(computeAggregateScores([validOnlyScore]));
+  });
+
   it("discernment rewards correct self-evaluation in both directions", () => {
     const score = computeCategoryScore(
       "mult",

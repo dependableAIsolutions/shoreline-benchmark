@@ -26,6 +26,7 @@ export interface PhaseResult {
   prompt: string;
   response: string;
   confidence: number | null;
+  executionFailed?: boolean;
   tokensUsed: number;
   latencyMs: number;
   promptTokens?: number;
@@ -42,6 +43,7 @@ export interface Phase2Result {
   extractedAnswer: string;
   correctAnswer: string;
   isCorrect: boolean;
+  executionFailed?: boolean;
   partialScore?: number;
   tokensUsed: number;
   latencyMs: number;
@@ -56,6 +58,7 @@ export interface Phase2Result {
 export interface TrialResult {
   category: CategoryKey;
   difficulty: number;
+  valid?: boolean;
   phase1: PhaseResult;
   phase2: Phase2Result;
   phase3: PhaseResult;
@@ -131,6 +134,8 @@ export interface ModelResult {
     rampMode?: "balanced" | "fast";
     totalTrials: number;
     invalidTrials: number;
+    executionFailedTrials?: number;
+    modelFailedTrials?: number;
   };
 }
 

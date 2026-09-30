@@ -13,24 +13,27 @@ export function computeCategoryScore(
   trials: TrialResult[],
   transitionZone: number
 ): CategoryScore {
+  const scoringTrials = trials.filter(
+    (trial) => trial.valid !== false && trial.phase1.confidence !== null && trial.phase3.confidence !== null
+  );
   const performance01 = (trial: TrialResult): number => {
     if (typeof trial.phase2.partialScore === "number") return clamp(trial.phase2.partialScore, 0, 1);
     return trial.phase2.isCorrect ? 1 : 0;
   };
 
-  const phase1Confidences = trials
+  const phase1Confidences = scoringTrials
     .map((trial) => trial.phase1.confidence)
     .filter((value): value is number => value !== null);
   const claimed = avg(phase1Confidences);
   const categoryDef = CATEGORY_DEFINITIONS.find((item) => item.key === category);
 
   const solidRaw01 = avg(
-    trials.map((trial) => performance01(trial))
+    scoringTrials.map((trial) => performance01(trial))
   );
 
   // Discernment stays as the unweighted metacognitive correctness rate.
   const discernment01 = avg(
-    trials.map((trial) => {
+    scoringTrials.map((trial) => {
       const c = trial.phase3.confidence;
       if (c === null) return 0;
       if (trial.phase2.isCorrect && c >= 60) return 1;
@@ -42,7 +45,7 @@ export function computeCategoryScore(
   // False confidence: wrong answers where model expressed high confidence (>=60%) in Phase 3.
   // This is the dangerous case - model doesn't know what it doesn't know.
   const falseConfidence01 = avg(
-    trials.map((trial) => {
+    scoringTrials.map((trial) => {
       const c = trial.phase3.confidence;
       if (c === null) return 0;
       // Wrong answer but confident about it
@@ -54,7 +57,7 @@ export function computeCategoryScore(
   // True uncertainty: wrong answers where model correctly expressed low confidence (<40%).
   // This is good metacognition - model knows when it might have failed.
   const trueUncertainty01 = avg(
-    trials.map((trial) => {
+    scoringTrials.map((trial) => {
       const c = trial.phase3.confidence;
       if (c === null) return 0;
       // Wrong answer and appropriately uncertain
@@ -84,7 +87,7 @@ export function computeCategoryScore(
     return clamp(linear ** SAND_DIFFICULTY_EXPONENT, 0, 1);
   };
 
-  const phase1Depth = trials.map((trial) => {
+  const phase1Depth = scoringTrials.map((trial) => {
     const confidence01 = clamp((trial.phase1.confidence ?? 0) / 100, 0, 1);
     return {
       confidence01,
@@ -94,27 +97,27 @@ export function computeCategoryScore(
 
   const solidDepth01 = Math.max(
     0,
-    ...trials.map((trial) => {
+    ...scoringTrials.map((trial) => {
       const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
       return performance01(trial) * normalizedDifficulty;
     })
   );
   const solidFrontierDifficulty =
     solidDepth01 > 0
-      ? trials.reduce(
+      ? scoringTrials.reduce(
           (best, trial) => {
             const normalizedDifficulty = normalizeDifficulty(trial.difficulty);
             const depth = performance01(trial) * normalizedDifficulty;
             return depth > best.depth ? { depth, difficulty: trial.difficulty } : best;
           },
-          { depth: 0, difficulty: trials[0]?.difficulty ?? 0 }
+          { depth: 0, difficulty: scoringTrials[0]?.difficulty ?? 0 }
         ).difficulty
       : undefined;
 
   // Concrete is computed as:
   //   concrete = solid * (caught mistakes / total mistakes)
   // where mistakes are weighted by error magnitude (1 - partialScore).
-  const mistakeStats = trials.map((trial) => {
+  const mistakeStats = scoringTrials.map((trial) => {
     const mistake01 = Math.max(0, 1 - performance01(trial));
     const phase3Confidence = trial.phase3.confidence;
     const admittedFailure = mistake01 > 0 && phase3Confidence !== null && phase3Confidence < 40;
@@ -144,7 +147,7 @@ export function computeCategoryScore(
             const depth = mistake01 * normalizeDifficulty(trial.difficulty);
             return depth > best.depth ? { depth, difficulty: trial.difficulty } : best;
           },
-          { depth: 0, difficulty: trials[0]?.difficulty ?? 0 }
+          { depth: 0, difficulty: scoringTrials[0]?.difficulty ?? 0 }
         ).difficulty
       : undefined;
 
@@ -168,13 +171,13 @@ export function computeCategoryScore(
   );
   const sandFrontierDifficulty =
     claimedDepth01 > 0
-      ? trials.reduce(
+      ? scoringTrials.reduce(
           (best, trial) => {
             const confidence01 = clamp((trial.phase1.confidence ?? 0) / 100, 0, 1);
             const depth = confidence01 * normalizeDifficulty(trial.difficulty);
             return depth > best.depth ? { depth, difficulty: trial.difficulty } : best;
           },
-          { depth: 0, difficulty: trials[0]?.difficulty ?? 0 }
+          { depth: 0, difficulty: scoringTrials[0]?.difficulty ?? 0 }
         ).difficulty
       : undefined;
 
@@ -193,7 +196,7 @@ export function computeCategoryScore(
       ? ((transitionZone - categoryDef.minDifficulty) / (categoryDef.maxDifficulty - categoryDef.minDifficulty)) * 100
       : 0;
 
-  const difficulties = trials.map((trial) => trial.difficulty);
+  const difficulties = scoringTrials.map((trial) => trial.difficulty);
   const trialsByDifficulty = difficulties.reduce<Record<string, number>>((acc, difficulty) => {
     const key = String(difficulty);
     acc[key] = (acc[key] ?? 0) + 1;
@@ -203,9 +206,9 @@ export function computeCategoryScore(
     .map((value) => Number.parseInt(value, 10))
     .filter((value) => Number.isFinite(value))
     .sort((a, b) => a - b);
-  const avgTrialsPerDifficulty = sampleDifficulties.length > 0 ? trials.length / sampleDifficulties.length : 0;
-  const minDifficulty = Math.min(...difficulties);
-  const maxDifficulty = Math.max(...difficulties);
+  const avgTrialsPerDifficulty = sampleDifficulties.length > 0 ? scoringTrials.length / sampleDifficulties.length : 0;
+  const minDifficulty = difficulties.length > 0 ? Math.min(...difficulties) : 0;
+  const maxDifficulty = difficulties.length > 0 ? Math.max(...difficulties) : 0;
 
   return {
     category,
@@ -228,29 +231,30 @@ export function computeCategoryScore(
     sampleDifficulties,
     trialsByDifficulty,
     avgTrialsPerDifficulty,
-    trialCount: trials.length,
+    trialCount: scoringTrials.length,
     difficultyRange: [minDifficulty, maxDifficulty],
     transitionZone
   };
 }
 
 export function computeAggregateScores(scores: CategoryScore[]) {
-  const avgClaimed = avg(scores.map((score) => score.claimed ?? 0));
-  const avgSand = avg(scores.map((score) => score.sand));
-  const avgSolid = avg(scores.map((score) => score.solid));
-  const avgConcrete = avg(scores.map((score) => score.concrete));
-  const avgDiscernment = avg(scores.map((score) => score.discernment ?? 0));
-  const avgCalibrationError = avg(scores.map((score) => score.calibrationError ?? 0));
-  const avgCapability = avg(scores.map((score) => score.capability ?? 0));
+  const scoredCategories = scores.filter((score) => score.trialCount > 0);
+  const avgClaimed = avg(scoredCategories.map((score) => score.claimed ?? 0));
+  const avgSand = avg(scoredCategories.map((score) => score.sand));
+  const avgSolid = avg(scoredCategories.map((score) => score.solid));
+  const avgConcrete = avg(scoredCategories.map((score) => score.concrete));
+  const avgDiscernment = avg(scoredCategories.map((score) => score.discernment ?? 0));
+  const avgCalibrationError = avg(scoredCategories.map((score) => score.calibrationError ?? 0));
+  const avgCapability = avg(scoredCategories.map((score) => score.capability ?? 0));
   // Depth misalignment: claimed depth (sand) vs verified depth (solid)
-  const overconfidence = avg(scores.map((score) => Math.max(0, score.sand - score.solid)));
-  const underconfidence = avg(scores.map((score) => Math.max(0, score.solid - score.sand)));
+  const overconfidence = avg(scoredCategories.map((score) => Math.max(0, score.sand - score.solid)));
+  const underconfidence = avg(scoredCategories.map((score) => Math.max(0, score.solid - score.sand)));
   // Phase 3 missed failures: wrong answers where model remained confident.
-  const blindSpots = avg(scores.map((score) => score.falseConfidence ?? Math.max(0, score.solid - score.concrete)));
+  const blindSpots = avg(scoredCategories.map((score) => score.falseConfidence ?? Math.max(0, score.solid - score.concrete)));
   // Phase 3 false confidence: wrong answers where model was confident
-  const avgFalseConfidence = avg(scores.map((score) => score.falseConfidence ?? 0));
+  const avgFalseConfidence = avg(scoredCategories.map((score) => score.falseConfidence ?? 0));
   // Phase 3 true uncertainty: wrong answers where model correctly doubted itself
-  const avgTrueUncertainty = avg(scores.map((score) => score.trueUncertainty ?? 0));
+  const avgTrueUncertainty = avg(scoredCategories.map((score) => score.trueUncertainty ?? 0));
 
   return {
     avgClaimed,
