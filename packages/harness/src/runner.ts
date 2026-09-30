@@ -1,4 +1,5 @@
-import { access, appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import { access, appendFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
   CATEGORY_DEFINITIONS,
@@ -224,7 +225,9 @@ async function loadCheckpoint(checkpointPath: string): Promise<RunCheckpoint | n
 
 async function saveCheckpoint(checkpointPath: string, checkpoint: RunCheckpoint): Promise<void> {
   checkpoint.updatedAt = new Date().toISOString();
-  await writeFile(checkpointPath, JSON.stringify(checkpoint, null, 2));
+  const temporaryPath = `${checkpointPath}.${process.pid}.${randomUUID()}.tmp`;
+  await writeFile(temporaryPath, JSON.stringify(checkpoint, null, 2));
+  await rename(temporaryPath, checkpointPath);
 }
 
 async function withTimeout<T>(operation: Promise<T>, timeoutMs: number, label: string): Promise<T> {
