@@ -1,14 +1,13 @@
-import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import test from "node:test";
+import { expect, it } from "vitest";
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 
-test("static generation keeps valid trials after a malformed JSONL line", async () => {
+it("static generation keeps valid trials after a malformed JSONL line", async () => {
   const fixtureDir = await mkdtemp(path.join(os.tmpdir(), "shoreline-jsonl-recovery-"));
   const runDir = path.join(fixtureDir, "input", "test-model", "run-1");
   const outputDir = path.join(fixtureDir, "output");
@@ -46,9 +45,9 @@ test("static generation keeps valid trials after a malformed JSONL line", async 
     `--publicOutput=${publicOutputDir}`
   ], { cwd: repoRoot, encoding: "utf8" });
 
-  assert.equal(generated.status, 0, `${generated.stdout}\n${generated.stderr}`);
+  expect(generated.status, `${generated.stdout}\n${generated.stderr}`).toBe(0);
   const fullTrials = JSON.parse(await readFile(path.join(publicOutputDir, "test-model.json"), "utf8"));
-  assert.deepEqual(fullTrials.map((result: { timestamp: string }) => result.timestamp), [
+  expect(fullTrials.map((result: { timestamp: string }) => result.timestamp)).toEqual([
     "2026-01-01T00:00:01.000Z",
     "2026-01-01T00:00:03.000Z"
   ]);
