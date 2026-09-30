@@ -129,9 +129,13 @@ async function extractFullTrialResponses(rawResponsesPath: string): Promise<Full
 
     for await (const line of rl) {
       if (!line.trim()) continue;
-      const trial = JSON.parse(line) as RawTrial;
-      const { pattern, patternLabel } = classifyPattern(trial);
-      allTrials.push(createTrialResult(trial, pattern, patternLabel));
+      try {
+        const trial = JSON.parse(line) as RawTrial;
+        const { pattern, patternLabel } = classifyPattern(trial);
+        allTrials.push(createTrialResult(trial, pattern, patternLabel));
+      } catch {
+        // Skip malformed trials and continue with the rest of the file
+      }
     }
   } catch {
     // File might not exist
