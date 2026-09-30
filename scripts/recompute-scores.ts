@@ -135,6 +135,18 @@ function toNonNegativeNumber(value: unknown): number | undefined {
   return value;
 }
 
+function isValidTrial(trial: TrialResult): boolean {
+  return trial.valid !== false && trial.phase1.confidence !== null && trial.phase3.confidence !== null;
+}
+
+function hasExecutionFailure(trial: TrialResult): boolean {
+  return (
+    trial.phase1.executionFailed === true ||
+    trial.phase2.executionFailed === true ||
+    trial.phase3.executionFailed === true
+  );
+}
+
 function collectUsageTotals(trials: TrialResult[]): UsageTotals {
   const totals: UsageTotals = {
     totalTokensUsed: 0,
@@ -204,8 +216,11 @@ async function recomputeRun(modelDirPath: string, runDirPath: string, modelDirNa
   const aggregate = computeAggregateScores(categories.map((category) => categoryScores[category]));
 
   const usageTotals = collectUsageTotals(trials);
-  const invalidTrials = trials.filter((trial) => trial.phase1.confidence === null || trial.phase3.confidence === null)
-    .length;
+  const invalidTrials = trials.filter((trial) => !isValidTrial(trial)).length;
+  const executionFailedTrials = trials.filter(hasExecutionFailure).length;
+  const modelFailedTrials = trials.filter(
+    (trial) => !hasExecutionFailure(trial) && !trial.phase2.isCorrect
+  ).length;
   const missingCostCalls = Math.max(0, usageTotals.totalModelCalls - usageTotals.costMeasuredCalls);
   const averageLatencyMs =
     usageTotals.totalModelCalls > 0 ? usageTotals.totalLatencyMs / usageTotals.totalModelCalls : 0;
@@ -237,7 +252,9 @@ async function recomputeRun(modelDirPath: string, runDirPath: string, modelDirNa
       averageLatencyMs,
       runDurationMs: previousScore?.metadata?.runDurationMs,
       totalTrials: trials.length,
-      invalidTrials
+      invalidTrials,
+      executionFailedTrials,
+      modelFailedTrials
     }
   };
 

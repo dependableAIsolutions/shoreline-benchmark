@@ -136,6 +136,18 @@ function countByDifficulty(trials: TrialResult[]): Map<number, number> {
   return counts;
 }
 
+function isValidTrial(trial: TrialResult): boolean {
+  return trial.valid !== false && trial.phase1.confidence !== null && trial.phase3.confidence !== null;
+}
+
+function hasExecutionFailure(trial: TrialResult): boolean {
+  return (
+    trial.phase1.executionFailed === true ||
+    trial.phase2.executionFailed === true ||
+    trial.phase3.executionFailed === true
+  );
+}
+
 function toNonNegativeNumber(value: unknown): number | undefined {
   if (typeof value !== "number") return undefined;
   if (!Number.isFinite(value) || value < 0) return undefined;
@@ -262,7 +274,7 @@ async function runThreePhaseTrial(
         costSource: "unavailable" as const,
         tokensPerSecond: undefined,
         timeToFirstTokenMs: undefined,
-        failed: true
+        failed: false
       }
     : await safeComplete(adapter, phase3Prompt, `Phase 3 (${categoryKey} d=${difficulty})`, callTimeoutMs);
   const phase3Confidence = extractConfidence(phase3.content);
@@ -270,10 +282,12 @@ async function runThreePhaseTrial(
   const trial: TrialResult = {
     category: categoryKey,
     difficulty,
+    valid: phase1Confidence !== null && phase3Confidence !== null,
     phase1: {
       prompt: phase1Prompt,
       response: phase1.content,
       confidence: phase1Confidence,
+      executionFailed: phase1.failed,
       tokensUsed: phase1.tokensUsed,
       latencyMs: phase1.latencyMs,
       promptTokens: phase1.promptTokens,
@@ -289,6 +303,7 @@ async function runThreePhaseTrial(
       extractedAnswer: evalResult.extractedAnswer,
       correctAnswer: task.correctAnswer,
       isCorrect: evalResult.isCorrect,
+      executionFailed: phase2.failed,
       partialScore: evalResult.partialScore,
       tokensUsed: phase2.tokensUsed,
       latencyMs: phase2.latencyMs,
@@ -303,6 +318,7 @@ async function runThreePhaseTrial(
       prompt: phase3Prompt,
       response: phase3.content,
       confidence: phase3Confidence,
+      executionFailed: phase2.failed ? undefined : phase3.failed,
       tokensUsed: phase3.tokensUsed,
       latencyMs: phase3.latencyMs,
       promptTokens: phase3.promptTokens,
@@ -318,7 +334,7 @@ async function runThreePhaseTrial(
   return {
     trial,
     tokensUsed: phase1.tokensUsed + phase2.tokensUsed + phase3.tokensUsed,
-    invalidConfidence: phase1Confidence === null || phase3Confidence === null
+    invalidConfidence: !trial.valid
   };
 }
 
@@ -460,7 +476,11 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
   for (const existingTrial of allTrials) {
     addTrialToUsageTotals(usageTotals, existingTrial);
   }
-  let invalidTrials = allTrials.filter((trial) => trial.phase1.confidence === null || trial.phase3.confidence === null).length;
+  let invalidTrials = allTrials.filter((trial) => !isValidTrial(trial)).length;
+  let executionFailedTrials = allTrials.filter(hasExecutionFailure).length;
+  let modelFailedTrials = allTrials.filter(
+    (trial) => !hasExecutionFailure(trial) && !trial.phase2.isCorrect
+  ).length;
   let checkpointWriteQueue = Promise.resolve();
   const queueCheckpointSave = async (): Promise<void> => {
     checkpointWriteQueue = checkpointWriteQueue.then(() => saveCheckpoint(checkpointPath, checkpoint));
@@ -568,6 +588,8 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
           categoryTrials.push(result.trial);
           addTrialToUsageTotals(usageTotals, result.trial);
           if (result.invalidConfidence) invalidTrials += 1;
+          if (hasExecutionFailure(result.trial)) executionFailedTrials += 1;
+          if (!hasExecutionFailure(result.trial) && !result.trial.phase2.isCorrect) modelFailedTrials += 1;
 
           await appendTrial(result.trial);
 
@@ -580,7 +602,7 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
       const invalidRate =
         categoryTrials.length === 0
           ? 0
-          : categoryTrials.filter((trial) => trial.phase1.confidence === null || trial.phase3.confidence === null).length /
+          : categoryTrials.filter((trial) => !isValidTrial(trial)).length /
             categoryTrials.length;
       const emptyPhase2Rate =
         categoryTrials.length === 0
@@ -648,7 +670,9 @@ export async function runBenchmark(config: BenchmarkRunnerConfig): Promise<Model
       quickMode,
       rampMode: config.rampMode ?? "balanced",
       totalTrials: allTrials.length,
-      invalidTrials
+      invalidTrials,
+      executionFailedTrials,
+      modelFailedTrials
     }
   };
 
