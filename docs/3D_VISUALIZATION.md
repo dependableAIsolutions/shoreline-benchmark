@@ -2,137 +2,116 @@
 
 ## Design Rationale
 
-The 3D island view enhances the 2D visualization by adding a third dimension (height) to encode additional metrics. This makes certain patterns more obvious:
+The 3D view gives each category's three island metrics a spatial profile. The
+distance from the center shows how far each metric reaches, so differences
+between claimed ability, verified performance, and noticed failures are easy to
+compare around the island. Fixed layer elevations and terrain textures give
+those profiles a readable landscape; elevation itself is not a score.
 
-- **Cliffs**: Steep vertical transitions when capability exists without corresponding claims
-- **Valleys**: Depressions where self-awareness lags behind capability
-- **Peaks**: High points where capability AND self-awareness align
+The view complements the 2D island. It is a visual aid for comparing category
+profiles, while the labels and tooltip provide the exact values.
 
 ## Metric-to-Geometry Mapping
 
-### Dimensions
+| Visual dimension | What it encodes | How to read it |
+|------------------|-----------------|----------------|
+| **Angle** (X-Z) | Category | Each category occupies one spoke around the island. |
+| **Radial extent** (X-Z) | Sand, solid, and concrete scores | Each score is scaled from 0–100 to the 0–2 unit radius. |
+| **Height** (Y) | Fixed layer and shoreline shape | Elevation distinguishes terrain layers; it does not encode discernment or another score. |
+| **Color and texture** | Terrain layer and procedural variation | Tan is sand, green is solid, and gray-blue is concrete. False confidence does not tint the terrain red. |
 
-| Dimension | Metric | Interpretation |
-|-----------|--------|----------------|
-| **Radial extent** (X-Z) | Layer value (sand/solid/concrete) | How far capability/claims extend |
-| **Height** (Y) | Discernment (Phase 3 quality) | Self-awareness quality |
-| **Color** | Base layer color + falseConfidence tint | Danger indicator |
+The layer meanings match the metrics shown elsewhere in the app:
 
-### Layer Heights
+- **Sand** is claimed depth: what the model says it can do before trying.
+- **Solid** is verified depth: what the model solves correctly.
+- **Concrete** is failure-aware depth: how well it notices its own mistakes.
 
-```typescript
-// Sand layer - low beach at sea level
-sandHeight = 0.02 + (value / 100) × 0.15
+For each layer, the component takes that metric's value for every category and
+builds a smoothed radial profile. The category values determine how far the
+layer extends, not its height. The three profiles are combined into one terrain
+mesh. Where they overlap, concrete is drawn as the raised interior, solid as
+the middle terrain, and sand as the outer beach. Local slopes, shoreline
+transitions, and small deterministic noise soften the boundaries.
 
-// Solid layer - mid terrain influenced by discernment
-solidHeight = 0.1 + (solid × 0.6 + discernment × 0.4) / 100 × 0.4
+### Layer Shape
 
-// Concrete layer - highest peaks
-concreteHeight = 0.25 + (concrete / 100) × 0.55
-```
+The main terrain mesh uses fixed elevation cues: sand begins near 0.03 units,
+solid terrain transitions around 0.18 units, and concrete plateaus around 0.35
+units. The mesh adds slopes at layer edges, shoreline tapering, and subtle
+height variation for texture. These values shape the illustration; they are
+not formulas derived from the scores.
 
-The solid layer height is a weighted blend of capability (60%) and discernment (40%), creating height variation that reflects metacognitive quality.
+### Color and Texture
 
-### Color Encoding
-
-```typescript
-baseColor = layerColor           // #F59E0B (sand), #3DA84A (solid), #8A9CAA (concrete)
-dangerColor = #F87171            // Warning red
-
-if (falseConfidence > 30%) {
-  displayColor = lerp(dangerColor, baseColor, 1 - falseConfidence)
-}
-```
-
-Categories with high false confidence (model was wrong but confident) show red tinting.
+Vertex colors are selected from the terrain layer and varied by deterministic
+noise. Sand uses tan, solid uses green, and concrete uses gray-blue. Concrete
+edges blend with the underlying green terrain, and the shoreline darkens toward
+the edge. The water and ocean floor use separate shoreline-aware blue palettes.
+No color channel represents discernment or false confidence.
 
 ## Visual Signatures
 
-### 1. Capable Plateau
-- **Metrics**: solid high, discernment high
-- **Visual**: Wide, tall green terrain
-- **Meaning**: Model succeeds AND knows when it succeeds/fails
+Read the horizontal reach of the layers to compare metrics:
 
-### 2. Cliff Profile
-- **Metrics**: solid high, sand low
-- **Visual**: Wide base with steep edges, sand barely extending beyond solid
-- **Meaning**: Underconfident - capable but doesn't claim its capability
+1. **Claimed reach beyond verified reach**: sand extends past solid. This
+   suggests claimed ability exceeds demonstrated performance in that category.
+2. **Verified reach beyond claimed reach**: solid extends past sand. This
+   suggests demonstrated performance exceeds what the model claims.
+3. **Failure-aware interior**: concrete occupies part of the solid region.
+   Concrete is computed from solid and mistake-awareness, so it shows the
+   portion associated with recognized mistakes.
+4. **Similar profiles**: layers with similar reach overlap, making their
+   boundaries harder to distinguish. Use the category tooltip for their exact
+   values.
 
-### 3. Sandy Beach
-- **Metrics**: sand high, solid low
-- **Visual**: Extended low beach beyond the solid land mass
-- **Meaning**: Overconfident - claims territory it can't actually hold
-
-### 4. Blind Valley
-- **Metrics**: solid high, concrete low, discernment low
-- **Visual**: Wide but relatively flat terrain, possible red tinting
-- **Meaning**: Capable but doesn't recognize its own success/failure
-
-### 5. Humble Basin
-- **Metrics**: all low, trueUncertainty high
-- **Visual**: Small, low terrain with appropriate proportions
-- **Meaning**: Limited capability but appropriately aware of limitations
+These are visual comparisons, not extra metrics. Aggregate overconfidence,
+underconfidence, and blind-spot values are calculated separately and are not
+encoded as terrain height or color.
 
 ## Implementation Details
 
-### Determinism
+### Geometry and Stability
 
-All geometry is procedurally generated to ensure consistent rendering:
+`IslandTerrain` creates one indexed `BufferGeometry` with vertex colors. It
+uses 320 angular segments and 108 concentric ring segments. Each layer profile
+is interpolated between category values with a closed Catmull–Rom curve, then
+filled and smoothed to reduce angular jitter. The terrain uses seeded
+deterministic noise, and generated coordinates are quantized for stable
+rendering.
 
-```typescript
-function organicVariation(index: number, seed: number, amplitude = 0.05): number {
-  const x = Math.sin(index * 127.1 + seed * 311.7) * 43758.5453;
-  return ((x - Math.floor(x)) * 2 - 1) * amplitude;
-}
+The island also draws contour lines for the three layers. A shoreline profile
+drives the surrounding ocean floor and water colors. Water texture offsets and
+the ocean surface move subtly while the terrain profile remains stable.
 
-function quantize(value: number): number {
-  return Math.round(value * 10000) / 10000;
-}
-```
+### Performance
 
-This prevents:
-- Hydration mismatches between server and client
-- Different renders on page refresh
-- Random visual noise
+- Keep the terrain as a single indexed mesh with vertex colors.
+- The terrain's current resolution is 320 angular by 108 radial segments.
+- The ocean floor and water are separate grid meshes, each with its own
+  resolution and shoreline coloring.
 
-### Performance Considerations
+## Interactivity and Usage
 
-- Uses simple triangle geometry (not smooth curves) for performance
-- Segments per category is limited (6) to keep vertex count low
-- Vertex colors instead of multiple materials
-- Single geometry buffer per layer
+Use the **2D** and **3D** buttons in an island card header to switch views. The
+3D view slowly auto-rotates. Drag to orbit and scroll to zoom; panning is
+disabled. Hover a category label to emphasize the label and show that
+category's sand, solid, and concrete values in the tooltip. Hovering the
+terrain itself does not select a category.
 
-### Interactivity
-
-- **Orbit controls**: Rotate, zoom, pan the 3D view
-- **Category hover**: Highlights category wedge, shows detailed tooltip
-- **Tooltip**: Shows sand/solid/concrete plus discernment and false confidence
-
-## Usage
-
-Toggle between 2D and 3D views using the buttons in the IslandCard header:
-
-```
-[Model Name]                    [2D] [3D]
-```
-
-The 3D view supports:
-- Mouse drag to rotate
-- Scroll to zoom
-- Mouse over category labels to see details
+The card uses a 960 × 540 view in its regular layout and a 360 × 360 view in
+compact layout. `Island3D` also accepts optional width and height props for
+other callers.
 
 ## Technical Stack
 
 - **@react-three/fiber**: React renderer for Three.js
-- **@react-three/drei**: Helper components (OrbitControls, Html)
-- **three**: 3D rendering engine
+- **@react-three/drei**: Orbit controls and HTML labels/tooltips
+- **three**: Geometry, materials, and rendering engine
 
-## Future Enhancements
+## Possible Future Enhancements
 
-Potential improvements:
-
-1. **Animated transitions**: Smooth morphing between different model states
-2. **Category wedge highlighting**: More prominent selection state
-3. **Contour lines**: Show threshold boundaries (50%, 80% confidence frontiers)
-4. **Water effects**: Animated ocean around the island
-5. **Minimap**: Small 2D overview showing current camera angle
+1. Animated transitions between model profiles
+2. A more prominent category selection state
+3. Contour lines for additional metric thresholds
+4. More varied water effects
+5. A minimap showing the current camera angle
