@@ -13,8 +13,8 @@ Shoreline measures model capability and metacognitive calibration across 11 reas
 - `concrete`: failure-awareness rate: wrong answers correctly flagged with low Phase 3 confidence (0-100)
 
 Derived aggregate metrics:
-- `overconfidence`: `max(0, claimed - solid)`
-- `underconfidence`: `max(0, solid - claimed)`
+- `overconfidence`: `avg(max(0, sand - solid))` across scored categories
+- `underconfidence`: `avg(max(0, solid - sand))` across scored categories
 - `blindSpots`: missed failures (`wrong + high confidence`, aligned with `falseConfidence`)
 - `calibrationIndex`: `100 - avgCalibrationError`
 - `capabilityIndex`: normalized transition-zone percentile by category difficulty range
