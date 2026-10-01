@@ -138,12 +138,3 @@ export interface ModelResult {
     modelFailedTrials?: number;
   };
 }
-
-export interface RunOptions {
-  adapter: "openrouter" | "lmstudio" | "localapi";
-  model: string;
-  categories: CategoryKey[];
-  trialsPerDifficulty: number;
-  temperature: number;
-  outputDir: string;
-}
