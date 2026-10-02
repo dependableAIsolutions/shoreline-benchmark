@@ -94,7 +94,7 @@ Web-only script:
 Optional:
 
 ```bash
-WEB_PORT=3000 REFRESH_STATIC=1 ./start-dev.sh
+WEB_PORT=3000 SKIP_REFRESH=1 ./start-dev.sh
 ```
 
 ## Tested Models (Current)
