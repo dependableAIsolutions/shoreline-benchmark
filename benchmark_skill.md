@@ -115,6 +115,7 @@ Defined in `benchmark/suites/openrouter.launch-template.json`:
 - `anthropic/claude-opus-4.6`
 - `anthropic/claude-sonnet-4.5`
 - `google/gemini-2.5-pro`
+- `google/gemini-3-pro`
 - `x-ai/grok-4`
 - `meta-llama/llama-4-maverick`
 - `deepseek/deepseek-r1`
