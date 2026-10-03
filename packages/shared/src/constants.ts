@@ -1,11 +1,5 @@
 import type { CategoryDefinition } from "./types";
 
-export const SHORELINE_LAYERS = {
-  sand: "Phase 1 claimed depth",
-  solid: "Phase 2 verified depth",
-  concrete: "Failure-aware share of verified depth"
-} as const;
-
 // Sand normalization is intentionally model-agnostic and extends beyond
 // the benchmarked range so 100 is a theoretical outer ceiling.
 //
