@@ -53,9 +53,12 @@ Current config:
 - quick mode: `true`
 - trials per difficulty: `1`
 - models:
-  - `openai/gpt-5.2`
-  - `anthropic/claude-sonnet-4.5`
-  - `google/gemini-2.5-pro`
+  - `google/gemini-3-flash-preview`
+  - `moonshotai/kimi-k2.5`
+  - `deepseek/deepseek-v3.2`
+  - `minimax/minimax-m2.1`
+  - `x-ai/grok-4.1-fast`
+  - `openai/gpt-oss-120b`
 
 Command:
 
@@ -81,7 +84,7 @@ CONFIG=benchmark/suites/openrouter.smoke.json ./run-benchmarks.sh --force
 Run a subset:
 
 ```bash
-CONFIG=benchmark/suites/openrouter.smoke.json ./run-benchmarks.sh --models openai/gpt-5.2
+CONFIG=benchmark/suites/openrouter.smoke.json ./run-benchmarks.sh --models google/gemini-3-flash-preview
 ```
 
 ## Render Website
