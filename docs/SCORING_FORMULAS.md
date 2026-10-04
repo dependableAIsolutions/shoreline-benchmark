@@ -91,15 +91,16 @@ This compares average Phase 1 confidence with average Phase 2 performance. The P
 
 ## Display Layers
 
-The 3D island uses the scores as layer radii. Sand extends to the largest score to form the outer envelope; Solid and Concrete use their computed values directly:
+The 3D island builds separate radial profiles from the Sand, Solid, and Concrete scores. At each angle, the terrain's outer envelope is the maximum radius across those profiles:
 
 ```typescript
-sandRadius = max(sand, solid, concrete)
-solidRadius = solid
-concreteRadius = concrete
+sandRadius = sample(sandProfile, angle)
+solidRadius = sample(solidProfile, angle)
+concreteRadius = sample(concreteProfile, angle)
+outerRadius = max(sandRadius, solidRadius, concreteRadius)
 ```
 
-The visual height also uses the claimed frontiers: Sand height is based on `claimedThick` and `claimedLoose`, Solid height on Solid, and Concrete height on Concrete. These display choices do not change the returned scores.
+Elevation uses fixed layer cues: Sand at 0.03, Solid at 0.18, Concrete at 0.35, and the shoreline taper reaches water at -0.02. Slopes and small terrain variations shape the transitions, but elevation does not encode another score. The scorer computes `claimedLoose` and `claimedThick` into `scores.json` for analysis; the 3D renderer does not read those fields.
 
 ## Terrain Profiles
 
