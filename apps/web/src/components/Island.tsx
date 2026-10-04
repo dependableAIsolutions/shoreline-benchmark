@@ -7,7 +7,6 @@ import { CATEGORY_ORDER, type CategoryKey, type ModelResult } from "../lib/types
 interface IslandProps {
   model: ModelResult;
   size?: number;
-  showLabels?: boolean;
   hoveredCategory: CategoryKey | null;
   onHoverCategory?: (category: CategoryKey | null) => void;
 }
@@ -23,7 +22,6 @@ function wedgePath(cx: number, cy: number, radius: number, startAngle: number, e
 export function Island({
   model,
   size = 480,
-  showLabels = true,
   hoveredCategory,
   onHoverCategory
 }: IslandProps) {
@@ -144,107 +142,106 @@ export function Island({
         );
       })}
 
-      {showLabels &&
-        CATEGORY_ORDER.map((category, index) => {
-          const angle = index * step;
-          const outerVal = Math.max(sandVals[index], 20);
-          const labelR = (outerVal / 100) * maxR + 28;
-          const pos = polarToXY(cx, cy, angle, labelR);
-          const rad = ((angle - 90) * Math.PI) / 180;
-          const anchor = Math.abs(Math.cos(rad)) < 0.25 ? "middle" : Math.cos(rad) > 0 ? "start" : "end";
-          const isHovered = hoveredCategory === category;
-          const cardRows = [
-            { label: "Sand", value: rawSandVals[index], color: "#F59E0B" },
-            { label: "Solid", value: rawSolidVals[index], color: "#3DA84A" },
-            { label: "Concrete", value: rawConcreteVals[index], color: "#8A9CAA" }
-          ] as const;
+      {CATEGORY_ORDER.map((category, index) => {
+        const angle = index * step;
+        const outerVal = Math.max(sandVals[index], 20);
+        const labelR = (outerVal / 100) * maxR + 28;
+        const pos = polarToXY(cx, cy, angle, labelR);
+        const rad = ((angle - 90) * Math.PI) / 180;
+        const anchor = Math.abs(Math.cos(rad)) < 0.25 ? "middle" : Math.cos(rad) > 0 ? "start" : "end";
+        const isHovered = hoveredCategory === category;
+        const cardRows = [
+          { label: "Sand", value: rawSandVals[index], color: "#F59E0B" },
+          { label: "Solid", value: rawSolidVals[index], color: "#3DA84A" },
+          { label: "Concrete", value: rawConcreteVals[index], color: "#8A9CAA" }
+        ] as const;
 
-          const sandDot = polarToXY(cx, cy, angle, (sandVals[index] / 100) * maxR);
-          const solidDot = polarToXY(cx, cy, angle, (solidVals[index] / 100) * maxR);
-          const concreteDot = polarToXY(cx, cy, angle, (concreteVals[index] / 100) * maxR);
+        const sandDot = polarToXY(cx, cy, angle, (sandVals[index] / 100) * maxR);
+        const solidDot = polarToXY(cx, cy, angle, (solidVals[index] / 100) * maxR);
+        const concreteDot = polarToXY(cx, cy, angle, (concreteVals[index] / 100) * maxR);
 
-          return (
-            <g
-              key={category}
-              data-category-interactive="true"
-              onMouseEnter={() => onHoverCategory?.(category)}
-              onMouseLeave={() => onHoverCategory?.(null)}
-              onPointerDown={() => onHoverCategory?.(category)}
-              style={{ cursor: "default" }}
-            >
-              {/* Hide outer label when tooltip is open to avoid overlap */}
-              {!isHovered && (
-                <text
-                  x={pos.x}
-                  y={pos.y}
-                  textAnchor={anchor}
-                  dominantBaseline="central"
-                  fontSize={9}
-                  fontFamily="'JetBrains Mono', monospace"
-                  fill="#3D3630"
-                  fontWeight={400}
-                >
-                  {categoryLabels[category as CategoryKey]}
-                </text>
-              )}
+        return (
+          <g
+            key={category}
+            data-category-interactive="true"
+            onMouseEnter={() => onHoverCategory?.(category)}
+            onMouseLeave={() => onHoverCategory?.(null)}
+            onPointerDown={() => onHoverCategory?.(category)}
+            style={{ cursor: "default" }}
+          >
+            {/* Hide outer label when tooltip is open to avoid overlap */}
+            {!isHovered && (
+              <text
+                x={pos.x}
+                y={pos.y}
+                textAnchor={anchor}
+                dominantBaseline="central"
+                fontSize={9}
+                fontFamily="'JetBrains Mono', monospace"
+                fill="#3D3630"
+                fontWeight={400}
+              >
+                {categoryLabels[category as CategoryKey]}
+              </text>
+            )}
 
-              {isHovered && (
-                <g pointerEvents="none">
-                  <circle cx={sandDot.x} cy={sandDot.y} r={3} fill="rgba(245,158,11,0.9)" stroke="#F59E0B" strokeWidth={1} />
-                  <circle cx={solidDot.x} cy={solidDot.y} r={3} fill="rgba(60,150,70,0.8)" stroke="#3C9646" strokeWidth={1} />
-                  <circle cx={concreteDot.x} cy={concreteDot.y} r={3.5} fill="rgba(100,120,140,0.8)" stroke="#64788C" strokeWidth={1} />
+            {isHovered && (
+              <g pointerEvents="none">
+                <circle cx={sandDot.x} cy={sandDot.y} r={3} fill="rgba(245,158,11,0.9)" stroke="#F59E0B" strokeWidth={1} />
+                <circle cx={solidDot.x} cy={solidDot.y} r={3} fill="rgba(60,150,70,0.8)" stroke="#3C9646" strokeWidth={1} />
+                <circle cx={concreteDot.x} cy={concreteDot.y} r={3.5} fill="rgba(100,120,140,0.8)" stroke="#64788C" strokeWidth={1} />
 
-                  <g>
-                    <rect
-                      x={cx - 82}
-                      y={cy - 44}
-                      width={164}
-                      height={88}
-                      rx={8}
-                      fill="rgba(8,12,26,0.96)"
-                      stroke="rgba(255,255,255,0.15)"
-                      strokeWidth={1}
-                    />
-                    <text
-                      x={cx}
-                      y={cy - 26}
-                      textAnchor="middle"
-                      fontSize={10}
-                      fontFamily="'JetBrains Mono', monospace"
-                      fill="#E8E0D4"
-                      fontWeight={700}
-                    >
-                      {categoryLabels[category as CategoryKey]}
-                    </text>
-                    {cardRows.map((row, rowIndex) => (
-                      <g key={row.label}>
-                        <text
-                          x={cx - 62}
-                          y={cy - 8 + rowIndex * 14}
-                          fontSize={9}
-                          fontFamily="'JetBrains Mono', monospace"
-                          fill={row.color}
-                        >
-                          {row.label}
-                        </text>
-                        <text
-                          x={cx + 62}
-                          y={cy - 8 + rowIndex * 14}
-                          textAnchor="end"
-                          fontSize={9}
-                          fontFamily="'JetBrains Mono', monospace"
-                          fill={row.color}
-                        >
-                          {row.value.toFixed(1)}
-                        </text>
-                      </g>
-                    ))}
-                  </g>
+                <g>
+                  <rect
+                    x={cx - 82}
+                    y={cy - 44}
+                    width={164}
+                    height={88}
+                    rx={8}
+                    fill="rgba(8,12,26,0.96)"
+                    stroke="rgba(255,255,255,0.15)"
+                    strokeWidth={1}
+                  />
+                  <text
+                    x={cx}
+                    y={cy - 26}
+                    textAnchor="middle"
+                    fontSize={10}
+                    fontFamily="'JetBrains Mono', monospace"
+                    fill="#E8E0D4"
+                    fontWeight={700}
+                  >
+                    {categoryLabels[category as CategoryKey]}
+                  </text>
+                  {cardRows.map((row, rowIndex) => (
+                    <g key={row.label}>
+                      <text
+                        x={cx - 62}
+                        y={cy - 8 + rowIndex * 14}
+                        fontSize={9}
+                        fontFamily="'JetBrains Mono', monospace"
+                        fill={row.color}
+                      >
+                        {row.label}
+                      </text>
+                      <text
+                        x={cx + 62}
+                        y={cy - 8 + rowIndex * 14}
+                        textAnchor="end"
+                        fontSize={9}
+                        fontFamily="'JetBrains Mono', monospace"
+                        fill={row.color}
+                      >
+                        {row.value.toFixed(1)}
+                      </text>
+                    </g>
+                  ))}
                 </g>
-              )}
-            </g>
-          );
-        })}
+              </g>
+            )}
+          </g>
+        );
+      })}
     </svg>
   );
 }
