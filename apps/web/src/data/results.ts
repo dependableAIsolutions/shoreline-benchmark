@@ -101,12 +101,6 @@ const fallbackResults = Object.entries(modelData).map(([name, layers]) => toMode
 
 export const modelResults: ModelResult[] = generatedResults.length > 0 ? generatedResults : fallbackResults;
 
-export const modelResultById: Record<string, ModelResult> = Object.fromEntries(
-  modelResults.map((result) => [result.modelId, result])
-);
-
-export const modelNames = modelResults.map((result) => result.modelDisplayName);
-
 export const categoryLabels: Record<CategoryKey, string> = {
   mult: "Multiplication",
   modexp: "Modular Exp.",
