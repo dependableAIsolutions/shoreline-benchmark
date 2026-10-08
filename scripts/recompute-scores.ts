@@ -185,7 +185,7 @@ function collectUsageTotals(trials: TrialResult[]): UsageTotals {
   return totals;
 }
 
-async function recomputeRun(modelDirPath: string, runDirPath: string, modelDirName: string): Promise<boolean> {
+async function recomputeRun(runDirPath: string, modelDirName: string): Promise<boolean> {
   const rawPath = path.join(runDirPath, "raw-responses.jsonl");
   const scorePath = path.join(runDirPath, "scores.json");
   const checkpointPath = path.join(runDirPath, "checkpoint.json");
@@ -275,7 +275,7 @@ async function main(): Promise<void> {
     for (const runDir of runDirs) {
       if (!runDir.isDirectory()) continue;
       const runDirPath = path.join(modelDirPath, runDir.name);
-      const updated = await recomputeRun(modelDirPath, runDirPath, modelDir.name);
+      const updated = await recomputeRun(runDirPath, modelDir.name);
       if (updated) {
         touched += 1;
         console.log(`recomputed: ${path.join(modelDir.name, runDir.name)}`);
