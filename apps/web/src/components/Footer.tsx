@@ -25,7 +25,7 @@ export function Footer() {
             DAIS Home
           </a>
           <a
-            href="https://services.findbusiness.ai"
+            href="https://findbusiness.ai/services/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#7c6f5e] transition-colors duration-200 hover:text-[#7ab8ad]"
