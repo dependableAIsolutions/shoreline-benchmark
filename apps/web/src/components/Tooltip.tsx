@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 interface TooltipProps {
   content: ReactNode;
   children: ReactNode;
-  position?: "top" | "bottom" | "left" | "right";
+  position?: "top" | "bottom";
   maxWidth?: number;
   className?: string;
 }
@@ -39,14 +39,6 @@ export function Tooltip({ content, children, position = "top", maxWidth = 280, c
       case "bottom":
         x = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
         y = triggerRect.bottom + 8;
-        break;
-      case "left":
-        x = triggerRect.left - tooltipRect.width - 8;
-        y = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
-        break;
-      case "right":
-        x = triggerRect.right + 8;
-        y = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
         break;
     }
 
