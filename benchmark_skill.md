@@ -101,15 +101,10 @@ WEB_PORT=3000 SKIP_REFRESH=1 ./start-dev.sh
 ```
 
 ## Tested Models (Current)
-Fresh all-category quick runs completed for:
-- Local:
-  - `qwen/qwen3-coder-next`
-- Remote SOTA:
-  - `openai/gpt-5.2`
-  - `anthropic/claude-sonnet-4.5`
-  - `google/gemini-2.5-pro`
-
-All above runs produced valid `scores.json`, `raw-responses.jsonl`, and `checkpoint.json` with 11 populated category scores.
+The current published model roster and results are in `apps/web/src/data/results.generated.ts`.
+This generated dataset is built from available run directories with `corepack pnpm generate-static`;
+it can include models run through different suite configurations. The enabled models in the local
+and remote suite files above are the source of truth for which quick runs those commands can produce.
 
 ## Planned SOTA Remote Models (Next)
 Defined in `benchmark/suites/openrouter.launch-template.json`:
