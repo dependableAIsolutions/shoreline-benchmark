@@ -99,8 +99,7 @@ category's sand, solid, and concrete values in the tooltip. Hovering the
 terrain itself does not select a category.
 
 The card uses a 960 × 540 view in its regular layout and a 360 × 360 view in
-compact layout. `Island3D` also accepts optional width and height props for
-other callers.
+compact layout. `Island3D` requires width and height props.
 
 ## Technical Stack
 
