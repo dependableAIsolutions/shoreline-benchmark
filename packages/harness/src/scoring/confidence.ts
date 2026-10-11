@@ -35,8 +35,6 @@ function pickBestPercentCandidate(text: string): number | null {
     .sort((a, b) => (b.score === a.score ? a.idx - b.idx : b.score - a.score));
 
   if (scored.length === 0) return null;
-  if (scored[0].score > 0) return scored[0].raw;
-  if (scored.length === 1) return scored[0].raw;
   return scored[0].raw;
 }
 
