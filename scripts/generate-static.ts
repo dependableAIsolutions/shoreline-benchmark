@@ -30,7 +30,6 @@ interface FullTrialResult extends SampleResult {
 interface FullTrialsIndexEntry {
   file: string;
   totalTrials: number;
-  representativeSamples: number;
 }
 
 function classifyPattern(trial: RawTrial): { pattern: SampleResult["pattern"]; patternLabel: string } {
@@ -281,15 +280,14 @@ export const samplesByModel: Record<string, SampleResult[]> = ${JSON.stringify(s
   await writeFile(samplesJson, JSON.stringify(samplesByModel, null, 2));
 
   const fullTrialsIndexByModel: Record<string, FullTrialsIndexEntry> = {};
-  for (const { result, samples, fullTrials } of latest) {
+  for (const { result, fullTrials } of latest) {
     const fileStem = modelIdToFileStem(result.modelId);
     const fileName = `${fileStem}.json`;
     const filePath = path.join(publicOutput, fileName);
     await writeFile(filePath, JSON.stringify(fullTrials, null, 2));
     fullTrialsIndexByModel[result.modelId] = {
       file: `/data/full-trials/${fileName}`,
-      totalTrials: fullTrials.length,
-      representativeSamples: samples.length
+      totalTrials: fullTrials.length
     };
   }
 
@@ -298,7 +296,6 @@ export const samplesByModel: Record<string, SampleResult[]> = ${JSON.stringify(s
   const fullIndexContent = `export interface FullTrialsIndexEntry {
   file: string;
   totalTrials: number;
-  representativeSamples: number;
 }
 
 export const fullTrialsIndexByModel: Record<string, FullTrialsIndexEntry> = ${JSON.stringify(fullTrialsIndexByModel, null, 2)};
