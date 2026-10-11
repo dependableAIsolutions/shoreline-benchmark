@@ -17,7 +17,7 @@ Derived aggregate metrics:
 - `underconfidence`: `avg(max(0, solid - sand))` across scored categories
 - `blindSpots`: missed failures (`wrong + high confidence`, aligned with `falseConfidence`)
 - `calibrationIndex`: `100 - avgCalibrationError`
-- `capabilityIndex`: normalized transition-zone percentile by category difficulty range
+- `avgCapability`: mean of the per-category transition-zone percentile (`capability` in each category score)
 
 How category scoring is sampled:
 - Transition probing first finds an approximate pass/fail boundary per category.
