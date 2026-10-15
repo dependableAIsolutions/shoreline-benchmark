@@ -13,9 +13,7 @@
     "baseUrl": ".",
     "paths": {
       "@shoreline/shared": ["packages/shared/src/index.ts"],
-      "@shoreline/shared/*": ["packages/shared/src/*"],
-      "@shoreline/harness": ["packages/harness/src/index.ts"],
-      "@shoreline/harness/*": ["packages/harness/src/*"]
+      "@shoreline/harness": ["packages/harness/src/index.ts"]
     }
   }
 }
